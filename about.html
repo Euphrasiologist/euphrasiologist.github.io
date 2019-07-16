@@ -2,29 +2,137 @@
 <!doctype html>
 
 <html lang="en">
-<head>
-  <meta charset="utf-8">
+  <head>
 
-  <title>Musings of the Euphrasiologist</title>
-  <meta name="description" content="Musings of the Euphrasiologist">
-  <meta name="author" content="SitePoint">
+   <title>Musings of the Euphrasiologist</title>
+    <meta charset="UTF-8">
 
-  <link rel="stylesheet" href="css/styles.css?v=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+ 
+    <meta name="description" content="Musings of the Euphrasiologist">
+
+    <style>
+      body {font-family: Arial, Helvetica, sans-serif;}
+      .header {padding: 70px; /* some padding */
+        text-align: center; /* center the text */
+        background: #0f995d; /* green background */
+        color: white; /* white text color */
+      }
+      /* Increase the font size of the <h1> element */
+      .header h1 {font-size: 40px;
+                  font-size: 6vw}
+      .navbar {overflow: hidden; /* Hide overflow */
+               background-color: #333; /* Dark background color */
+             }
+        /* Style the navigation bar links */
+      .navbar a {
+        float: left; /* Make sure that the links stay side-by-side */
+        display: block; /* Change the display to block, for responsive reasons (see below) */
+        color: white; /* White text color */
+        text-align: center; /* Center the text */
+        padding: 14px 20px; /* Add some padding */
+        text-decoration: none; /* Remove underline */
+      }
+      /* Right-aligned link */
+      .navbar a.right {
+        float: right; /* Float a link to the right */
+      }
+      /* Change color on hover/mouse-over */
+      .navbar a:hover {
+        background-color: #ddd; /* Grey background color */
+        color: black; /* Black text color */
+      }
+      /* Ensure proper sizing, not sure what the asterisk means */
+      * {
+        box-sizing: border-box;
+      }
+
+      /* Column container */
+      .row { 
+        display: flex;
+        flex-wrap: wrap;
+      }
+
+      /* Create two unequal columns that sits next to each other */
+      /* Sidebar/left column */
+      .side {
+        flex: 30%; /* Set the width of the sidebar */
+        background-color: #f1f1f1; /* Grey background color */
+        padding: 20px; /* Some padding */
+      }
+
+      /* Main column */
+      .main { 
+        flex: 70%; /* Set the width of the main content */
+        background-color: white; /* White background color */
+        padding: 20px; /* Some padding */
+      }
+
+      .footer {
+          padding: 10px; /* Some padding */
+          text-align: center; /* Center text*/
+          background: #ddd; /* Grey background */
+        }
+            a {
+              color: inherit; /* inherit colour from surrounding text */
+              text-decoration: none;
+        }
+               /* unvisited link */
+        a:link {
+          color: none;
+        }
+
+        /* visited link */
+        a:visited {
+          color: none;
+        }
+
+        /* mouse over link */
+        a:hover {
+          color: hotpink;
+        }
+
+        /* selected link */
+        a:active {
+          color: none;
+        } 
+    </style>
 
 </head>
 
 <body>
-  <script></script>
 
-  <h1>Overview:</h1>
+<body>
 
-  <p1>This proto-website is the outreach for some of the work I have been doing, why I think it's interesting and how you could do the same thing too! I'm a firm believer in data, code and workflow transparency. Github is an incredible tool for this, as well as learning to code at the same time.</p1>
+  <div class="header">
+    <h1><a href="https://euphrasiologist.github.io/">Euphrasiologist</a></h1>
+    <p>PhD student studying parasitic plants</p>
+  </div>
 
-  <h2>About:</h2>
+  <div class="navbar">
+    <a href="blog.html">Featured plant</a>
+    <a href="https://github.com/Euphrasiologist">Github</a>
+    <a href="pictures.html">Pictures</a>
+    <a href="about.html" class="right">About</a>
+  </div>
 
-  <p2>My name is Max and I am a postgraduate researcher at the University of Edinburgh, working on some plants in the British Isles called Eyebrights (or Euphrasia). I am using common garden experiments, field observations, some statistics and genomics to understand how hybrid species might evolve in Euphrasia.</p2>
+  <div class="row">
+    <div class="side"> <p>This proto-website is the outreach for some of the work I have been doing, why I think it's interesting, and how you could do the same thing too! I'm a firm believer in data, code and workflow transparency. <a href="https://github.com/Euphrasiologist">Github</a> is an incredible tool for this, as well as learning to code at the same time.</p>
 
-  <p3>I also in general love plants.</p3>
+    <p>I am a postgraduate researcher at the University of Edinburgh, working on plants in the British Isles called Eyebrights (or <i>Euphrasia</i>). I use common garden experiments, field observations, statistics and genomics to understand how hybrid species might evolve in Euphrasia.</p>
+
+    <p>I am particularly interested in botany, plant life history, aliens and invasives, hybridisation and coding (R, python, awk, BASH)</p>
+
+
+    </div>
+
+  </div>
+
+  <div class="footer">
+  <a href="https://twitter.com/Euphrasiologist"><i class="fa fa-twitter"></i></a>
+  <a href="https://github.com/Euphrasiologist"><i class="fa fa-github"></i></a>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+  </div>
 
 </body>
 </html>
