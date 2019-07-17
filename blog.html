@@ -1,0 +1,188 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+
+   <title>Musings of the Euphrasiologist</title>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+ 
+    <meta name="description" content="Musings of the Euphrasiologist">
+
+    <style>
+      body {font-family: Arial, Helvetica, sans-serif;}
+      .header {padding: 70px; /* some padding */
+        text-align: center; /* center the text */
+        background: #0f995d; /* green background */
+        color: white; /* white text color */
+      }
+      /* Increase the font size of the <h1> element */
+      .header h1 {font-size: 40px;
+                  font-size: 6vw}
+      .navbar {overflow: hidden; /* Hide overflow */
+               background-color: #333; /* Dark background color */
+             }
+        /* Style the navigation bar links */
+      .navbar a {
+        float: left; /* Make sure that the links stay side-by-side */
+        display: block; /* Change the display to block, for responsive reasons (see below) */
+        color: white; /* White text color */
+        text-align: center; /* Center the text */
+        padding: 14px 20px; /* Add some padding */
+        text-decoration: none; /* Remove underline */
+      }
+      /* Right-aligned link */
+      .navbar a.right {
+        float: right; /* Float a link to the right */
+      }
+      /* Change color on hover/mouse-over */
+      .navbar a:hover {
+        background-color: #ddd; /* Grey background color */
+        color: black; /* Black text color */
+      }
+      /* Ensure proper sizing, not sure what the asterisk means */
+      * {
+        box-sizing: border-box;
+      }
+
+      /* Column container */
+      .row { 
+        display: flex;
+        flex-wrap: wrap;
+      }
+
+      /* Create two unequal columns that sits next to each other */
+      /* Sidebar/left column */
+      .leftcolumn {
+        float: left;
+        background-color: #f1f1f1; /* Grey background color */
+        width: 75%;
+      }
+
+      /* Main column */
+      .rightcolumn { 
+        float: left;
+        width: 25%;
+        padding-left: 20px;
+      }
+      .row:after {
+        content: "";
+        display: table;
+        clear: both;
+      }
+      /* Add a card effect for articles */
+      .card {
+        background-color: white;
+        padding: 20px;
+        margin-top: 20px;
+      }
+      /* Clear floats after the columns */
+      .row:after {
+        content: "";
+        display: table;
+        clear: both;
+      }
+
+      .footer {
+          padding: 10px; /* Some padding */
+          text-align: center; /* Center text*/
+          background: #ddd; /* Grey background */
+        }
+        a {
+          color: inherit; /* inherit colour from surrounding text */
+          text-decoration: none;
+        }
+               /* unvisited link */
+        a:link {
+          color: none;
+        }
+
+        /* visited link */
+        a:visited {
+          color: none;
+        }
+
+        /* mouse over link */
+        a:hover {
+          color: hotpink;
+        }
+
+        /* selected link */
+        a:active {
+          color: none;
+        } 
+
+        @media screen and (max-width: 800px) {
+                                                .leftcolumn, .rightcolumn { 
+                                                  width: 100%;
+                                                  padding: 0;
+                                                }
+                                              }
+    </style>
+
+</head>
+
+<body>
+
+  <div class="header">
+    <h1>Euphrasiologist</h1>
+    <p>PhD student studying parasitic plants</p>
+  </div>
+
+    <div class="navbar">
+    <a href="blog.html">Featured plant</a>
+    <a href="https://github.com/Euphrasiologist">Github</a>
+    <a href="pictures.html">Pictures</a>
+    <a href="about.html" class="right">About</a>
+  </div>
+
+<!-- The left, main, column elements -->
+<div class="row">
+  <div class="leftcolumn">
+    <div class="card">
+      <h2>TITLE HEADING</h2>
+      <h5>Title description, Dec 7, 2017</h5>
+      <div class="fakeimg" style="height:200px;">Image</div>
+      <p>Some text..</p>
+    </div>
+    <div class="card">
+      <h2>TITLE HEADING</h2>
+      <h5>Title description, Sep 2, 2017</h5>
+      <div class="fakeimg" style="height:200px;">Image</div>
+      <p>Some text..</p>
+    </div>
+  </div>
+
+  <!-- The right column elements --> 
+  <div class="rightcolumn">
+    <div class="card">
+      <h2>About Me</h2>
+      <div class="fakeimg" style="height:100px;">Image</div>
+      <p>Some text about me in culpa qui officia deserunt mollit anim..</p>
+    </div>
+    <div class="card">
+      <h3>Popular Post</h3>
+      <div class="fakeimg">Image</div><br>
+      <div class="fakeimg">Image</div><br>
+      <div class="fakeimg">Image</div>
+    </div>
+    <div class="card">
+      <h3>Follow Me</h3>
+      <p>Some text..</p>
+    </div>
+  </div>
+</div>
+
+
+  <div class="footer">
+  <a href="https://twitter.com/Euphrasiologist"><i class="fa fa-twitter"></i></a>
+  <a href="https://github.com/Euphrasiologist"><i class="fa fa-github"></i></a>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+  </div>
+
+
+</body>
+
+</html>
