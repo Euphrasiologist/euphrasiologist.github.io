@@ -1,1 +1,3 @@
-# euphrasiologist.github.io
+# Github website repository
+
+Source code for the website.
