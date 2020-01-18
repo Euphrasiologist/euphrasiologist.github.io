@@ -134,7 +134,7 @@ body {font-family: Arial, Helvetica, sans-serif;}
         } 
 
         @media screen and (max-width: 800px) {
-            .leftcolumn, .rightcolumn { 
+            .leftcolumn, .rightcolumn .main { 
               width: 100%;
               padding: 0;
             }
