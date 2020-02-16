@@ -11,6 +11,7 @@ var main_tree,
       .align_tips (true)
       .options({
         "show-scale": false,
+        "hide": false,
         'left-right-spacing': 'fit-to-size',
         // fit to given size top-to-bottom
         'top-bottom-spacing': 'fit-to-size',

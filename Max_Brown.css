@@ -1,6 +1,9 @@
 /* Max_Brown.CSS 1.20 by Max_Brown*/
 
 body {font-family: Arial, Helvetica, sans-serif;}
+      svg.tree_display {
+        width: 100%;
+      }
       .header {padding: 70px; /* some padding */
         text-align: center; /* center the text */
         background: #0f995d; /* green background */
