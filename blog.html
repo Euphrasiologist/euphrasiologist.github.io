@@ -1,15 +1,15 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
-    <link rel="stylesheet" href="./Max_Brown.css">
-  <head>
+<link rel="stylesheet" href="./Max_Brown.css">
 
-   <title>Botany</title>
+<head>
+
+    <title>Botany</title>
     <meta charset="UTF-8">
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
- 
+
     <meta name="description" content="Botany">
 
     <style></style>
@@ -18,50 +18,51 @@
 
 <body>
 
-  <div class="header">
-    <h1><a href="https://euphrasiologist.github.io/">Euphrasiologist</a></h1>
-    <p>PhD student studying parasitic plants</p>
-  </div>
+    <div class="header">
+        <h1><a href="https://euphrasiologist.github.io/">Euphrasiologist</a></h1>
+        <p>PhD student studying parasitic plants</p>
+    </div>
 
     <div class="navbar">
-    <a href="blog.html">Blog & news</a>
-    <a href="https://github.com/Euphrasiologist">Github</a>
-    <div class="dropdown">
-        <button class="dropbtn">Research
-          <i class="fa fa-caret-down"></i>
-        </button>
-        <div class="dropdown-content">
-          <a href="research.html">General Research</a>
-          <a href="BF_phylogeny.html">Phylogeny of the British flora</a>
+        <a href="blog.html">Blog & news</a>
+        <a href="https://github.com/Euphrasiologist">Github</a>
+        <div class="dropdown">
+            <button class="dropbtn">Research
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content">
+                <a href="research.html">General Research</a>
+                <a href="BF_phylogeny.html">Phylogeny of the British flora</a>
+            </div>
         </div>
-      </div>
-    <a href="about.html" class="right">About</a>
-  </div>
-
-<!-- The left, main, column elements -->
-<!--<div class="row"> -->
-  <!--<div class="leftcolumn"> -->
-    <div class="card">
-      <h2>Some thoughts</h2>
-      <h5>Some topics for exploration on the website, Nov 26, 2019</h5>
-      <!--<div class="fakeimg" style="height:200px;">Image</div>-->
-      <p>As I am apporaching the end of my PhD, a few projects are coming to a close. Along the way, I have learned a lot about a multitude of different things that I thought would be interesting to share. Some of these things are about plants, others about topics explored in my PhD, or more functional things such as coding. Let's see...</p>
+        <a href="about.html" class="right">About</a>
     </div>
-    <!-- to add a second
+
     <div class="card">
-      <h2>TITLE HEADING</h2>
-      <h5>Title description, Sep 2, 2017</h5>
-      <div class="fakeimg" style="height:200px;">Image</div>
-      <p>Some text..</p>
+        <h2>Displaying interactive phylogenies</h2>
+        <h5>A list of software capable of being embedded into html, Feb 18, 2020</h5>
+        <p>In recent years (and months) there has been much development on the display of phylogenies in browsers using javascript. Jason Davies created the very useful parseNewick.js function (see <a href="https://github.com/jasondavies/newick.js">here</a>) a few years back, which allows for the conversion of the Newick file format into a .json object. Manual creation of a tree is then possible, though difficult (see <a href="http://bl.ocks.org/petrosh/7bfb083d45d6f76755e7">here</a>).</p>
+        <p>There are several packages which offer full tree plotting and manipulation. The first I have come across is <a href="http://phylotree.hyphy.org/">Phylotree.js</a> which also offers an interactive web-app where you can upload your own trees and mess around with the multiple options. The only problem I had with this was that it seemed to have a few dependencies and relied on an old version of d3, which had a big re-make recently. The second one is <a href="https://github.com/oist/phylogeny-io">phylogeny.io</a> which also offers an excellent web-app that you can drop a file into. Lastly, and this is the one that I have used on this website, is <a href="https://github.com/rambaut/figtree.js">figtree.js</a>. Figtree.js is not very closely related to actual figtree but is a javascript library for displaying trees on the web. I like the overall look and feel of the trees they produce! See my current implementation of a phylogeny of the British flora <a href="BF_phylogeny.html">here</a>.</p>
+        <p>Just to note here that the data for the phylogeny was contributed from people at Kew Gardens, the Royal Botanical Garden Edinburgh and the National Botanical Garden of Wales, and is to hopefully be published soon!</p>
     </div>
-  </div> -->
+    <!-- The left, main, column elements -->
+    <!--<div class="row"> -->
+    <!--<div class="leftcolumn"> -->
+    <div class="card">
+        <h2>Some thoughts</h2>
+        <h5>Some topics for exploration on the website, Nov 26, 2019</h5>
+        <!--<div class="fakeimg" style="height:200px;">Image</div>-->
+        <p>As I am apporaching the end of my PhD, a few projects are coming to a close. Along the way, I have learned a lot about a multitude of different things that I thought would be interesting to share. Some of these things are about plants, others about topics explored in my PhD, or more functional things such as coding. Let's see...</p>
+    </div>
+
+    </div>
 
 
-  <div class="footer">
-  <a href="https://twitter.com/Euphrasiologist"><i class="fa fa-twitter"></i></a>
-  <a href="https://github.com/Euphrasiologist"><i class="fa fa-github"></i></a>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
-  </div>
+    <div class="footer">
+        <a href="https://twitter.com/Euphrasiologist" style="font-size: 40px"><i class="fa fa-twitter"></i></a>
+        <a href="https://github.com/Euphrasiologist" style="font-size: 40px"><i class="fa fa-github"></i></a>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+    </div>
 
 
 </body>
