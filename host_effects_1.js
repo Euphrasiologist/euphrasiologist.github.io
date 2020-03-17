@@ -29,7 +29,7 @@ Data.then(function (data) {
             height = 600 - margin.top - margin.bottom;
 
         // create the svg element (put in .row!)
-        var svg = d3.select(".row")
+        var svg = d3.select(".row1")
             .append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
@@ -39,12 +39,12 @@ Data.then(function (data) {
         // Create the x-scale (categorical TODO change names)
         var x = d3.scaleBand()
             .domain(["No host",
-                         "Arabidopsis thaliana",
+                         "Marchantia polymorpha",
                          "Equisetum arvense",
+                         "Pinus sylvestris",
+                         "Arabidopsis thaliana",
                          "Festuca rubra",
                          "Holcus lanatus",
-                         "Marchantia polymorpha",
-                        "Pinus sylvestris",
                         "Plantago lanceolata",
                         "Trifolium repens"])
             .range([0, width])
