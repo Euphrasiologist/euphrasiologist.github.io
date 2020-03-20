@@ -59,7 +59,7 @@ Data.then(function (data) {
         .attr('class', 'x label')
         .attr('transform', 'translate(' + (width / 2) + ' ,' + (height + margin.top + 36) + ')')
         .style('text-anchor', 'middle')
-        .text('Nodes to flower (common garden)')
+        .text('Nodes to flower (wild collected)')
 
     // create the y-axis
     var y = d3.scaleLinear()
@@ -85,7 +85,7 @@ Data.then(function (data) {
         .attr('x', 0 - (height / 2))
         .attr('dy', '1em')
         .style('text-anchor', 'middle')
-        .text('Nodes to flower (wild collected)')
+        .text('Nodes to flower (common garden)')
 
     // colour data points by taxon
     var colour = d3.scaleOrdinal(d3.schemeTableau10).domain(function (d) {
@@ -169,9 +169,6 @@ Data.then(function (data) {
         })
         .attr('stroke', 'black')
         .attr('stroke-width', '1.3')
-        .attr('class', function (d) {
-            return d.Species
-        })
 
     // Draw legend
     var legend = svg.selectAll('.legend')
@@ -190,13 +187,6 @@ Data.then(function (data) {
         .attr('height', 18)
         .style('fill', function (d) {
             return colour(d)
-        })
-        .on('mouseover', function (d) {
-            //currentOpacity = d3.selectAll('.' + d.Species)
-            d3.selectAll('.' + d.Species)
-                .transition()
-                .style('stroke-width', 3)
-        //console.log(currentOpacity)
         })
 
     legend.append('text')
@@ -230,6 +220,71 @@ Data.then(function (data) {
         })
         .attr('font-size', '12px')
 
+    // regression line
+
+    var updat;
+
+    function regression(data, Trait) {
+        // see http://slides.filogeneti.ca/js/rtt.js, thanks Art Poon! (if it works...)
+        const sum = function (accumulator, currentValue) {
+            return accumulator + currentValue
+        }
+
+        var updat = data.filter(function (d) {
+            return d.Trait === Trait
+        })
+        var n = updat.length
+        var x1 = updat.map(function (d) {
+            return d.Cmean
+        })
+        var y1 = updat.map(function (d) {
+            return d.Wmean
+        })
+        var xy1 = updat.map(function (d) {
+            return d.Cmean * d.Wmean
+        })
+
+        var sumX = x1.reduce(sum)
+        var sumY = y1.reduce(sum)
+        var sumXY = xy1.reduce(sum)
+        var x2 = x1.map(a => a * a)
+        var y2 = y1.map(a => a * a)
+        var sumX2 = x2.reduce(sum)
+        var sumY2 = y2.reduce(sum) // not used?
+
+        // maximum likelihood estimators - JA Rice (1988) page 455
+        var varX = n * sumX2 - sumX * sumX
+        var interceptY = (sumX2 * sumY - sumX * sumXY) / varX
+        var slope = (n * sumXY - sumX * sumY) / varX
+
+        updat.forEach(function (data) {
+            data.yhat = (data.Cmean * slope + interceptY)
+        })
+        return (updat)
+    }
+
+    var reg = regression(data, 'Nodes')
+    console.log(reg);
+
+    // create the initial regression line
+    var newline = d3.line()
+        .x(function (d) {
+            return x(d.Cmean)
+        })
+        .y(function (d) {
+            return y(d.yhat)
+        })
+
+    // append regression line
+    svg.append('path')
+        .datum(reg)
+        .attr('clip-path', 'url(#chart-area)')
+        .attr('class', 'line')
+        .attr('d', newline(reg))
+        .attr('stroke', 'red')
+        .attr('stroke-width', 2)
+
+
     /// /////////
     /// // UPDATES /////
     /// ////////
@@ -238,23 +293,23 @@ Data.then(function (data) {
     var click = function (Trait, datatrait) {
         d3.select(Trait).on('click', function () {
             if (Trait === '#Corolla3') {
-                var x_label = 'Corolla length (mm; common garden)'
-                var y_label = 'Corolla length (mm; wild collected)'
+                var x_label = 'Corolla length (mm; wild collected)'
+                var y_label = 'Corolla length (mm; common garden)'
                 var BUFFERX = 0.2
                 var BUFFERY = 0.2
             } else if (Trait === '#Nodes3') {
-                var x_label = 'Nodes to flower (common garden)'
-                var y_label = 'Nodes to flower (wild collected)'
+                var x_label = 'Nodes to flower (wild collected)'
+                var y_label = 'Nodes to flower (common garden)'
                 var BUFFERX = 0.2
                 var BUFFERY = 0.2
             } else if (Trait === '#Teeth3') {
-                var x_label = 'Number of leaf teeth (common garden)'
-                var y_label = 'Number of leaf teeth (wild collected)'
+                var x_label = 'Number of leaf teeth (wild collected)'
+                var y_label = 'Number of leaf teeth (common garden)'
                 var BUFFERX = 0.2
                 var BUFFERY = 0.4
             } else if (Trait === '#Internode3') {
-                var x_label = 'Cauline:Internode length ratio (common garden)'
-                var y_label = 'Cauline:Internode length ratio (wild collected)'
+                var x_label = 'Cauline:Internode length ratio (wild collected)'
+                var y_label = 'Cauline:Internode length ratio (common garden)'
                 var BUFFERX = 0.3
                 var BUFFERY = 0.7
             }
@@ -348,6 +403,27 @@ Data.then(function (data) {
                 .attr('cy', function (d) {
                     return (y(d.Wmean))
                 })
+            
+            // update line
+            var reg = regression(data, datatrait)
+
+            // create the initial regression line
+            var newline = d3.line()
+                .x(function (d) {
+                    return x(d.Cmean)
+                })
+                .y(function (d) {
+                    return y(d.yhat)
+                })
+            console.log(reg)
+            console.log(newline(reg))
+
+            svg.select("path.line")
+                .transition()
+                .duration(2000)
+                .attr("stroke", 'red')
+                .attr("stroke-width", 2)
+                .attr("d", newline(reg));
         })
     }
     document.getElementById('Nodes3').onclick = click('#Nodes3', 'Nodes')

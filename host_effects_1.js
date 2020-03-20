@@ -282,13 +282,13 @@ Data.then(function (data) {
             // update y axis name
             svg.select(".y.label")
                 .transition()
-                .duration(1000)
+                .duration(2000)
                 .text("Number of nodes to flower")
 
             // vertical line
             vertLine
                 .transition()
-                .duration(1000)
+                .duration(2000)
                 .attr("y1", function (d) {
                     if (d.value.minNodes > 0) {
                         return (y(d.value.minNodes))
@@ -305,7 +305,7 @@ Data.then(function (data) {
             // box
             box
                 .transition()
-                .duration(1000)
+                .duration(2000)
                 .attr("y", function (d) {
                     return (y(d.value.q3Nodes))
                 })
@@ -317,7 +317,7 @@ Data.then(function (data) {
             // median line
             medianLine
                 .transition()
-                .duration(1000)
+                .duration(2000)
                 .attr("y1", function (d) {
                     return (y(d.value.medianNodes))
                 })
@@ -329,7 +329,7 @@ Data.then(function (data) {
             // circles
             circle
                 .transition()
-                .duration(1000)
+                .duration(2000)
                 .attr("cx", function (d) {
                     return (x(d.Host) - jitterWidth / 2 + Math.random() * jitterWidth)
                 })
@@ -339,7 +339,7 @@ Data.then(function (data) {
             // axis?
             svg.select(".y.axis")
                 .transition()
-                .duration(1000)
+                .duration(2000)
                 .call(yAxis);
 
         });
@@ -352,13 +352,13 @@ Data.then(function (data) {
             // update y axis name
             svg.select(".y.label")
                 .transition()
-                .duration(1000)
+                .duration(2000)
                 .text("Height (mm)")
 
             // vertical line
             vertLine
                 .transition()
-                .duration(1000)
+                .duration(2000)
                 .attr("y1", function (d) {
                     if (d.value.minHeight > 0) {
                         return (y(d.value.minHeight))
@@ -375,7 +375,7 @@ Data.then(function (data) {
             // box
             box
                 .transition()
-                .duration(1000)
+                .duration(2000)
                 .attr("y", function (d) {
                     return (y(d.value.q3Height))
                 })
@@ -387,7 +387,7 @@ Data.then(function (data) {
             // median line
             medianLine
                 .transition()
-                .duration(1000)
+                .duration(2000)
                 .attr("y1", function (d) {
                     return (y(d.value.medianHeight))
                 })
@@ -398,7 +398,7 @@ Data.then(function (data) {
             // circles
             circle
                 .transition()
-                .duration(1000)
+                .duration(2000)
                 .attr("cx", function (d) {
                     return (x(d.Host) - jitterWidth / 2 + Math.random() * jitterWidth)
                 })
@@ -408,7 +408,7 @@ Data.then(function (data) {
             // axis?
             svg.select(".y.axis")
                 .transition()
-                .duration(1000)
+                .duration(2000)
                 .call(yAxis);
         });
 
@@ -420,13 +420,13 @@ Data.then(function (data) {
             // update y axis name
             svg.select(".y.label")
                 .transition()
-                .duration(1000)
+                .duration(2000)
                 .text("Corolla length (mm)")
 
             // vertical line
             vertLine
                 .transition()
-                .duration(1000)
+                .duration(2000)
                 .attr("y1", function (d) {
                     if (d.value.minCorolla > 0) {
                         return (y(d.value.minCorolla))
@@ -443,7 +443,7 @@ Data.then(function (data) {
             // box
             box
                 .transition()
-                .duration(1000)
+                .duration(2000)
                 .attr("y", function (d) {
                     return (y(d.value.q3Corolla))
                 })
@@ -456,7 +456,7 @@ Data.then(function (data) {
             // median line
             medianLine
                 .transition()
-                .duration(1000)
+                .duration(2000)
                 .attr("y1", function (d) {
                     return (y(d.value.medianCorolla))
                 })
@@ -468,7 +468,7 @@ Data.then(function (data) {
             // circles
             circle
                 .transition()
-                .duration(1000)
+                .duration(2000)
                 .attr("cx", function (d) {
                     return (x(d.Host) - jitterWidth / 2 + Math.random() * jitterWidth)
                 })
@@ -478,7 +478,7 @@ Data.then(function (data) {
             // axis?
             svg.select(".y.axis")
                 .transition()
-                .duration(1000)
+                .duration(2000)
                 .call(yAxis);
         });
 
@@ -490,13 +490,13 @@ Data.then(function (data) {
             // update y axis name
             svg.select(".y.label")
                 .transition()
-                .duration(1000)
+                .duration(2000)
                 .text("Number of days to flower")
 
             // vertical line
             vertLine
                 .transition()
-                .duration(1000)
+                .duration(2000)
                 .attr("y1", function (d) {
                     if (d.value.minDays > 0) {
                         return (y(d.value.minDays))
@@ -513,7 +513,7 @@ Data.then(function (data) {
             // box
             box
                 .transition()
-                .duration(1000)
+                .duration(2000)
                 .attr("y", function (d) {
                     return (y(d.value.q3Days))
                 })
@@ -526,7 +526,7 @@ Data.then(function (data) {
             // median line
             medianLine
                 .transition()
-                .duration(1000)
+                .duration(2000)
                 .attr("y1", function (d) {
                     return (y(d.value.medianDays))
                 })
@@ -538,7 +538,7 @@ Data.then(function (data) {
             // circles
             circle
                 .transition()
-                .duration(1000)
+                .duration(2000)
                 .attr("cx", function (d) {
                     return (x(d.Host) - jitterWidth / 2 + Math.random() * jitterWidth)
                 })
@@ -548,7 +548,7 @@ Data.then(function (data) {
             // axis?
             svg.select(".y.axis")
                 .transition()
-                .duration(1000)
+                .duration(2000)
                 .call(yAxis);
         });
 

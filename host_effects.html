@@ -37,6 +37,11 @@
   text-align: left;
   color: white;
 }
+    .FigLeg {
+        width: 90%;
+        padding: 1%;
+        margin: auto;
+    }
 </style>
 
 <head>
@@ -85,11 +90,17 @@
             <li></li><sup>4</sup>Botanical Society of Britain and Ireland
             
             </ul>
+            <div align="right">Max Brown, 20.03.2020</div>
            
+            <p><i>Euphrasia</i> or eyebrights are parasitic plants in the family Orobanchaceae, which also contains other well known plant species such as Yellow Rattle and the Broomrapes. <i>Euphrasia</i> are notorious in botanical circles for being difficult to identify. This is because the species are recently diverged, often hybridising with one another and change their physical characteristics depending on which host they parasitise.</p>
             
-            <p>To celebrate and make accessible some of the data from the paper that has just come out in the American Journal of Botany, I thought that I would talk about a few things here. Our paper investigates different traits of the hemiparasitic <i>Euphrasia</i> when they parasitise different host plants. This was possible by growing many <i>Euphrasia</i> plants on different hosts in a common garden experiment.</p>
-            <p>We show that <i>Euphrasia</i> show variation in life history strategies. Some will rapidly transition to flower, while others delay flowering and invest in vegetative growth. We hope to understand some of the plasticity in <i>Euphrasia</i> response to different host plant species.</p>
-            <p>Four of the traits we measured on individual <i>Euphrasia</i> plants were (a) height, (b) number of nodes to flower (an important taxonomic trait), (c) corolla length (important in determining whether a individual will outcross or not) and (d) how long it took to flower. These traits can be viewed on the graph below.</p>
+            <p>Our paper investigates different traits of the hemiparasitic <i>Euphrasia</i> when they parasitise different host plants. This was possible by growing many <i>Euphrasia</i> plants on different hosts in a common garden experiment. We also grow multiple <i>Euphrasia</i> species on a single host in a common garden experiment. In this way, we hope to remove any environmental variation and concentrate on host effects on parasitic <i>Euphrasia</i> and on the differences between <i>Euphrasia</i> species. Overall, we show that <i>Euphrasia</i> show variation in life history strategies both in response to host species and due to differences between <i>Euphrasia</i> species themselves. Some will rapidly transition to flower, while others delay flowering and invest in vegetative growth. </p>
+            
+            <h4>Phenotypic plasticity experiment:</h4>
+            
+            <p>In the first experiment, we used a single <i>Euphrasia</i> species (<i>Euphrasia arctica</i>) grown on eight hosts and also grown without a host (Figure 1). The main take home is that host species makes a large difference on several aspects of the biology of <i>E. arctica</i>. For example <i>E. arctica</i> grown on clover host (on the far right in the graph below) produces substantially taller plants (height), with larger flowers (corolla length), that also flower earlier (Julian days to flower). On the other hand, <i>E. arctica</i> plants without a host flowered 52(!) days later, were extremely short at first flowering and produced tiny flowers. Check out the traits on the graph below!</p>
+            
+            <p>These differences are interesting because firstly they show that <i>E. arctica</i> can grow on a range of hosts, indicating that it is a generalist parasite. Secondly, which host a <i>E. arctica</i> plant parasitises has an impact on when the plant will flower and how large this plant will eventually be. These traits are correlated with reproductive success. Lastly, the trait 'nodes to flower', which is an important trait in discriminating between species of eyebright appears to be remarkably consistent across all the hosts we tested. This trait therefore might be valuable and reliable in telling species apart.</p>
             
         <button id="Height" class="button1">Height</button>
         <button id="Nodes" class="button1">Nodes to flower</button>
@@ -99,12 +110,18 @@
             <script src="host_effects_1.js"></script>
             
         </div>
+        
+        <div align="center" class="FigLeg">Figure 1: Trait variation in a common garden experiment of <i>Euphrasia arctica</i> grown on different hosts. The edges of the boxplot show the first and third quartiles, solid horizontal line the median and the whiskers the higest and lowest values within 1.5 times the interquartile range. Jittered white dots represent raw data.</div>
 
     </div>
 
     <div class="row2">
         <div class="side">
-            <p>This is the species differences experiment...</p>
+            <h4>Species differences experiment:</h4>
+            
+            <p>We also ran an experiment in parallel which investigated the differences between species of <i>Euphrasia</i> when grown on a single host -- here we used clover (Figure 2). There is substantial variation in morphology between species in most traits measured. One of the species with a distinct life history strategy is <i>E. micrantha</i> which flowers from a low node while it is short. At the opposite end of the spectrum is <i>E. pseudokerneri</i> which flowers once it has grown tall and from a high node. Several closely related species such as <i>E. arctica, E. confusa</i> and <i>E. nemorosa</i> differ only in a few traits. <i>E. nemorosa</i> flowers later than <i>E. arctica</i> and at a higher node but overlaps in many other traits.</p>
+            
+            <p>Overall we see differences in life history, which is consistent with the classic trade off between growth and reproduction. In addition, flower size represents another axis of variation across the species. Differences in flower size can have appreciable influence on the genetic variability of the species; large flowered species generally outcross and small flowered species generally inbreed.</p>
             
         <button id="Height2" class="button1">Height</button>
         <button id="Nodes2" class="button1">Nodes to flower</button>
@@ -114,12 +131,15 @@
             <script src="host_effects_2.js"></script>
             
         </div>
-
+        
+            <div align="center" class="FigLeg">Figure 2: Trait variation in a common garden experiment of diverse <i>Euphrasia</i> species grown on a clover host (<i>Trifolium repens</i>). The edges of the boxplot show the first and third quartiles, solid horizontal line the median and the whiskers the higest and lowest values within 1.5 times the interquartile range. Jittered white dots represent raw data.</div>
     </div>
 
     <div class="row3">
         <div class="side">
-            <p>This is the common vs wild experiment...</p>
+            <h4>Comparison of common garden and wild collected plants:</h4>
+            
+            <p>In addition to the common garden experiments (above) we were also sent many herbarium specimens from all over the country as part of the 'Eye for Eyebright' scheme that Alex Twyford initiated. We used these collections to see if the wild collected species correlated in their trait values with the same species grown in the common garden (Figure 3). For some traits (e.g. nodes to flower and corolla length), the correlations are strong, which indicates that our common garden results generalise to observations in nature. As expected, plants grown in the common garden were overall larger plants.</p>
             
         <button id="Nodes3" class="button1">Nodes to flower</button>
         <button id="Corolla3" class="button1">Corolla length</button>
@@ -127,10 +147,17 @@
         <button id="Internode3" class="button1">Internode ratio</button>
 
         <script src="host_effects_3.js"></script>
-            
+        
         </div>
+        <div align="center" class="FigLeg">Figure 3: The relationship between morphological trait measurements made in the common garden and on wild collected herbarium specimens for diverse <i>Euphrasia</i> species. Each point represents a joint mean value, and error bars are standard errors of the mean.</div>
 
     </div>
+    
+    <div class="side">
+        
+            <p>Thank you for reading! The above graphs were generated using javascript and the package d3.js. The graphs here are purely for visualisation; to see the statistics head over to <a href="https://github.com/Euphrasiologist/phenotypic_plasticity_euphrasia">here</a> where all the source code is openly available. <p>I will also take this opportunity to thank all of the people over the past four years that have meant this work could take place. Natacha was tireless and dedicated in making sure the eyebrights were well looked after, and that the experiment actually ran! Edgar was key in processing the 'Eye for Eyebright' work. Chris Metherell is the eyebright guru, without which no eyebrights would have been identified correctly. Lastly, I thank Alex for his guidance all along the way and in the unwavering confidence in me and the project.</p>
+            
+        </div>
 
     <div class="footer">
         <a href="https://twitter.com/Euphrasiologist"><i class="fa fa-twitter" style="font-size: 40px"></i></a>
