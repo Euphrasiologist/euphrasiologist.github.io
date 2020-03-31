@@ -35,7 +35,9 @@ Data.then(function (data) {
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
             .attr("transform",
-                "translate(" + margin.left + "," + margin.top + ")");
+                "translate(" + margin.left + "," + margin.top + ")")
+            .attr("align", "center")
+        
         // Create the x-scale (categorical TODO change names)
         var x = d3.scaleBand()
             .domain(["No host",
@@ -551,9 +553,6 @@ Data.then(function (data) {
                 .duration(2000)
                 .call(yAxis);
         });
-
-
-
     }
     createVisualisation();
 })
