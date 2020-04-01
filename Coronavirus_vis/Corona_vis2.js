@@ -21,7 +21,7 @@
 //
 //}
 
-console.log(getSelectedValue())
+//console.log(getSelectedValue())
 
 // let's make the margins, height and width
 var margin = ({
