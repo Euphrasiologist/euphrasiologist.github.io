@@ -23,21 +23,6 @@
 
 //console.log(getSelectedValue())
 
-// let's make the margins, height and width
-var margin = ({
-    top: 20,
-    right: 20,
-    bottom: 30,
-    left: 50
-})
-var height = 600
-var width = 1000
-
-var svg = d3.select("#coronavis2")
-    .append("svg")
-    .attr("width", width)
-    .attr("height", height);
-
 // load data
 
 var indicators = d3.csv("https://raw.githubusercontent.com/tomwhite/covid-19-uk-data/master/data/covid-19-indicators-uk.csv", function (d) {
@@ -59,7 +44,6 @@ var indicators2 = indicators.then(function (data) {
     const dates = Array.from(new Set(data.map(d => d.date)));
 
     return {
-        y: "Variable",
         series: Array.from(
             d3.rollup(data,
                 ([d]) => +d.Value,
@@ -80,11 +64,26 @@ var indicators3 = indicators2.then(function (data) {
     const variable = data.series.filter(d => /^D/.test(d.name) == true);
     const dates = data.dates;
     return {
+        y: "Deaths", // change later! TODO
         series: variable,
         dates: dates
     }
 })
 
+// let's make the margins, height and width
+var margin = ({
+    top: 20,
+    right: 20,
+    bottom: 30,
+    left: 50
+})
+var height = 600
+var width = 1000
+
+var svg2 = d3.select("#coronavis2")
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height);
 
 indicators3.then(function (data) {
     // x scale
@@ -117,13 +116,13 @@ indicators3.then(function (data) {
         .x((d, i) => x(data.dates[i]))
         .y(d => y(d))
 
-    svg.append("g")
+    svg2.append("g")
         .call(xAxis);
 
-    svg.append("g")
+    svg2.append("g")
         .call(yAxis);
 
-    var path = svg.append("g")
+    var path = svg2.append("g")
         .attr("fill", "none")
         .attr("stroke", "#56b4e9")
         .attr("stroke-width", 1.5)
@@ -137,20 +136,20 @@ indicators3.then(function (data) {
 
     // a hover function to be called later. Courtesy of https://observablehq.com/@d3/multi-line-chart
 
-    function hover(svg, path) {
+    function hover(svg2, path) {
 
         if ("ontouchstart" in document.documentElement) {
-            svg
+            svg2
                 .style("-webkit-tap-highlight-color", "transparent")
                 .on("touchmove", moved)
                 .on("touchstart", entered)
                 .on("touchend", left)
-        } else svg
+        } else svg2
             .on("mousemove", moved)
             .on("mouseenter", entered)
             .on("mouseleave", left);
 
-        const dot = svg.append("g")
+        const dot = svg2.append("g")
             .attr("display", "none");
 
         dot.append("circle")
@@ -193,6 +192,6 @@ indicators3.then(function (data) {
         }
     }
 
-    svg.call(hover, path);
+    svg2.call(hover, path);
 
 })
