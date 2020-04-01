@@ -2,24 +2,24 @@
 // split for each country
 // add an all for each country option
 
-function getSelectedValue() {
-
-    var select = document.getElementById("selectdropdown");
-    select.onchange = function () {
-        var selectedString = select.options[select.selectedIndex].value;
-        selectedString.selectedIndex = 1
-        console.log(selectedString)
-    }
-
-    //    var s = document.getElementById("selectdropdown")
-    //    
-    //    return new RegExp(s.options[s.selectedIndex].value)
-
-    //s.addEventListener("change", onChange)
-
-    //return new RegExp(s.value)
-
-}
+//function getSelectedValue() {
+//
+//    var select = document.getElementById("selectdropdown");
+//    select.onchange = function () {
+//        var selectedString = select.options[select.selectedIndex].value;
+//        selectedString.selectedIndex = 1
+//        console.log(selectedString)
+//    }
+//
+//    //    var s = document.getElementById("selectdropdown")
+//    //    
+//    //    return new RegExp(s.options[s.selectedIndex].value)
+//
+//    //s.addEventListener("change", onChange)
+//
+//    //return new RegExp(s.value)
+//
+//}
 
 console.log(getSelectedValue())
 
