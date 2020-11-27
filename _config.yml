@@ -6,6 +6,7 @@ logo_url:           https://avatars1.githubusercontent.com/u/40207129?v=4 # Get 
 
 # Site Settings
 url:                https://www.maxbrown.xyz # main url
+baseurl:            "/"
 permalink:          /:title # Post permalink
 timezone:           Europe/London # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 mathjax:            true  # enables support for mathjax - set to 'false' to disable
