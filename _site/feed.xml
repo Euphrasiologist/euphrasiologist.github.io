@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Another blog</title>
+    <description>A minimalist Jekyll theme</description>
+    <link>http://localhost:4000/the-plain</link>
+    
+      
+        <item>
+          <title>Radial text with highlighting</title>
+          <description>&lt;p&gt;This is more of a test than anything, to see if I could get an interactive visualisation up and running in this blog format. It would seem you can!&lt;/p&gt;
+
+&lt;p&gt;The radial text here is useful for labelling radial diagrams (e.g. radial phylogenies).&lt;/p&gt;
+
+&lt;example&gt;
+
+&lt;script&gt;
+
+  function rotate(d) {
+  return ((d.start + d.end) / 2 / Math.PI) * 180 + 90;
+}
+
+  function letters(str) {
+    return (
+      str
+        .split(&quot;&quot;)
+        .map(a =&gt; ({ sort: Math.random(), value: a }))
+        .sort((a, b) =&gt; a.sort - b.sort)
+        .map(a =&gt; a.value)
+        .join(&quot;&quot;)
+    );
+  }
+
+  function obs(length) {
+    let res = [];
+    for (let i = 0; i &lt; length; i++) {
+      res.push({
+        string: letters(&quot;maxbrown.xyz&quot;)
+      });
+    }
+
+    let rotations = (Math.PI * 2) / res.length;
+
+    for (let i = 1; i &lt; res.length; i++) {
+      res[0].start = 0;
+      res[0].end = rotations;
+
+      res[i].start = res[i - 1].start + rotations;
+      res[i].end = res[i - 1].end + rotations;
+    }
+
+    return res;
+}
+  let diam = 400;
+  const svg = d3.select(&quot;example&quot;)
+    .append(&quot;svg&quot;)
+    .attr(&quot;width&quot;, diam)
+    .attr(&quot;height&quot;, diam)
+    .attr(&quot;viewBox&quot;, `${-diam / 2} ${-diam / 2} ${diam} ${diam}`)
+    .attr(&quot;font-family&quot;, &quot;sans-serif&quot;)
+    .attr(&quot;font-size&quot;, 10)
+    .attr(&quot;align&quot;,&quot;right&quot;);
+
+  svg.append(&quot;style&quot;).text(`
+
+    .label--active {
+      font-weight: bold;
+      fill: red
+    }
+    svg {
+    display: block;
+    margin: auto;
+    }
+
+`);
+
+const data = obs(40);
+  const words = svg
+    .append(&quot;g&quot;)
+    .selectAll(&quot;text&quot;)
+    .data(data)
+    .join(&quot;text&quot;)
+    .attr(&quot;dy&quot;, &quot;.31em&quot;)
+    .attr(&quot;id&quot;, (d, i) =&gt; &quot;word&quot; + i)
+    .attr(
+      &quot;transform&quot;,
+      d =&gt;
+        `rotate(${rotate(d)}) translate(${diam/2},0) ${
+          d.start &gt; Math.PI ? &quot;&quot; : &quot; rotate(180)&quot;
+        }`
+    )
+    .attr(&quot;text-anchor&quot;, d =&gt;
+      d.start &lt; Math.PI + data[0].end ? &quot;start&quot; : &quot;end&quot;
+    )
+    .text(d =&gt; d.string);
+
+  words
+    .on(&quot;mouseover&quot;, function(event, d) {
+      d3.select(this).classed(&quot;label--active&quot;, true);
+    })
+    .on(&quot;mouseout&quot;, function(event, d) {
+      d3.select(this).classed(&quot;label--active&quot;, false);
+    })
+
+&lt;/script&gt;
+
+&lt;/example&gt;
+</description>
+          <pubDate>2020-11-25T00:00:00+00:00</pubDate>
+          <link>http://localhost:4000/the-plain/radial-text</link>
+          <guid isPermaLink="true">http://localhost:4000/the-plain/radial-text</guid>
+        </item>
+      
+    
+  </channel>
+</rss>

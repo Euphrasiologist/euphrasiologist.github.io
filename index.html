@@ -1,102 +1,31 @@
+---
+layout: default
+---
 
-<!DOCTYPE html>
+<section>
 
-<html lang="en">
-    <link rel="stylesheet" href="./Max_Brown.css">
-<script type="text/javascript" src="../d3/d3.min.js"></script>
+	{% for post in site.posts %}
+		{% unless post.next %}
+			<h3 class="code">{{ post.date | date: '%Y' }}</h3>
+		{% else %}
+			{% capture year %}{{ post.date | date: '%Y' }}{% endcapture %}
+			{% capture nyear %}{{ post.next.date | date: '%Y' }}{% endcapture %}
+			{% if year != nyear %}
+				<h3 class="code">{{ post.date | date: '%Y' }}</h3>
+			{% endif %}
+		{% endunless %}
 
-<head>
+		<ul>
+			<li>
+				<div class="post-date code">
+					<span>{{ post.date | date: "%b %d" }}</span>
+				</div>
+				<div class="title">
+					<a href="{{ post.url | prepend: site.baseurl | prepend: site.url }}">{{ post.title }}</a>
+				</div>
+			</li>
+		</ul>
 
-    <title>Botany</title>
-    <meta charset="UTF-8">
+	{% endfor %}
 
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <meta name="description" content="Botany">
-
-</head>
-
-<body>
-
-    <div class="header">
-        <h1><a href="https://euphrasiologist.github.io/">Euphrasiologist</a></h1>
-        <p>PhD student studying parasitic plants</p>
-    </div>
-
-    <div class="navbar">
-        <a href="blog.html">Blog & news</a>
-        <a href="https://github.com/Euphrasiologist">Github</a>
-        <div class="dropdown">
-            <button class="dropbtn">Research
-                <i class="fa fa-caret-down"></i>
-            </button>
-            <div class="dropdown-content">
-                <a href="research.html">General Research</a>
-                <a href="BF_phylogeny.html">Phylogeny of the British Flora</a>
-            </div>
-        </div>
-        <a href="about.html" class="right">About</a>
-    </div>
-
-    <div class="row">
-        <div class="side">
-            <p>I have spent the past three years looking into Eyebrights, or <i>Euphrasia</i>. Specifically I am interested in whether these parasitic plants are more specialised than we think, and to understand the process of hybridisation better in the genus.</p>
-
-            <p>This website aims to track some of the things I find interesting. Visit the source code for this website and my current and past projects by
-                visiting my Github account.</p>
-
-            <p>---Recent stuff---</p>
-
-            <div id="recentstuff"></div>
-
-            <script type="text/javascript">
-                var recent_things = ["In blog and news, check out new COVID-19 graphs.",
-                    "In research, check out our newest paper on Euphrasia!",
-                    "Pictured is the Cornish Eyebright, a narrow endemic to Cornwall, UK."
-                ]
-
-                function randpick() {
-                    return recent_things[Math.floor(Math.random() * recent_things.length)]
-                }
-
-                var svg = d3.select("#recentstuff")
-                    .append("p")
-                    .attr("width", 100)
-                    .attr("height", 100)
-
-                svg.selectAll("text")
-                    .data(randpick())
-                    .join("text")
-                    .text(d => d)
-                
-                async function update() {
-                    
-                    while(true) {
-                        svg.selectAll("text")
-                            .data(randpick())
-                            .join("text")
-                            .text(d => d)
-                        
-                    await new Promise(resolve => setInterval(resolve, 4000))
-                        
-                    }
-                    
-                }
-                
-                update()
-
-                
-            </script>
-        </div>
-
-        <div class="main"><img src="Images/Euphrasia_vigursii_Cornwall.jpg" alt="Euphrasia vigursii in Cornwall, a rare endemic hybrid species" style="width:500px;height:600px;"></div>
-    </div>
-
-    <div class="footer">
-        <a href="https://twitter.com/Euphrasiologist"><i class="fa fa-twitter" style="font-size: 40px"></i></a>
-        <a href="https://github.com/Euphrasiologist"><i class="fa fa-github" style="font-size: 40px"></i></a>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
-    </div>
-
-
-</body></html>
+</section>
