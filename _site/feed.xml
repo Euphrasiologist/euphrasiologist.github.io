@@ -3,7 +3,7 @@
   <channel>
     <title>Another blog</title>
     <description>A minimalist Jekyll theme</description>
-    <link>https://euphrasiologist.github.io/the-plain</link>
+    <link>https://euphrasiologist.github.io</link>
     
       
         <item>
@@ -107,8 +107,8 @@ const data = obs(40);
 &lt;/example&gt;
 </description>
           <pubDate>2020-11-25T00:00:00+00:00</pubDate>
-          <link>https://euphrasiologist.github.io/the-plain/radial-text</link>
-          <guid isPermaLink="true">https://euphrasiologist.github.io/the-plain/radial-text</guid>
+          <link>https://euphrasiologist.github.io/radial-text</link>
+          <guid isPermaLink="true">https://euphrasiologist.github.io/radial-text</guid>
         </item>
       
     
