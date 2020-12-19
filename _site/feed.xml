@@ -3,7 +3,323 @@
   <channel>
     <title>Another blog</title>
     <description>A minimalist Jekyll theme</description>
-    <link>https://euphrasiologist.github.io</link>
+    <link>https://www.maxbrown.xyz/</link>
+    
+      
+        <item>
+          <title>Visualising GC content across chromosomes</title>
+          <description>&lt;p&gt;GC content is the proportion of DNA bases in a given sqeuence window which are either G or C. GC content varies througout a genome due to selection, mutational bias, and GC-biased gene conversion. I’ve visualised this in the genome of &lt;i&gt;Arabidopsis thaliana&lt;/i&gt;, which is a model organism for botanical research across a variety of disciplines.&lt;/p&gt;
+
+&lt;p&gt;The dropdowns can be toggled to look at different chromosomes, and to look at one of three variables: GC content, GC skew, and tetranucleotide diversity. The slider changes the bin for the moving average (red line). The smaller graph at the bottom can be used to select a region of the graph and zoom in.&lt;/p&gt;
+
+&lt;p&gt;&lt;select id=&quot;chromosomeDropdown&quot;&gt;&lt;/select&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;select id=&quot;VariableDropdown&quot;&gt;&lt;/select&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;input type=&quot;range&quot; name=&quot;movingAverage&quot; id=&quot;movingAverage&quot; min=&quot;1&quot; max=&quot;1000&quot; value=&quot;500&quot; /&gt;&lt;/p&gt;
+
+&lt;example&gt;
+
+&lt;script&gt;
+
+function movingAverage(values, N) {
+    let i = 0;
+    let sum = 0;
+    const means = new Float64Array(values.length).fill(NaN);
+    for (let n = Math.min(N - 1, values.length); i &lt; n; ++i) {
+        sum += values[i];
+    }
+    for (let n = values.length; i &lt; n; ++i) {
+        sum += values[i];
+        means[i] = sum / N;
+        sum -= values[i - N + 1];
+    }
+    return means;
+}
+
+const margin = { top: 20, bottom: 120, left: 40, right: 20 };
+const margin1 = { top: 300, bottom: 40, left: 40, right: 20 };
+
+const height1 = 300;
+const height2 = 80;
+
+const width = 954;
+
+const svg = d3
+    .select(&quot;example&quot;)
+    .append(&quot;svg&quot;)
+    .attr(&quot;viewBox&quot;, [0, 0, 1000, 400])
+    .attr(&quot;width&quot;, 900)
+    .attr(&quot;height&quot;, 400);
+
+svg.append(&quot;style&quot;).text(`
+
+    svg {
+    display: block;
+    margin: left;
+    -webkit-transform: translateX(-20%);
+    -ms-transform: translateX(-20%);
+    transform: translateX(-20%);
+    }
+
+`);
+
+const data = d3.csv(&quot;./assets/data/Athaliana_genome_stats.csv&quot;, function (d) {
+
+    return {
+        ID: d.ID,
+        bin: +d.bin.replace(/ [0-9]+-/, &quot;&quot;),
+        GCPercent: +d['GC%'],
+        GCSkew: +d.GCSkew,
+        UniqueKmers: +d.UniqueKmers
+    }
+});
+
+console.log(data);
+
+data.then(function (data) {
+    const chromosomes = [...new Set(data.map(d =&gt; d.ID))];
+    const variables = Object.keys(data[0]).slice(2, 5);
+
+    d3.select(&quot;#chromosomeDropdown&quot;)
+        .selectAll('myOptionsChrom')
+        .data(chromosomes)
+        .join('option')
+        .text(d =&gt; d)
+        .attr(&quot;value&quot;, d =&gt; d);
+
+    d3.select(&quot;#VariableDropdown&quot;)
+        .selectAll('myOptionsVar')
+        .data(variables)
+        .join('option')
+        .text(d =&gt; d)
+        .attr(&quot;value&quot;, d =&gt; d);
+
+    let filteredData = d3.group(data, d =&gt; d.ID).get(chromosomes[0]);
+    let filteredDataMA = movingAverage(filteredData.map(d =&gt; d[variables[0]]), 100);
+
+    for (let i = 0; i &lt; filteredData.length; i++) {
+        filteredData[i].MA = filteredDataMA[i];
+    }
+
+    let xMin = 0;
+    let xMax = d3.max(filteredData.map(d =&gt; d.bin));
+    let yMin = 0;
+    let yMax = d3.max(filteredData.map(d =&gt; d[variables[0]]));
+
+    const x = d3
+        .scaleLinear()
+        .domain([xMin, xMax])
+        .range([0, width]);
+
+    const y = d3
+        .scaleLinear()
+        .domain([yMin, yMax])
+        .range([height1, 0]);
+
+    const x2 = d3
+        .scaleLinear()
+        .domain([xMin, xMax])
+        .range([0, width]);
+
+    const y2 = d3
+        .scaleLinear()
+        .domain([yMin, yMax])
+        .range([height2, 50]);
+
+    const xAxis = d3.axisBottom(x).tickFormat(x =&gt; `${x / 1000000}MB`);
+    const yAxis = d3.axisLeft(y);
+    const xAxis2 = d3.axisBottom(x2).tickFormat(x =&gt; `${x / 1000000}MB`);
+    const yAxis2 = d3.axisLeft(y2);
+
+    const line = d3
+        .line()
+        .x(d =&gt; x(d.bin))
+        .y(d =&gt; y(d[variables[0]]));
+
+    const line2 = d3
+        .line()
+        .x(d =&gt; x2(d.bin))
+        .y(d =&gt; y2(d[variables[0]]));
+
+    const movAvgLine = d3
+        .line()
+        .defined(d =&gt; !isNaN(d.MA))
+        .x(d =&gt; x(d.bin))
+        .y(d =&gt; y(d.MA));
+
+    const clip = d3
+        .selectAll(svg)
+        .append('defs')
+        .append('svg:clipPath')
+        .attr('id', 'clip')
+        .append('svg:rect')
+        .attr('width', width)
+        .attr('height', height1)
+        .attr('x', 0)
+        .attr('y', 0);
+
+    const linechart = d3
+        .selectAll(svg)
+        .append('g')
+        .attr('class', 'focus')
+        .attr('transform', `translate(${margin.left} ${margin.top})`)
+        .attr('clip-path', 'url(#clip)');
+
+    const focus = d3
+        .selectAll(svg)
+        .append('g')
+        .attr('class', 'focus')
+        .attr('transform', `translate(${margin.left} ${margin.top})`);
+
+    const context = d3
+        .selectAll(svg)
+        .append('g')
+        .attr('class', 'context')
+        .attr('transform', `translate(${margin.left} ${margin1.top})`);
+
+    const focusXaxis = focus
+        .append('g')
+        .attr('class', 'axis axis--x')
+        .attr('transform', `translate(0, ${height1})`)
+        .call(xAxis);
+
+    focus
+        .append('g')
+        .attr('class', 'axis axis--y')
+        .call(yAxis);
+
+    const yAxisLabel = d3.selectAll(svg)
+        .append('text')
+        .attr(&quot;font-family&quot;, &quot;sans-serif&quot;)
+        .attr(&quot;font-size&quot;, 10)
+        .attr('x', 30)
+        .attr('y', 13)
+        .text(d3.select(&quot;#VariableDropdown&quot;).node().value + &quot;: Moving average bin = &quot; + d3.select(&quot;#movingAverage&quot;).node().value);
+
+    d3.selectAll(svg)
+        .append('text')
+        .attr(&quot;font-family&quot;, &quot;sans-serif&quot;)
+        .attr(&quot;font-size&quot;, 10)
+        .attr('x', width - margin.right - 35)
+        .attr('y', height1 + 13)
+        .text(data.x);
+
+    const mainLine = linechart
+        .append('path')
+        .datum(filteredData)
+        .attr('class', 'line')
+        .attr('d', line)
+        .style('fill', 'none')
+        .attr('stroke', &quot;black&quot;)
+        .attr('stroke-width', 1);
+
+    const movingAverageLine = linechart
+        .append('path')
+        .datum(filteredData)
+        .attr('class', 'line1')
+        .attr('d', movAvgLine)
+        .style('fill', 'none')
+        .attr('stroke', 'red')
+        .attr('stroke-width', 0.8);
+
+    const bottomLine = context
+        .append('path')
+        .datum(filteredData)
+        .attr('class', 'line2')
+        .attr('d', line2)
+        .style('fill', 'none')
+        .attr('stroke', &quot;black&quot;)
+        .attr('stroke-width', 0.1);
+
+    context
+        .append('g')
+        .attr('class', 'axis axis--x')
+        .attr('transform', `translate(0, ${height2})`)
+        .call(xAxis2);
+
+    const brush = d3
+        .brushX()
+        .extent([[0, 40], [width, height2]])
+        .on('brush end', function (event, d) {
+            if (event.sourceEvent &amp;&amp; event.sourceEvent.type === &quot;zoom&quot;) return;
+            var s = event.selection || x2.range();
+            x.domain(s.map(x2.invert, x2));
+            linechart.selectAll(&quot;.line&quot;).attr(&quot;d&quot;, line);
+            linechart.selectAll('.line1').attr('d', movAvgLine);
+            linechart.selectAll(&quot;.line2&quot;).attr(&quot;d&quot;, line2);
+            focus.selectAll(&quot;.axis--x&quot;).call(xAxis);
+        });
+
+    context
+        .append('g')
+        .attr('class', &quot;brush&quot;)
+        .call(brush);
+
+
+    function updateChart(movingAverageBin, chromosome, variable) {
+
+        let filteredData = d3.group(data, d =&gt; d.ID).get(chromosome);
+        let filteredDataMA = movingAverage(filteredData.map(d =&gt; d[variable]), movingAverageBin);
+        for (let i = 0; i &lt; filteredData.length; i++) {
+            filteredData[i].MA = filteredDataMA[i];
+        };
+        x.domain([xMin, d3.max(filteredData.map(d =&gt; d.bin))]);
+        x2.domain([xMin, d3.max(filteredData.map(d =&gt; d.bin))]);
+        y.domain([variable === &quot;GCSkew&quot; ? d3.min(filteredData.map(d =&gt; d[variable])) : 0, d3.max(filteredData.map(d =&gt; d[variable]))]);
+        y2.domain([variable === &quot;GCSkew&quot; ? d3.min(filteredData.map(d =&gt; d[variable])) : 0, d3.max(filteredData.map(d =&gt; d[variable]))]);
+
+        svg.selectAll('.axis--x')
+            .transition()
+            .duration(1000)
+            .call(xAxis);
+
+        line.y(d =&gt; y(d[variable]));
+        line2.y(d =&gt; y2(d[variable]));
+
+        movingAverageLine
+            .datum(filteredData)
+            .attr('d', movAvgLine);
+        mainLine
+            .datum(filteredData)
+            .attr('d', line);
+        bottomLine
+            .datum(filteredData)
+            .attr('d', line2);
+        yAxisLabel.text(d3.select(&quot;#VariableDropdown&quot;).node().value + &quot;: Moving average bin = &quot; + d3.select(&quot;#movingAverage&quot;).node().value)
+
+    }
+
+    d3.select(&quot;#movingAverage&quot;).on(&quot;change&quot;, function (d) {
+        selectedValue = this.value;
+        updateChart(selectedValue, 
+            d3.select(&quot;#chromosomeDropdown&quot;).node().value, 
+            d3.select(&quot;#VariableDropdown&quot;).node().value)
+    });
+    d3.select(&quot;#chromosomeDropdown&quot;).on(&quot;change&quot;, function (d) {
+        selectedGroup = this.value;
+        updateChart(d3.select(&quot;#movingAverage&quot;).node().value, 
+        selectedGroup, 
+        d3.select(&quot;#VariableDropdown&quot;).node().value)
+    });
+    d3.select(&quot;#VariableDropdown&quot;).on(&quot;change&quot;, function (d) {
+        selectedGroup = this.value;
+        updateChart(d3.select(&quot;#movingAverage&quot;).node().value, 
+        d3.select(&quot;#chromosomeDropdown&quot;).node().value, 
+        selectedGroup)
+    });
+    }
+)
+
+&lt;/script&gt;
+
+&lt;/example&gt;
+</description>
+          <pubDate>2020-12-19T00:00:00+00:00</pubDate>
+          <link>https://www.maxbrown.xyz//Athaliana-GC</link>
+          <guid isPermaLink="true">https://www.maxbrown.xyz//Athaliana-GC</guid>
+        </item>
+      
     
       
         <item>
@@ -16,7 +332,7 @@
 
 &lt;script&gt;
 
-  function rotate(d) {
+function rotate(d) {
   return ((d.start + d.end) / 2 / Math.PI) * 180 + 90;
 }
 
@@ -107,8 +423,518 @@ const data = obs(40);
 &lt;/example&gt;
 </description>
           <pubDate>2020-11-25T00:00:00+00:00</pubDate>
-          <link>https://euphrasiologist.github.io/radial-text</link>
-          <guid isPermaLink="true">https://euphrasiologist.github.io/radial-text</guid>
+          <link>https://www.maxbrown.xyz//radial-text</link>
+          <guid isPermaLink="true">https://www.maxbrown.xyz//radial-text</guid>
+        </item>
+      
+    
+      
+        <item>
+          <title>Animating some SVG lines</title>
+          <description>&lt;p&gt;A bit of a challenge for me to set up an animation like this outside of the &lt;a href=&quot;https://observablehq.com/@euphrasiologist/animating-path-elements-simply&quot;&gt;Observable&lt;/a&gt; runtime. Makes use of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;requestAnimationFrame&lt;/code&gt; in an SVG. And it looks pretty!&lt;/p&gt;
+
+&lt;example&gt;
+
+&lt;script&gt;
+
+const svg = d3.select(&quot;example&quot;)
+    .append(&quot;svg&quot;)
+    .attr(&quot;width&quot;, 1000)
+    .attr(&quot;height&quot;, 500);
+
+let frame;
+
+svg.append(&quot;style&quot;).text(`
+
+    svg {
+    display: block;
+    margin: auto;
+    }
+
+`);
+
+  svg
+    .append(&quot;g&quot;)
+    .selectAll(&quot;lines&quot;)
+    .data(d3.range(100))
+    .join(&quot;path&quot;)
+    .attr(&quot;d&quot;, d =&gt;
+      describeArc(
+        d * 3 + 150,
+        d + 150,
+        100 + d,
+        Date.now() / 1000 - d / 100,
+        Date.now() / 800 - d / 100
+      )
+    )
+    .attr('fill-opacity', '0')
+    .attr(&quot;class&quot;, &quot;path&quot;)
+    .attr(&quot;stroke&quot;, &quot;#777&quot;);
+
+function moveSVG(time) {
+     const x = Date.now();
+     d3.selectAll(&quot;path&quot;).attr(&quot;d&quot;, d =&gt;
+       describeArc(
+         d * 3 + 150,
+         d + 150,
+         100 + d,
+         Date.now() / 1000 - d / 100,
+         Date.now() / 800 - d / 100
+       )
+     );
+     frame = requestAnimationFrame(moveSVG);
+   }
+
+requestAnimationFrame(moveSVG);
+
+function polarToCartesian(centerX, centerY, radius, angleInRadians) {
+  return {
+    x: centerX + (radius * Math.cos(angleInRadians)),
+    y: centerY + (radius * Math.sin(angleInRadians))
+  };
+};
+
+function describeArc(x, y, radius, startAngle, endAngle) {
+  var start = polarToCartesian(x, y, radius, startAngle);
+  var end = polarToCartesian(x, y, radius, endAngle);
+
+  var d = [
+    &quot;M&quot;,
+    start.x,
+    start.y,
+    &quot;A&quot;,
+    radius,
+    radius,
+    0,
+    0,
+    0,
+    end.x,
+    end.y
+  ].join(&quot; &quot;);
+
+  return d;
+};
+
+&lt;/script&gt;
+
+&lt;/example&gt;
+</description>
+          <pubDate>2020-08-30T00:00:00+01:00</pubDate>
+          <link>https://www.maxbrown.xyz//svg-line-animation</link>
+          <guid isPermaLink="true">https://www.maxbrown.xyz//svg-line-animation</guid>
+        </item>
+      
+    
+      
+        <item>
+          <title>How many eyebright hybrids are there?</title>
+          <description>&lt;p&gt;As part of my PhD, I explored hybridisation in this genus of plants called Eyebrights. Eyebrights are interesting for many reasons, but one of them is their apparent propensity to hybridise with one another. From 21 species in the UK, a staggering 71 hybrids have been recorded. Here, I’ve visualised this in a matrix where the green cells indicate hybridisation between species.&lt;/p&gt;
+
+&lt;example&gt;
+
+&lt;script&gt;
+
+const data_recip = [
+  {
+    index: &quot;rostkoviana&quot;,
+    montana: 1,
+    anglica: 1,
+    rivularis: 1,
+    vigursii: 1,
+    nemorosa: 1,
+    confusa: 1,
+    micrantha: 1,
+    arctica: 1
+  },
+  { index: &quot;montana&quot;, rostkoviana: 1, arctica: 1, confusa: 1 },
+  {
+    index: &quot;anglica&quot;,
+    rostkoviana: 1,
+    arctica: 1,
+    tetraquetra: 1,
+    nemorosa: 1,
+    confusa: 1,
+    micrantha: 1
+  },
+  { index: &quot;rivularis&quot;, rostkoviana: 1, scottica: 1 },
+  { index: &quot;vigursii&quot;, tetraquetra: 1, rostkoviana: 1 },
+  {
+    index: &quot;arctica&quot;,
+    anglica: 1,
+    rostkoviana: 1,
+    montana: 1,
+    tetraquetra: 1,
+    nemorosa: 1,
+    pseudokerneri: 1,
+    confusa: 1,
+    frigida: 1,
+    foulaensis: 1,
+    ostenfeldii: 1,
+    marshallii: 1,
+    campbelliae: 1,
+    micrantha: 1,
+    scottica: 1,
+    heslop_harrisonii: 1
+  },
+  {
+    index: &quot;tetraquetra&quot;,
+    anglica: 1,
+    arctica: 1,
+    vigursii: 1,
+    nemorosa: 1,
+    pseudokerneri: 1,
+    confusa: 1,
+    micrantha: 1,
+    salisburgensis: 1
+  },
+  {
+    index: &quot;nemorosa&quot;,
+    rostkoviana: 1,
+    anglica: 1,
+    arctica: 1,
+    tetraquetra: 1,
+    pseudokerneri: 1,
+    stricta: 1,
+    ostenfeldii: 1,
+    scottica: 1,
+    salisburgensis: 1,
+    confusa: 1,
+    foulaensis: 1,
+    marshallii: 1,
+    campbelliae: 1,
+    micrantha: 1,
+    heslop_harrisonii: 1
+  },
+  {
+    index: &quot;pseudokerneri&quot;,
+    tetraquetra: 1,
+    confusa: 1,
+    arctica: 1,
+    nemorosa: 1
+  },
+  { index: &quot;stricta&quot;, nemorosa: 1 },
+  {
+    index: &quot;confusa&quot;,
+    rostkoviana: 1,
+    montana: 1,
+    anglica: 1,
+    arctica: 1,
+    tetraquetra: 1,
+    nemorosa: 1,
+    pseudokerneri: 1,
+    frigida: 1,
+    foulaensis: 1,
+    cambrica: 1,
+    ostenfeldii: 1,
+    marshallii: 1,
+    micrantha: 1,
+    scottica: 1,
+    campbelliae: 1
+  },
+  {
+    index: &quot;frigida&quot;,
+    ostenfeldii: 1,
+    micrantha: 1,
+    scottica: 1,
+    confusa: 1,
+    arctica: 1
+  },
+  {
+    index: &quot;foulaensis&quot;,
+    nemorosa: 1,
+    ostenfeldii: 1,
+    marshallii: 1,
+    micrantha: 1,
+    scottica: 1,
+    arctica: 1,
+    confusa: 1,
+    campbelliae: 1
+  },
+  { index: &quot;cambrica&quot;, ostenfeldii: 1, scottica: 1, confusa: 1 },
+  {
+    index: &quot;ostenfeldii&quot;,
+    scottica: 1,
+    arctica: 1,
+    nemorosa: 1,
+    confusa: 1,
+    frigida: 1,
+    cambrica: 1,
+    micrantha: 1,
+    foulaensis: 1
+  },
+  {
+    index: &quot;marshallii&quot;,
+    nemorosa: 1,
+    micrantha: 1,
+    scottica: 1,
+    arctica: 1,
+    confusa: 1,
+    foulaensis: 1
+  },
+  { index: &quot;rotundifolia&quot; },
+  {
+    index: &quot;campbelliae&quot;,
+    nemorosa: 1,
+    confusa: 1,
+    foulaensis: 1,
+    micrantha: 1,
+    arctica: 1
+  },
+  {
+    index: &quot;micrantha&quot;,
+    rostkoviana: 1,
+    anglica: 1,
+    arctica: 1,
+    confusa: 1,
+    frigida: 1,
+    foulaensis: 1,
+    tetraquetra: 1,
+    nemorosa: 1,
+    ostenfeldii: 1,
+    marshallii: 1,
+    campbelliae: 1,
+    scottica: 1,
+    salisburgensis: 1
+  },
+  {
+    index: &quot;scottica&quot;,
+    micrantha: 1,
+    marshallii: 1,
+    ostenfeldii: 1,
+    cambrica: 1,
+    foulaensis: 1,
+    frigida: 1,
+    confusa: 1,
+    nemorosa: 1,
+    arctica: 1,
+    rivularis: 1
+  },
+  { index: &quot;heslop_harrisonii&quot;, nemorosa: 1, arctica: 1 },
+  { index: &quot;salisburgensis&quot;, tetraquetra: 1, nemorosa: 1, micrantha: 1 }
+];
+
+const species = [
+  { name: &quot;rostkoviana&quot;, ploidy: 2 },
+  { name: &quot;montana&quot;, ploidy: 2 },
+  { name: &quot;anglica&quot;, ploidy: 2 },
+  { name: &quot;rivularis&quot;, ploidy: 2 },
+  { name: &quot;vigursii&quot;, ploidy: 2 },
+  { name: &quot;arctica&quot;, ploidy: 4 },
+  { name: &quot;tetraquetra&quot;, ploidy: 4 },
+  { name: &quot;nemorosa&quot;, ploidy: 4 },
+  { name: &quot;pseudokerneri&quot;, ploidy: 4 },
+  { name: &quot;stricta&quot;, ploidy: 4 },
+  { name: &quot;confusa&quot;, ploidy: 4 },
+  { name: &quot;frigida&quot;, ploidy: 4 },
+  { name: &quot;foulaensis&quot;, ploidy: 4 },
+  { name: &quot;cambrica&quot;, ploidy: 4 },
+  { name: &quot;ostenfeldii&quot;, ploidy: 4 },
+  { name: &quot;marshallii&quot;, ploidy: 4 },
+  { name: &quot;rotundifolia&quot;, ploidy: 4 },
+  { name: &quot;campbelliae&quot;, ploidy: 4 },
+  { name: &quot;micrantha&quot;, ploidy: 4 },
+  { name: &quot;scottica&quot;, ploidy: 4 },
+  { name: &quot;heslop_harrisonii&quot;, ploidy: 4 },
+  { name: &quot;salisburgensis&quot;, ploidy: 4 }
+];
+
+const categories = data_recip.map(d =&gt; d.index);
+
+const matrix = data_recip.map(d =&gt;
+  species.map(e =&gt; {
+    return { x: d.index, y: e.name, count: d[e.name] };
+  })
+);
+
+const upper_tri = [];
+for (let i = 0; i &lt; matrix.length; i++) {
+    upper_tri.push(matrix[i].slice(0, i + 1));
+};
+
+const margin = {
+  top: 10,
+  right: 50,
+  bottom: 80,
+  left: 100
+};
+const width = 700;
+const height = 700;
+
+const legend_ = [
+  { name: &quot;Hybrid recorded&quot;, class: &quot;no-hybrids&quot; },
+  { name: &quot;Hybrid not (yet) recorded&quot;, class: &quot;hybrids&quot; }
+];
+const colours = d3.scaleOrdinal([&quot;salmon&quot;, &quot;green&quot;]).domain(legend_);
+
+const yAxis = g =&gt;
+  g
+    .attr(&quot;transform&quot;, `translate(${margin.left}, 0)`)
+    .call(d3.axisLeft(y).ticks(null, &quot;s&quot;))
+    .call(g =&gt; g.selectAll(&quot;.domain&quot;).remove());
+
+const xAxis = g =&gt;
+  g
+    .attr(&quot;transform&quot;, `translate(0, ${height - margin.bottom})`)
+    .call(d3.axisBottom(x).tickSizeOuter(0))
+    .call(g =&gt; g.selectAll(&quot;.domain&quot;).remove())
+    .selectAll(&quot;text&quot;)
+    .style(&quot;text-anchor&quot;, &quot;start&quot;)
+    .attr(&quot;dx&quot;, &quot;-.8em&quot;)
+    .attr(&quot;dy&quot;, &quot;.8em&quot;)
+    .attr(&quot;transform&quot;, &quot;rotate(30)&quot;);
+
+const y = d3
+  .scaleBand()
+  .domain(categories)
+  .range([height - margin.bottom, margin.top]);
+
+const x = d3
+  .scaleBand()
+  .domain(categories)
+  .range([margin.left, width - margin.right]);
+
+const svg = d3
+    .select(&quot;example&quot;)
+    .append(&quot;svg&quot;)
+    .attr(&quot;width&quot;, width)
+    .attr(&quot;height&quot;, height)
+    .attr(&quot;font-family&quot;, &quot;sans-serif&quot;)
+    .attr(&quot;font-size&quot;, 10)
+    .attr(&quot;align&quot;,&quot;left&quot;);
+
+svg.append(&quot;style&quot;).text(`
+
+    svg {
+    display: block;
+    margin: auto;
+    }
+
+`);
+
+for (let i = 0; i &lt; matrix.length; i++) {
+    const squares = svg
+      .append(&quot;g&quot;)
+      .selectAll(&quot;g&quot;)
+      .data(upper_tri[i])
+      .join(&quot;g&quot;);
+
+    squares
+      .append(&quot;rect&quot;)
+      .attr(&quot;x&quot;, d =&gt; x(d.x))
+      .attr(&quot;y&quot;, d =&gt; y(d.y))
+      .attr(&quot;width&quot;, x.bandwidth())
+      .attr(&quot;height&quot;, y.bandwidth())
+      .attr(&quot;class&quot;, d =&gt; (d.count === undefined ? &quot;no-hybrids&quot; : &quot;hybrids&quot;))
+      .style(&quot;fill&quot;, d =&gt;
+        d.x === d.y ? &quot;#EFEFEF&quot; : d.count === undefined ? &quot;salmon&quot; : &quot;green&quot;
+      );
+}
+
+  const ploidy = species.map(d =&gt; d.ploidy === 2);
+
+  svg
+    .append(&quot;g&quot;)
+    .call(xAxis)
+    .selectAll('text')
+    .text(d =&gt; &quot;E. &quot; + d.replace(&quot;_&quot;, &quot;-&quot;))
+    .attr(&quot;font-family&quot;, &quot;sans-serif&quot;)
+    .attr(&quot;font-size&quot;, 12)
+    .style(&quot;font-style&quot;, &quot;italic&quot;)
+    .style('font-weight', (d, i) =&gt; (ploidy[i] ? &quot;bold&quot; : &quot;normal&quot;));
+
+  const ladderText = svg.append(&quot;g&quot;);
+  const tickLen = 5;
+
+  ladderText
+    .selectAll(&quot;xText&quot;)
+    .data(categories)
+    .join(&quot;text&quot;)
+    .attr(&quot;text-anchor&quot;, &quot;end&quot;)
+    .attr(&quot;x&quot;, d =&gt; x(d) - x.bandwidth() + 20)
+    .attr(&quot;y&quot;, d =&gt; y(d) + y.bandwidth() / 2 + 3)
+    .style(&quot;font-style&quot;, &quot;italic&quot;)
+    .style('font-weight', (d, i) =&gt; (ploidy[i] ? &quot;bold&quot; : &quot;normal&quot;))
+    .text(d =&gt; &quot;E. &quot; + d);
+
+  ladderText
+    .selectAll(&quot;xLine&quot;)
+    .data(categories)
+    .join(&quot;line&quot;)
+    .attr(&quot;x1&quot;, d =&gt; x(d) - tickLen)
+    .attr(&quot;y1&quot;, d =&gt; y(d) + y.bandwidth() / 2)
+    .attr(&quot;x2&quot;, d =&gt; x(d))
+    .attr(&quot;y2&quot;, d =&gt; y(d) + y.bandwidth() / 2)
+    .attr(&quot;stroke-width&quot;, 1)
+    .attr(&quot;stroke&quot;, &quot;black&quot;);
+
+  const legend = svg
+    .append(&quot;g&quot;)
+    .attr(&quot;transform&quot;, `translate(${width / 4}, ${height / 8})`);
+
+  const size = 50;
+  const border_padding = 15;
+  const item_padding = 20;
+  const text_offset = 20;
+
+  legend
+    .selectAll(&quot;boxes&quot;)
+    .data(legend_)
+    .enter()
+    .append(&quot;rect&quot;)
+    .attr(&quot;x&quot;, border_padding - size)
+    .attr(&quot;y&quot;, (d, i) =&gt; border_padding + i * (size + item_padding))
+    .attr(&quot;width&quot;, size)
+    .attr(&quot;height&quot;, size)
+    .style(&quot;fill&quot;, d =&gt; colours(d.name))
+    .on(&quot;pointerenter click&quot;, (event, d) =&gt;
+      svg.selectAll(&quot;rect.&quot; + d.class).style(&quot;fill-opacity&quot;, 0.3)
+    )
+    .on(&quot;pointerleave click&quot;, (event, d) =&gt;
+      svg.selectAll(&quot;rect.&quot; + d.class).style(&quot;fill-opacity&quot;, 1)
+    );
+  legend
+    .selectAll(&quot;labels&quot;)
+    .data(legend_)
+    .enter()
+    .append(&quot;text&quot;)
+    .attr(&quot;x&quot;, border_padding + 16)
+    .attr(&quot;y&quot;, (d, i) =&gt; border_padding + i * (size + item_padding) + size / 2)
+    .text(d =&gt; d.name)
+    .attr(&quot;text-anchor&quot;, &quot;left&quot;)
+    .style(&quot;alignment-baseline&quot;, &quot;middle&quot;)
+    .style(&quot;font-family&quot;, &quot;sans-serif&quot;)
+    .style(&quot;font-size&quot;, 15);
+
+  const grid = svg.append(&quot;g&quot;);
+  grid
+    .selectAll(&quot;gridlinesv&quot;)
+    .data(categories)
+    .join(&quot;line&quot;)
+    .attr(&quot;x1&quot;, d =&gt; x(d) + x.bandwidth())
+    .attr(&quot;y1&quot;, d =&gt; y(d))
+    .attr(&quot;x2&quot;, d =&gt; x(d) + x.bandwidth())
+    .attr(&quot;y2&quot;, d =&gt; y(&quot;rostkoviana&quot;) + y.bandwidth())
+    .attr(&quot;stroke-width&quot;, 1)
+    .attr(&quot;stroke&quot;, &quot;black&quot;);
+  grid
+    .selectAll(&quot;gridlinesh&quot;)
+    .data(categories)
+    .join(&quot;line&quot;)
+    .attr(&quot;x1&quot;, d =&gt; x(d))
+    .attr(&quot;y1&quot;, d =&gt; y(d) + y.bandwidth())
+    .attr(&quot;x2&quot;, d =&gt; x(&quot;salisburgensis&quot;) + x.bandwidth())
+    .attr(&quot;y2&quot;, d =&gt; y(d) + y.bandwidth())
+    .attr(&quot;stroke-width&quot;, 1)
+    .attr(&quot;stroke&quot;, &quot;black&quot;);
+
+&lt;/script&gt;
+
+&lt;/example&gt;
+
+</description>
+          <pubDate>2020-08-25T00:00:00+01:00</pubDate>
+          <link>https://www.maxbrown.xyz//eyebright-hybrids</link>
+          <guid isPermaLink="true">https://www.maxbrown.xyz//eyebright-hybrids</guid>
         </item>
       
     

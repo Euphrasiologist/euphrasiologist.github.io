@@ -1,4 +1,4 @@
-sitemap: https://euphrasiologist.github.io/sitemap.xml
+sitemap: https://www.maxbrown.xyz//sitemap.xml
 
 user-agent: EmailCollector
 disallow: /

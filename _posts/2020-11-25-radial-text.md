@@ -12,7 +12,7 @@ The radial text here is useful for labelling radial diagrams (e.g. radial phylog
 
 <script>
 
-  function rotate(d) {
+function rotate(d) {
   return ((d.start + d.end) / 2 / Math.PI) * 180 + 90;
 }
 
