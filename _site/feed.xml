@@ -7,6 +7,123 @@
     
       
         <item>
+          <title>Haystacks</title>
+          <description>&lt;p&gt;Some falling haystacks implemented using some SVG path primitives. See &lt;a href=&quot;https://github.com/Euphrasiologist/plotutils&quot;&gt;this link&lt;/a&gt; for more details.&lt;/p&gt;
+
+&lt;example&gt;
+
+&lt;script&gt;
+
+const data = [];
+const dim = 4;
+for (let i = 0; i &lt; dim * 100; i++) {
+for (let j = 0; j &lt; dim; j++) {
+    data.push({
+    x1: getRandomInt(j * 95, 95 + j * 95) + 10,
+    y1: getRandomInt(j * 95, 95 + j * 95) + 10,
+    x2: getRandomInt(j * 95, 95 + j * 95) + 10,
+    y2: getRandomInt(j * 95, 95 + j * 95) + 10
+    });
+}
+}
+
+const svg = d3
+    .select(&quot;example&quot;)
+    .append(&quot;svg&quot;)
+    .attr(&quot;width&quot;, 400)
+    .attr(&quot;height&quot;, 400);
+
+  svg
+    .append(&quot;rect&quot;)
+    .attr(&quot;width&quot;, &quot;100%&quot;)
+    .attr(&quot;height&quot;, &quot;100%&quot;)
+    .attr(&quot;fill&quot;, &quot;#f8e9d9&quot;);
+
+  svg.append(&quot;style&quot;).text(`
+
+    .line--active {
+        stroke: red
+    }
+    svg {
+        display: block;
+        margin: auto;
+    }
+
+`);
+
+  const generator = line()
+    .x1(d =&gt; d.x1)
+    .y1(d =&gt; d.y1)
+    .x2(d =&gt; d.x2)
+    .y2(d =&gt; d.y2);
+
+  const lines = svg
+    .selectAll(&quot;path2&quot;)
+    .data(data)
+    .join(&quot;path&quot;)
+    .attr(&quot;d&quot;, generator)
+    .attr(&quot;id&quot;, (d, i) =&gt; &quot;line_&quot; + i)
+    .attr(&quot;stroke&quot;, (d, i) =&gt; (i % 3 ? &quot;black&quot; : &quot;#f8e9d9&quot;))
+    .attr(&quot;fill&quot;, &quot;none&quot;);
+
+  lines
+    .on(&quot;mouseover&quot;, function(event, d) {
+      d3.select(this).classed(&quot;line--active&quot;, true);
+    })
+    .on(&quot;mouseout&quot;, function(event, d) {
+      d3.select(this).classed(&quot;line--active&quot;, false);
+    });
+
+
+function line() {
+  let x1 = 0,
+    y1 = 0,
+    x2 = 0,
+    y2 = 0;
+
+  function draw(datum) {
+    const x10 = typeof x1 === &quot;function&quot; ? x1(datum) : x1,
+      y10 = typeof y1 === &quot;function&quot; ? y1(datum) : y1,
+      x20 = typeof x2 === &quot;function&quot; ? x2(datum) : x2,
+      y20 = typeof y2 === &quot;function&quot; ? y2(datum) : y2;
+
+    return `M${x10},${y10}L${x20},${y20}`;
+  }
+
+  draw.x1 = function(_) {
+    return arguments.length ? ((x1 = _), draw) : x1;
+  };
+  draw.y1 = function(_) {
+    return arguments.length ? ((y1 = _), draw) : y1;
+  };
+  draw.x2 = function(_) {
+    return arguments.length ? ((x2 = _), draw) : x2;
+  };
+  draw.y2 = function(_) {
+    return arguments.length ? ((y2 = _), draw) : y2;
+  };
+
+  return draw;
+}
+
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+&lt;/script&gt;
+
+&lt;/example&gt;
+</description>
+          <pubDate>2020-12-20T00:00:00+00:00</pubDate>
+          <link>https://www.maxbrown.xyz//haystacks</link>
+          <guid isPermaLink="true">https://www.maxbrown.xyz//haystacks</guid>
+        </item>
+      
+    
+      
+        <item>
           <title>Visualising GC content across chromosomes</title>
           <description>&lt;p&gt;GC content is the proportion of DNA bases in a given sqeuence window which are either G or C. GC content varies througout a genome due to selection, mutational bias, and GC-biased gene conversion. I’ve visualised this in the genome of &lt;i&gt;Arabidopsis thaliana&lt;/i&gt;, which is a model organism for botanical research across a variety of disciplines.&lt;/p&gt;
 
