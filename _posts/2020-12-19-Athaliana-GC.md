@@ -269,6 +269,11 @@ data.then(function (data) {
             .transition()
             .duration(1000)
             .call(xAxis);
+        
+        svg.selectAll('.axis--y')
+            .transition()
+            .duration(1000)
+            .call(yAxis);
 
         line.y(d => y(d[variable]));
         line2.y(d => y2(d[variable]));
