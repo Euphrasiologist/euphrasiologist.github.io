@@ -3,7 +3,95 @@
   <channel>
     <title>Another blog</title>
     <description>A minimalist Jekyll theme</description>
-    <link>https://www.maxbrown.xyz/</link>
+    <link>http://localhost:4000/</link>
+    
+      
+        <item>
+          <title>Guitar scales!</title>
+          <description>&lt;p&gt;An implementation of a guitar fretboard, and a multitude of scales in d3. Based on code written by Austin Whittier &lt;a href=&quot;https://observablehq.com/@awhitty/fretboard#tonal&quot;&gt;here&lt;/a&gt;. It might take a second to load. I wrapped the fretboard code up into a class, so it may(?) be easier to use elsewhere if people want to! The code to get the dropdowns working is a bit knarly, and a bit more work may be done on it yet! See the source code &lt;a href=&quot;https://github.com/Euphrasiologist/guitarneck&quot;&gt;here&lt;/a&gt;!&lt;/p&gt;
+
+&lt;p&gt;&lt;select id=&quot;keyDropdown&quot;&gt;&lt;/select&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;select id=&quot;scaleDropdown&quot;&gt;&lt;/select&gt;&lt;/p&gt;
+
+&lt;example&gt;
+
+&lt;script type=&quot;module&quot;&gt;
+    import guitarneck from &quot;https://unpkg.com/guitarneck@1.0.2/src/index.js?module&quot;;
+
+    d3.select(&quot;#keyDropdown&quot;)
+        .selectAll('myKeyOpts')
+        .data([&quot;A&quot;, &quot;B&quot;, &quot;Bb&quot;, &quot;C&quot;, &quot;Db&quot;, &quot;D&quot;, &quot;Eb&quot;, &quot;E&quot;, &quot;F&quot;, &quot;Gb&quot;, &quot;G&quot;])
+        .join('option')
+        .text(d =&gt; d)
+        .attr(&quot;value&quot;, d =&gt; d);
+
+    d3.select(&quot;#scaleDropdown&quot;)
+        .selectAll('myKeyopts')
+        .data(Tonal.ScaleType.all().map(d =&gt; d.name))
+        .join('option')
+        .text(d =&gt; d)
+        .attr(&quot;value&quot;, d =&gt; d);
+
+    let scale = d3.select(&quot;#keyDropdown&quot;).node().value + &quot; &quot; + d3.select(&quot;#scaleDropdown&quot;).node().value;
+
+    const w = 1000,
+          h = 300;
+    const svg = d3.select(&quot;example&quot;).append(&quot;svg&quot;).attr(&quot;width&quot;, w).attr(&quot;height&quot;, h);
+
+      svg.append(&quot;style&quot;).text(`
+
+    svg {
+        display: block;
+        margin: auto;
+        position: relative;
+        left: -200px;
+    }
+
+`);
+
+    new guitarneck(svg).size(w, h).render(scale);
+
+    function updateChart(key, scale) {
+
+        let updatedScale = key + &quot; &quot; + scale;
+        d3.select(&quot;svg&quot;).remove();
+            const svg = d3.select(&quot;example&quot;).append(&quot;svg&quot;).attr(&quot;width&quot;, w).attr(&quot;height&quot;, h);
+
+      svg.append(&quot;style&quot;).text(`
+
+    svg {
+        display: block;
+        margin: auto;
+        position: relative;
+        left: -200px;
+    }
+
+`);
+        new guitarneck(svg).size(w, h).render(updatedScale);
+    }
+
+    d3.select(&quot;#keyDropdown&quot;).on(&quot;change&quot;, function (d) {
+        let selectedKey = this.value;
+        updateChart(selectedKey, 
+            d3.select(&quot;#scaleDropdown&quot;).node().value)
+    });
+    d3.select(&quot;#scaleDropdown&quot;).on(&quot;change&quot;, function (d) {
+        let selectedScale = this.value;
+        updateChart(d3.select(&quot;#keyDropdown&quot;).node().value, 
+        selectedScale)
+    });
+
+
+&lt;/script&gt;
+
+&lt;/example&gt;
+</description>
+          <pubDate>2021-02-07T00:00:00+00:00</pubDate>
+          <link>http://localhost:4000//guitar-fret</link>
+          <guid isPermaLink="true">http://localhost:4000//guitar-fret</guid>
+        </item>
+      
     
       
         <item>
@@ -117,8 +205,8 @@ function getRandomInt(min, max) {
 &lt;/example&gt;
 </description>
           <pubDate>2020-12-20T00:00:00+00:00</pubDate>
-          <link>https://www.maxbrown.xyz//haystacks</link>
-          <guid isPermaLink="true">https://www.maxbrown.xyz//haystacks</guid>
+          <link>http://localhost:4000//haystacks</link>
+          <guid isPermaLink="true">http://localhost:4000//haystacks</guid>
         </item>
       
     
@@ -438,8 +526,8 @@ data.then(function (data) {
 &lt;/example&gt;
 </description>
           <pubDate>2020-12-19T00:00:00+00:00</pubDate>
-          <link>https://www.maxbrown.xyz//Athaliana-GC</link>
-          <guid isPermaLink="true">https://www.maxbrown.xyz//Athaliana-GC</guid>
+          <link>http://localhost:4000//Athaliana-GC</link>
+          <guid isPermaLink="true">http://localhost:4000//Athaliana-GC</guid>
         </item>
       
     
@@ -545,8 +633,8 @@ const data = obs(40);
 &lt;/example&gt;
 </description>
           <pubDate>2020-11-25T00:00:00+00:00</pubDate>
-          <link>https://www.maxbrown.xyz//radial-text</link>
-          <guid isPermaLink="true">https://www.maxbrown.xyz//radial-text</guid>
+          <link>http://localhost:4000//radial-text</link>
+          <guid isPermaLink="true">http://localhost:4000//radial-text</guid>
         </item>
       
     
@@ -642,8 +730,8 @@ function describeArc(x, y, radius, startAngle, endAngle) {
 &lt;/example&gt;
 </description>
           <pubDate>2020-08-30T00:00:00+01:00</pubDate>
-          <link>https://www.maxbrown.xyz//svg-line-animation</link>
-          <guid isPermaLink="true">https://www.maxbrown.xyz//svg-line-animation</guid>
+          <link>http://localhost:4000//svg-line-animation</link>
+          <guid isPermaLink="true">http://localhost:4000//svg-line-animation</guid>
         </item>
       
     
@@ -1055,8 +1143,8 @@ for (let i = 0; i &lt; matrix.length; i++) {
 
 </description>
           <pubDate>2020-08-25T00:00:00+01:00</pubDate>
-          <link>https://www.maxbrown.xyz//eyebright-hybrids</link>
-          <guid isPermaLink="true">https://www.maxbrown.xyz//eyebright-hybrids</guid>
+          <link>http://localhost:4000//eyebright-hybrids</link>
+          <guid isPermaLink="true">http://localhost:4000//eyebright-hybrids</guid>
         </item>
       
     
