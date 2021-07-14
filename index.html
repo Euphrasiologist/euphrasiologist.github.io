@@ -1,31 +1,47 @@
----
-layout: default
----
+<!DOCTYPE html>
+<html>
 
-<section>
+<head>
+    <meta charset="utf-8">
+    <link rel='stylesheet' type='text/css' href='style.css'>
+    <title>Max Brown's Website</title>
+</head>
 
-	{% for post in site.posts %}
-		{% unless post.next %}
-			<h3 class="code">{{ post.date | date: '%Y' }}</h3>
-		{% else %}
-			{% capture year %}{{ post.date | date: '%Y' }}{% endcapture %}
-			{% capture nyear %}{{ post.next.date | date: '%Y' }}{% endcapture %}
-			{% if year != nyear %}
-				<h3 class="code">{{ post.date | date: '%Y' }}</h3>
-			{% endif %}
-		{% endunless %}
+<body>
+    <main>
+        <header>
+            <h1>Max Brown's Homepage</h1>
+        </header>
 
-		<ul>
-			<li>
-				<div class="post-date code">
-					<span>{{ post.date | date: "%b %d" }}</span>
-				</div>
-				<div class="title">
-					<a href="{{ post.url | prepend: site.baseurl | prepend: site.url }}">{{ post.title }}</a>
-				</div>
-			</li>
-		</ul>
+        <picture>
+            <img src="./pics/me.jpg" alt="This is me."
+                style="width: 50%; display: block; margin-left: auto; margin-right: auto">
+        </picture>
 
-	{% endfor %}
+        <h2>About</h2>
+        <p>I am a biologist interested mainly in plant ecology, genetics, and genomics. I am currently working at the
+            Wellcome Sanger Institute as a bioinformatician on the exciting <a href="">Darwin Tree of Life project</a>.
+            This involves working with and processing genomes in interesting ways!</p>
 
-</section>
+        <h2>Links</h2>
+
+        <ul>
+            <li><a href="blogindex.html">Blog 2021</a></li>
+            <li><a href="cv.html">Academic CV</a></li>
+            <li><a href="https://github.com/Euphrasiologist">Open source software</a></li>
+            <li><a href="https://scholar.google.com/citations?user=1W1iLhEAAAAJ&hl=en">Google Scholar</a></li>
+        </ul>
+
+
+
+        <div itemscope="" itemtype="https://schema.org/Person"
+            style="display: table; margin-right: auto; margin-left: auto;"><a itemprop="sameAs"
+                content="https://orcid.org/0000-0003-2561-516X" href="https://orcid.org/0000-0003-2561-516X"
+                target="orcid.widget" rel="me noopener noreferrer" style="vertical-align:top;"><img
+                    src="https://orcid.org/sites/default/files/images/orcid_16x16.png"
+                    style="width:1em;margin-right:.5em;" alt="ORCID iD icon">https://orcid.org/0000-0003-2561-516X</a>
+        </div>
+    </main>
+</body>
+
+</html>

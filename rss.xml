@@ -1,0 +1,47 @@
+<!-- LB -->
+
+<item>
+<title>DToL Plant Working Group</title>
+<guid>https://maxbrown.xyz/2021.html#dtol-plant-working-group</guid>
+<pubDate>Sun, 13 Jun 2021 18:38:25 +0100</pubDate>
+<description><![CDATA[
+<script src="../js/dtol-plant-working-group.js"></script>
+
+<example></example>
+]]></description>
+</item>
+
+
+<item>
+<title>New website</title>
+<guid>https://maxbrown.xyz/2021.html#new-website</guid>
+<pubDate>Sun, 13 Jun 2021 17:27:50 +0100</pubDate>
+<description><![CDATA[
+    The motivation for this stripped back website, is that running Jekyll was becoming really annoying to sync between
+    separate computers. And it's probably unneccesary for what I wanted. As I wanted to do some easy blogging (nothing
+    major), I came across <a href="https://github.com/LukeSmithxyz/lb">this</a>. It's a little shell script which will
+    create and publish blog posts from the terminal. I intend to mock them up in VSCode, as nano isn't going to cut it
+    for
+    me. I'm on a Mac, so the script won't work properly without GNU sed - there is somehow a difference between the two.
+    I
+    later have learned that Macs have ancient versions of GNU coreutils (~2005?).
+
+    As for the blog executable, it's really nice!
+
+    <code>./lb n # makes a new post</code>
+    <code>./lb p # publishes a post</code>
+
+    As for the blog, I don't really know what I'll do yet. But I may shove some of my D3 visualisations on here, talk
+    about
+    bits of code that I like. Or plants I like.
+]]></description>
+</item>
+
+
+
+
+
+
+
+
+

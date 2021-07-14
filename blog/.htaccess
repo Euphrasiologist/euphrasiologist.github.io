@@ -1,0 +1,10 @@
+Options +Indexes
+AddDescription "Test" ".html"
+AddDescription "" "another-test.html" #Sun, 13 Jun 2021 13:03:45 +0100
+AddDescription "test
+
+AddDescription "New website!
+AddDescription "
+ 
+AddDescription "New website" "new-website.html" #Sun, 13 Jun 2021 17:27:50 +0100
+AddDescription "DToL Plant Working Group" "dtol-plant-working-group.html" #Sun, 13 Jun 2021 18:38:25 +0100
