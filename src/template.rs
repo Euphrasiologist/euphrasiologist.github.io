@@ -130,7 +130,7 @@ pub fn render_body(body: &str) -> String {
     format!(
         r#"  <body>
     <header>
-      <img src="./img/website_logo.svg" alt="Made with RX!" class="website_logo">
+      <img src="img/website_logo.svg" alt="Made with RX!" class="website_logo">
     </header>
     <main>
       <!-- Do I want a welcome anchor? -->
