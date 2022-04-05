@@ -67,6 +67,20 @@ pub fn build_website(content_dir: &str, output_dir: &str) -> Result<()> {
         std::str::from_utf8(&copy_status_htmls.stdout)?
     );
 
+    // copy over images
+    std::fs::create_dir_all("./public/img")?;
+    let copy_status_img = std::process::Command::new("cp")
+        .arg("-r")
+        .arg("./img/")
+        .arg("public/img/")
+        .output()?;
+
+    eprintln!(
+        "Err: {}\nOut: {}",
+        std::str::from_utf8(&copy_status_img.stderr)?,
+        std::str::from_utf8(&copy_status_img.stdout)?
+    );
+
     // process the markdown files
     let markdown_files: Vec<String> = walkdir::WalkDir::new(content_dir)
         .into_iter()

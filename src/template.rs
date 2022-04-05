@@ -93,10 +93,6 @@ pub const HEADER: &str = r#"<!DOCTYPE html>
       color: #FE612C;
     }
 
-    .header_text {
-
-    }
-
     .footer_text {
       text-align: center;
       font-family: monospace;
@@ -117,8 +113,15 @@ pub const HEADER: &str = r#"<!DOCTYPE html>
       padding: 10px;
     }
 
+    .website_logo {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      width: 50%;
+    }
+
   </style>
-  <title>Max Carter-Brown</title>
+    <title>Max Carter-Brown</title>
   </head>
 "#;
 
@@ -127,7 +130,7 @@ pub fn render_body(body: &str) -> String {
     format!(
         r#"  <body>
     <header>
-      <h1 class="header_text">Max Carter-Brown</h1>
+      <img src="./img/website_logo.svg" alt="Made with RX!" class="website_logo">
     </header>
     <main>
       <!-- Do I want a welcome anchor? -->
