@@ -27,6 +27,8 @@ curl \
   https://api.github.com/repos/Euphrasiologist/euphrasiologist.github.io/pages \
   -d '{"cname": "maxbrown.xyz"}'
 
+# sleep because I think the previous command is being overwritten.
+sleep 5
 # and switch the source branch to github pages.
 curl \
   -i \
