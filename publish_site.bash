@@ -8,7 +8,7 @@ git push
 # now delete the branch gh-pages remotely
 # and locally
 git push -d origin gh-pages
-git branch -d gh-pages
+git branch -D gh-pages
 
 # now push and create the branch again remotely
 # and locally I guess...
