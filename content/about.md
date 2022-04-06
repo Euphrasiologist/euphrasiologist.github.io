@@ -1,6 +1,6 @@
 # About me
 
-I'm a data scientist, software developer, part time plant-nerd, and nature lover!
+I'm a data scientist, software developer, part time plant-nerd, and nature lover.
 
 ## My links
 
