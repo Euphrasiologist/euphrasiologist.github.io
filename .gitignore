@@ -1,3 +1,4 @@
 /target
 .cargo
 TOKEN
+publish_site.nu

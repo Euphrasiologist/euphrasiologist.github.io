@@ -8,7 +8,7 @@ pub const HEADER: &str = r#"<!DOCTYPE html>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- For syntax highlighting -->
   <link rel="stylesheet"
-      href="https://unpkg.com/@highlightjs/cdn-assets@11.5.0/styles/nord.min.css">
+      href="https://unpkg.com/@highlightjs/cdn-assets@11.5.0/styles/github.min.css">
   <script src="//unpkg.com/@highlightjs/cdn-assets@11.5.0/highlight.min.js"></script>
   <script>hljs.highlightAll();</script>
   <script>
@@ -37,6 +37,10 @@ pub const HEADER: &str = r#"<!DOCTYPE html>
       font-size: 16px;
     }
 
+    a {
+      text-decoration: none; 
+    }
+
     a:hover {
       color: #FE612C;
     }
@@ -45,6 +49,7 @@ pub const HEADER: &str = r#"<!DOCTYPE html>
       font-family: roboto;
       text-align: center;
       font-size: 22px;
+      font-size: 4vw;
     }
     
     #home_link {
@@ -59,6 +64,7 @@ pub const HEADER: &str = r#"<!DOCTYPE html>
       font-family: roboto;
       text-align: center;
       font-size: 22px;
+      font-size: 4vw;
     }
     
     #about_link {
@@ -73,10 +79,11 @@ pub const HEADER: &str = r#"<!DOCTYPE html>
       font-family: roboto;
       text-align: center;
       font-size: 20px;
+      font-size: 3vw;
     }
     
     #blog_link {
-      color: blue;
+      color: #023020;
     }
 
     #blog_link:hover {
@@ -86,10 +93,11 @@ pub const HEADER: &str = r#"<!DOCTYPE html>
     .blog_date {
       float: right;
       position: relative;
-      bottom: 15px;
+      bottom: 2vh;
       text-align: center;
       font-family: monospace;
-      font-size: 12px;
+      /* so we don't get weird jumping of blog elements */
+      font-size: min(1.2vw, 30);
       color: #FE612C;
     }
 
