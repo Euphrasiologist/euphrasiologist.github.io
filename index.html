@@ -1,0 +1,65 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home - Brown Lab</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <header>
+    <h1>Brown Lab</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="research.html">Research</a>
+      <a href="people.html">People</a>
+      <a href="publications.html">Publications</a>
+      <a href="opportunities.html">Opportunities</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+  <main>
+    <div class="carousel">
+      <div class="carousel-item">
+        <img src="Euphrasia_tetraploid.JPG" alt="A tetraploid Eyebright" class="carousel-image">
+        <div class="carousel-caption">A hemiparasitic Eyebright (Euphrasia)</div>
+      </div>
+      <div class="carousel-item">
+        <img src="Tulbaghia_chromosomes.JPG" alt="Tulbaghia chromosomes" class="carousel-image">
+        <div class="carousel-caption">The very large chromosomes of Tulbaghia</div>
+      </div>
+    </div>
+
+    <p>Hello! Our lab is interested in plant ecology, evolution, genomics, and bioinformatic tool development. We use
+      field and sequence data to understand plant evolution at broad and focused scales.</p>
+  </main>
+  <footer>
+    <p>&copy; 2025 Brown Lab</p>
+  </footer>
+</body>
+
+<script>
+  const items = document.querySelectorAll('.carousel-item');
+  let currentIndex = 0;
+
+  function showNextImage() {
+    // Hide the current item
+    items[currentIndex].style.display = 'none';
+
+    // Update the index to the next item
+    currentIndex = (currentIndex + 1) % items.length;
+
+    // Show the next item
+    items[currentIndex].style.display = 'block';
+  }
+
+  // Rotate images every 3 seconds
+  setInterval(showNextImage, 5000);
+
+</script>
+
+</html>

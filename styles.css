@@ -1,0 +1,170 @@
+/* styles.css */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+}
+
+header {
+  background-color: #333;
+  color: white;
+  padding: 1rem 0;
+  text-align: center;
+}
+
+p {
+  font-size: 20px;
+  padding: 20px;
+  /* Add padding inside the border */
+  margin: 30px auto;
+  /* Center align and add spacing */
+}
+
+header h1 {
+  font-size: 48px;
+  /* Make the title much larger */
+  margin: 0;
+}
+
+header a {
+  color: white;
+  margin: 0 15px;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+nav {
+  background-color: #444;
+  padding: 10px 0;
+  border-top: 2px solid #333;
+  border-bottom: 2px solid #333;
+  text-align: center;
+  margin-top: 20px;
+}
+
+nav a {
+  font-size: 20px;
+  /* Increase font size */
+  color: #ffffff;
+  /* White text color */
+  font-weight: bold;
+  /* Make the text bold */
+  text-decoration: none;
+  margin: 0 15px;
+  padding: 10px;
+  border-radius: 5px;
+  /* Rounded corners */
+  transition: background-color 0.3s ease, color 0.3s ease;
+  /* Smooth transition for background and text color */
+}
+
+nav a:hover {
+  background-color: #28a745;
+  /* Green background color on hover */
+  color: white;
+  /* Keep the text color white */
+}
+
+
+main {
+  padding: 20px;
+  background-color: transparent;
+  /* Make background transparent */
+  margin: 20px;
+  border-radius: 8px;
+  border: none;
+  /* Remove any borders */
+  visibility: visible;
+  /* Ensure the main content is visible */
+}
+
+footer {
+  background-color: #333;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+  margin-top: 20px;
+}
+
+h1,
+nav a {
+  text-transform: uppercase;
+  /* Make text all caps */
+  font-family: 'Montserrat', sans-serif;
+  /* Font style */
+}
+
+/* Carousel Container */
+.carousel {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  height: 400px;
+  /* Fixed height for carousel */
+  margin: 0 auto;
+  overflow: hidden;
+  background-color: #f4f4f4;
+}
+
+/* Carousel Items */
+.carousel-item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  /* Hide all items initially */
+  text-align: center;
+}
+
+.carousel-item:first-child {
+  display: block;
+  /* Show the first item */
+}
+
+/* Images */
+.carousel-image {
+  max-width: 100%;
+  max-height: 80%;
+  /* Leave space for caption */
+  object-fit: contain;
+  margin: 0 auto;
+}
+
+/* Captions */
+.carousel-caption {
+  position: absolute;
+  bottom: 10%;
+  width: 100%;
+  text-align: center;
+  font-size: 18px;
+  color: black;
+  background: rgba(0, 0, 0, 0);
+  /* Semi-transparent background */
+  padding: 10px;
+  box-sizing: border-box;
+  border-radius: 5px;
+}
+
+/* Container for the image and text */
+.text-with-image {
+  display: flex;
+  align-items: flex-start;
+  /* Aligns text and image at the top */
+  gap: 15px;
+  /* Adds space between the image and the text */
+}
+
+/* Style for the image */
+.left-image {
+  max-width: 150px;
+  /* Limit the image width */
+  height: auto;
+  /* Maintain the aspect ratio */
+  border-radius: 5px;
+  /* Optional: Add rounded corners */
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  /* Optional: Add a shadow */
+}
