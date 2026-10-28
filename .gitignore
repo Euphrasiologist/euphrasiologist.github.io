@@ -4,3 +4,5 @@ TOKEN
 publish_site.nu
 cv.pdf
 .DS_Store
+_site/
+.jekyll-cache/

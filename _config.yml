@@ -1,0 +1,30 @@
+# Jekyll config for GitHub Pages. Only files with front matter (news pages,
+# posts and index.html) are processed; other pages are served as written.
+title: Brown Lab
+description: Plant ecology, evolution and genomics at Anglia Ruskin University, Cambridge.
+author: Max Carter-Brown
+url: https://euphrasiologist.com
+lang: en-GB
+
+permalink: /news/:year/:title/
+defaults:
+  - scope:
+      type: posts
+    values:
+      layout: post
+markdown: kramdown
+kramdown:
+  input: GFM
+  smart_quotes: lsquo,rsquo,ldquo,rdquo
+
+plugins:
+  - jekyll-feed
+feed:
+  path: news/feed.xml
+
+exclude:
+  - README.md
+  - WRITING-NEWS.md
+  - Gemfile
+  - Gemfile.lock
+  - publish_site.nu

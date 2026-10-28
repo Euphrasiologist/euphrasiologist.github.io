@@ -1,0 +1,29 @@
+---
+layout: default
+title: News
+permalink: /news.html
+summary: News from the Brown Lab at Anglia Ruskin University, Cambridge.
+---
+    <section class="page-head">
+      <div class="wrap">
+        <p class="eyebrow">News</p>
+        <h1>What's new in the lab</h1>
+        <p class="lede">Papers, preprints, software releases, talks and people. Follow along with the <a href="/news/feed.xml">RSS feed</a>.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <ul class="news-list">
+          {% for post in site.posts %}
+          <li class="news-item">
+            <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%-d %b %Y" }}</time>
+            <div>
+              <h2><a href="{{ post.url }}">{{ post.title }}</a></h2>
+              <p>{{ post.summary | default: post.excerpt | strip_html | truncatewords: 40 }}</p>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </section>
