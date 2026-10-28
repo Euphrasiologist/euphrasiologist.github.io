@@ -549,7 +549,9 @@ i {
 }
 
 .ticker-track {
-  display: inline-block;
+  display: flex;
+  width: max-content;
+  will-change: transform;
   animation: ticker 70s linear infinite;
 }
 
@@ -574,8 +576,11 @@ i {
 }
 
 @keyframes ticker {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
   to {
-    transform: translateX(-50%);
+    transform: translate3d(-50%, 0, 0);
   }
 }
 
@@ -930,7 +935,7 @@ a.theme-card:hover {
 
 .repos {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
 }
 
@@ -954,12 +959,15 @@ a.repo:hover {
 
 .repo-head {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
-  gap: 12px;
+  gap: 6px 12px;
 }
 
 .repo-name {
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-family: var(--mono);
   font-size: 1.12rem;
   font-weight: 500;
@@ -1055,7 +1063,7 @@ a.repo:hover {
 
 @media (max-width: 760px) {
   .repos {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
