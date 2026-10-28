@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Brown Lab — styles.css
+   Brown Lab: styles.css
    Palette drawn from the eyebright flower: violet veins, yellow eye,
    set on paper and forest ink.
    ========================================================================== */
@@ -693,7 +693,7 @@ i {
 
 .themes {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 18px;
 }
 
@@ -2128,6 +2128,10 @@ a.output:hover {
   gap: 20px;
 }
 
+.fig-grid.two {
+  grid-template-columns: repeat(2, 1fr);
+}
+
 .fig-card {
   display: flex;
   flex-direction: column;
@@ -2191,7 +2195,8 @@ a.output:hover {
 }
 
 @media (max-width: 620px) {
-  .fig-grid {
+  .fig-grid,
+  .fig-grid.two {
     grid-template-columns: 1fr;
   }
 }
@@ -2312,4 +2317,54 @@ a.output:hover {
     background: #fff;
     color: #000;
   }
+}
+
+/* ---------- DNA halo (cursor) ---------- */
+
+.dna-halo {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  user-select: none;
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 22px;
+  letter-spacing: 0.35em;
+  white-space: pre;
+  color: var(--accent);
+  --dna-mut: #1f9d55;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  /* mask-image is drawn by site.js as the cursor moves */
+  -webkit-mask-image: linear-gradient(transparent, transparent);
+  mask-image: linear-gradient(transparent, transparent);
+}
+
+.dna-halo.on {
+  opacity: 1;
+}
+
+.dna-halo .mut {
+  animation: dna-mut 0.8s ease-out forwards;
+}
+
+@keyframes dna-mut {
+  from {
+    color: var(--dna-mut);
+  }
+  to {
+    color: var(--accent);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .dna-halo {
+    --dna-mut: #5fd68a;
+  }
+}
+
+:root[data-theme="dark"] .dna-halo {
+  --dna-mut: #5fd68a;
 }
