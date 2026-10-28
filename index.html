@@ -1,65 +1,338 @@
-<!-- index.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home - Brown Lab</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <title>Brown Lab · Plant Ecology & Genomics</title>
+  <meta name="description" content="The Brown Lab at Anglia Ruskin University studies plant ecology, evolution and genomics — from somatic mutation and organelle genomes to hybridisation and parasitic plants.">
+  <meta name="author" content="Max Carter-Brown">
+  <link rel="canonical" href="https://euphrasiologist.github.io/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Brown Lab">
+  <meta property="og:title" content="Brown Lab · Plant Ecology & Genomics">
+  <meta property="og:description" content="The Brown Lab at Anglia Ruskin University studies plant ecology, evolution and genomics — from somatic mutation and organelle genomes to hybridisation and parasitic plants.">
+  <meta property="og:url" content="https://euphrasiologist.github.io/">
+  <meta property="og:image" content="https://euphrasiologist.github.io/img/og.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#f7f5ef" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f1512" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+  <script src="site.js" defer></script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Person", "name": "Max Carter-Brown", "alternateName": ["Max R Brown", "Max Brown"], "jobTitle": "Senior Lecturer in Plant Ecology and Genetics", "affiliation": {"@type": "CollegeOrUniversity", "name": "Anglia Ruskin University"}, "alumniOf": [{"@type": "CollegeOrUniversity", "name": "University of Edinburgh"}, {"@type": "CollegeOrUniversity", "name": "University of Oxford"}], "knowsAbout": ["Plant ecology", "Plant evolution", "Genomics", "Bioinformatics", "Hybridisation", "Parasitic plants"], "url": "https://euphrasiologist.github.io", "image": "https://euphrasiologist.github.io/img/max-portrait.jpg", "sameAs": ["https://scholar.google.com/citations?user=1W1iLhEAAAAJ&hl=en", "https://github.com/Euphrasiologist"]}</script>
 </head>
 
 <body>
-  <header>
-    <h1>Brown Lab</h1>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="research.html">Research</a>
-      <a href="people.html">People</a>
-      <a href="publications.html">Publications</a>
-      <a href="opportunities.html">Opportunities</a>
-      <a href="contact.html">Contact</a>
-    </nav>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="Brown Lab — home">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+  <g fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3">
+    <ellipse cx="12.2" cy="9.6" rx="3.8" ry="5.6" transform="rotate(-22 12.2 9.6)"/>
+    <ellipse cx="19.8" cy="9.6" rx="3.8" ry="5.6" transform="rotate(22 19.8 9.6)"/>
+    <ellipse cx="8.4" cy="19.4" rx="4" ry="6.2" transform="rotate(-58 8.4 19.4)"/>
+    <ellipse cx="23.6" cy="19.4" rx="4" ry="6.2" transform="rotate(58 23.6 19.4)"/>
+    <ellipse cx="16" cy="23.4" rx="4.2" ry="6.4"/>
+  </g>
+  <path d="M16 18v8M13.6 19.5l-1.4 5M18.4 19.5l1.4 5" stroke="var(--accent)" stroke-width="0.9" stroke-linecap="round" opacity=".7"/>
+  <circle cx="16" cy="16.4" r="3" fill="var(--gold)"/>
+</svg>
+        Brown Lab <small>Plant Ecology &amp; Genomics</small>
+      </a>
+      <nav class="nav" id="site-nav" aria-label="Main">
+        <a href="research.html">Research</a>
+        <a href="publications.html">Publications</a>
+        <a href="software.html">Software</a>
+        <a href="figures.html">Figures</a>
+        <a href="people.html">People</a>
+        <a href="opportunities.html">Join</a>
+        <a href="contact.html">Contact</a>
+        <button class="icon-btn theme-toggle" type="button" aria-label="Toggle dark mode"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button>
+      </nav>
+      <button class="icon-btn menu-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="site-nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    </div>
   </header>
-  <main>
-    <div class="carousel">
-      <div class="carousel-item">
-        <img src="Euphrasia_tetraploid.JPG" alt="A tetraploid Eyebright" class="carousel-image">
-        <div class="carousel-caption">A hemiparasitic Eyebright (Euphrasia)</div>
+
+  <main id="main">
+    <section class="hero">
+      <div class="wrap">
+        <div>
+          <p class="eyebrow">Anglia Ruskin University · Cambridge, UK</p>
+          <h1>Plant evolution, read from the <em>field</em> and the <em>genome</em>.</h1>
+          <p class="lede">The Brown Lab studies how plants mutate, hybridise and parasitise one another — and builds the open-source tools needed to see it in thousands of genomes at once.</p>
+          <div class="btn-row">
+            <a class="btn primary" href="research.html">Explore our research <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            <a class="btn" href="opportunities.html">Join the lab</a>
+          </div>
+        </div>
+        <figure class="figure">
+          <div class="frame"><img src="img/euphrasia.jpg" alt="Eyebright plants with small white and lilac flowers with yellow centres, growing among grasses" width="1600" height="1200" fetchpriority="high"></div>
+          <div class="tag"><i>Euphrasia</i> sp.<span>tetraploid · hemiparasite</span></div>
+          <figcaption><b>Fig. 1</b>Eyebrights steal water and nutrients from neighbouring plants, and hybridise freely — a taxonomist's puzzle and an evolutionary biologist's model.</figcaption>
+        </figure>
       </div>
-      <div class="carousel-item">
-        <img src="Tulbaghia_chromosomes.JPG" alt="Tulbaghia chromosomes" class="carousel-image">
-        <div class="carousel-caption">The very large chromosomes of Tulbaghia</div>
-      </div>
+    </section>
+
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker-track">5′&nbsp;TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b>TTT<b>AGGG</b></div>
+      <div class="ticker-label">(TTTAGGG)<sub>n</sub> · the plant telomeric repeat</div>
     </div>
 
-    <p>Hello! Our lab is interested in plant ecology, evolution, genomics, and bioinformatic tool development. We use
-      field and sequence data to understand plant evolution at broad and focused scales.</p>
+    <section class="section">
+      <div class="wrap">
+        <div class="stats reveal">
+          <div class="stat"><div class="num">1,731</div><div class="label">Citations</div></div>
+          <div class="stat"><div class="num">12</div><div class="label">h-index</div></div>
+          <div class="stat"><div class="num">17</div><div class="label">Publications since 2020</div></div>
+          <div class="stat"><div class="num">8</div><div class="label">Open-source research tools</div></div>
+        </div>
+        <p class="stats-note">Source: <a href="https://scholar.google.com/citations?user=1W1iLhEAAAAJ&hl=en">Google Scholar</a>, October 2026.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Research</p>
+            <h2>Six questions we are working on</h2>
+          </div>
+          <a class="link-arrow" href="research.html">All research themes</a>
+        </div>
+        <div class="themes">
+          <a class="theme-card reveal" href="research.html#somatic">
+            <div class="idx">01<span>→</span></div>
+            <h3>Somatic mutation in plants</h3>
+            <p>How fast do plants accumulate mutations as they grow, and does a thousand-year-old tree differ from an annual weed? Fundamental rates, measured with long-read sequencing.</p>
+          </a>
+          <a class="theme-card reveal" href="research.html#organelles">
+            <div class="idx">02<span>→</span></div>
+            <h3>Plant organelle genomes</h3>
+            <p>Plant mitochondria are recombining, repeat-rich and wildly variable in size. We build tools to assemble them and compare their structure across the tree of life.</p>
+          </a>
+          <a class="theme-card reveal" href="research.html#telomeres">
+            <div class="idx">03<span>→</span></div>
+            <h3>Telomeres across the tree of life</h3>
+            <p>Using tidk on thousands of Darwin Tree of Life genomes to reveal far more variation in telomeric repeats than textbooks suggest.</p>
+          </a>
+          <a class="theme-card reveal" href="research.html#hybridisation">
+            <div class="idx">04<span>→</span></div>
+            <h3>Hybridisation & polyploidy</h3>
+            <p>What makes species able to hybridise? We combine phylogenetics, ecology and genomics across the British flora — and across ploidy levels.</p>
+          </a>
+          <a class="theme-card reveal" href="research.html#parasites">
+            <div class="idx">05<span>→</span></div>
+            <h3>Hemiparasitic plants</h3>
+            <p>Eyebrights (<i>Euphrasia</i>) photosynthesise yet steal from their neighbours. We study host range, performance and the networks that link parasites to hosts.</p>
+          </a>
+          <a class="theme-card reveal" href="research.html#genomes">
+            <div class="idx">06<span>→</span></div>
+            <h3>Reference genomes</h3>
+            <p>Contributing chromosome-level reference genomes for British plants through the Darwin Tree of Life, from apples to the giant genome of mistletoe.</p>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Selected publications</p>
+            <h2>Recent work</h2>
+          </div>
+          <a class="link-arrow" href="publications.html">All publications</a>
+        </div>
+        <ul class="pubs reveal">
+        <li class="pub" data-topics="tools genomes" data-lead="1">
+          <div>
+            <h3 class="pub-title"><a href="https://doi.org/10.1093/bioinformatics/btaf049">tidk: a toolkit to rapidly identify telomeric repeats from genomic datasets</a></h3>
+            <p class="pub-authors"><b>MR Brown</b>, P Gonzalez de la Rosa, M Blaxter</p>
+            <p class="pub-venue"><i>Bioinformatics</i> 41, btaf049, 2025</p>
+          </div>
+          <div class="pub-meta" title="Citations on Google Scholar, October 2026">
+            <div class="cites">236</div>
+            <div class="cites-label">citations</div>
+            <div class="cites-bar"><span style="--w:34.4%"></span></div>
+          </div>
+        </li>
+        <li class="pub" data-topics="tools genomes" data-lead="0">
+          <div>
+            <h3 class="pub-title"><a href="https://doi.org/10.1186/s13059-025-03676-6">Oatk: a de novo assembly tool for complex plant organelle genomes</a></h3>
+            <p class="pub-authors">C Zhou, <b>MR Brown</b>, M Blaxter, Darwin Tree of Life Project Consortium, SA McCarthy, R Durbin</p>
+            <p class="pub-venue"><i>Genome Biology</i> 26, 235, 2025</p>
+          </div>
+          <div class="pub-meta" title="Citations on Google Scholar, October 2026">
+            <div class="cites">411</div>
+            <div class="cites-label">citations</div>
+            <div class="cites-bar"><span style="--w:59.9%"></span></div>
+          </div>
+        </li>
+        <li class="pub" data-topics="hybrid" data-lead="1">
+          <div>
+            <h3 class="pub-title"><a href="https://doi.org/10.1111/mec.17315">The emerging importance of cross-ploidy hybridisation and introgression</a></h3>
+            <p class="pub-authors"><b>MR Brown</b>, RJ Abbott, AD Twyford</p>
+            <p class="pub-venue"><i>Molecular Ecology</i> 33(8), e17315, 2024</p>
+          </div>
+          <div class="pub-meta" title="Citations on Google Scholar, October 2026">
+            <div class="cites">43</div>
+            <div class="cites-label">citations</div>
+            <div class="cites-bar"><span style="--w:6.3%"></span></div>
+          </div>
+        </li>
+        <li class="pub" data-topics="hybrid" data-lead="1">
+          <div>
+            <h3 class="pub-title"><a href="https://doi.org/10.1073/pnas.2220261120">Genetic factors predict hybrid formation in the British flora</a></h3>
+            <p class="pub-authors"><b>MR Brown</b>, PM Hollingsworth, L Forrest, M Hart, IJ Leitch, L Jones, C Ford, N de Vere, AD Twyford</p>
+            <p class="pub-venue"><i>Proceedings of the National Academy of Sciences</i> 120(16), e2220261120, 2023</p>
+          </div>
+          <div class="pub-meta" title="Citations on Google Scholar, October 2026">
+            <div class="cites">20</div>
+            <div class="cites-label">citations</div>
+            <div class="cites-bar"><span style="--w:2.9%"></span></div>
+          </div>
+        </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="fig-feature">
+          <a class="figure" href="figures.html" style="text-decoration:none">
+            <div class="plate"><img src="img/fig-mito-complexity.jpg" alt="Circular phylogeny of land plants with concentric rings of bars describing mitochondrial genome features" width="820" height="820" loading="lazy"></div>
+          </a>
+          <div>
+            <p class="eyebrow">Interactive figures</p>
+            <h2>Data you can explore</h2>
+            <p class="lede">Our papers come with interactive figures you can hover, zoom and interrogate — like this map of mitochondrial assembly complexity across hundreds of land plants.</p>
+            <div class="btn-row" style="margin-top:24px">
+              <a class="btn primary" href="figures.html">See the figures <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section band-dark">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Open-source software</p>
+            <h2>Tools that run on thousands of genomes</h2>
+            <p class="lede">Fast, tested and mostly written in Rust — used across the Darwin Tree of Life, with fasta_windows running in production at the Wellcome Sanger Institute.</p>
+          </div>
+          <a class="link-arrow" href="software.html">All software</a>
+        </div>
+        <div class="repos">
+        <a class="repo reveal" href="https://github.com/tolkit/telomeric-identifier">
+          <div class="repo-head">
+            <span class="repo-name"><span class="repo-org">tolkit/</span>tidk</span>
+            <span class="badge">Bioinformatics, 2025</span>
+          </div>
+          <p>Telomere identification toolkit. Discovers and maps telomeric repeats across whole genomes — built to survey the thousands of assemblies coming out of the Darwin Tree of Life.</p>
+          <div class="repo-meta"><span><i class="lang-dot" style="--c:#dea584"></i>Rust</span><span>★ 180</span></div>
+        </a>
+        <a class="repo reveal" href="https://github.com/genomehubs/goat-cli">
+          <div class="repo-head">
+            <span class="repo-name"><span class="repo-org">genomehubs/</span>goat-cli</span>
+            <span class="badge">Wellcome Open Res, 2023</span>
+          </div>
+          <p>Command line interface for Genomes on a Tree. Query genome size, chromosome number, assembly status and sequencing-project metadata for any taxon across eukaryotes.</p>
+          <div class="repo-meta"><span><i class="lang-dot" style="--c:#dea584"></i>Rust</span><span>★ 14</span></div>
+        </a>
+        <a class="repo reveal" href="https://github.com/c-zhou/oatk">
+          <div class="repo-head">
+            <span class="repo-name"><span class="repo-org">c-zhou/</span>oatk</span>
+            <span class="badge">Genome Biology, 2025</span>
+          </div>
+          <p>De novo assembly of complex plant mitochondrial and plastid genomes from HiFi reads. Co-developed with Chenxi Zhou and Richard Durbin.</p>
+          <div class="repo-meta"><span><i class="lang-dot" style="--c:#8c9eb0"></i>C</span><span>★ 89</span></div>
+        </a>
+        <a class="repo reveal" href="https://github.com/tolkit/gfatk">
+          <div class="repo-head">
+            <span class="repo-name"><span class="repo-org">tolkit/</span>gfatk</span>
+            
+          </div>
+          <p>A Graphical Fragment Assembly toolkit for plant organelles. Uses graph algorithms to resolve tangled mitochondrial and chloroplast assembly graphs into linear sequences.</p>
+          <div class="repo-meta"><span><i class="lang-dot" style="--c:#dea584"></i>Rust</span><span>★ 17</span></div>
+        </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="cta reveal">
+          <svg class="cta-mark" viewBox="0 0 32 32" aria-hidden="true">
+  <g fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3">
+    <ellipse cx="12.2" cy="9.6" rx="3.8" ry="5.6" transform="rotate(-22 12.2 9.6)"/>
+    <ellipse cx="19.8" cy="9.6" rx="3.8" ry="5.6" transform="rotate(22 19.8 9.6)"/>
+    <ellipse cx="8.4" cy="19.4" rx="4" ry="6.2" transform="rotate(-58 8.4 19.4)"/>
+    <ellipse cx="23.6" cy="19.4" rx="4" ry="6.2" transform="rotate(58 23.6 19.4)"/>
+    <ellipse cx="16" cy="23.4" rx="4.2" ry="6.4"/>
+  </g>
+  <path d="M16 18v8M13.6 19.5l-1.4 5M18.4 19.5l1.4 5" stroke="var(--accent)" stroke-width="0.9" stroke-linecap="round" opacity=".7"/>
+  <circle cx="16" cy="16.4" r="3" fill="var(--gold)"/>
+</svg>
+          <div>
+            <p class="eyebrow">Opportunities</p>
+            <h2>Curious about plants, genomes, or both?</h2>
+            <p>We welcome enquiries from prospective PhD students, postdoctoral fellows, project students and collaborators.</p>
+          </div>
+          <div class="btn-row">
+            <a class="btn primary" href="opportunities.html">Opportunities <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            <a class="btn" href="contact.html">Get in touch</a>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
-  <footer>
-    <p>&copy; 2025 Brown Lab</p>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-grid">
+        <div>
+          <a class="brand" href="index.html"><svg viewBox="0 0 32 32" aria-hidden="true">
+  <g fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3">
+    <ellipse cx="12.2" cy="9.6" rx="3.8" ry="5.6" transform="rotate(-22 12.2 9.6)"/>
+    <ellipse cx="19.8" cy="9.6" rx="3.8" ry="5.6" transform="rotate(22 19.8 9.6)"/>
+    <ellipse cx="8.4" cy="19.4" rx="4" ry="6.2" transform="rotate(-58 8.4 19.4)"/>
+    <ellipse cx="23.6" cy="19.4" rx="4" ry="6.2" transform="rotate(58 23.6 19.4)"/>
+    <ellipse cx="16" cy="23.4" rx="4.2" ry="6.4"/>
+  </g>
+  <path d="M16 18v8M13.6 19.5l-1.4 5M18.4 19.5l1.4 5" stroke="var(--accent)" stroke-width="0.9" stroke-linecap="round" opacity=".7"/>
+  <circle cx="16" cy="16.4" r="3" fill="var(--gold)"/>
+</svg> Brown Lab</a>
+          <p style="margin-top:14px;max-width:30em">Plant ecology, evolution and genomics at Anglia Ruskin University, Cambridge.</p>
+        </div>
+        <div>
+          <h4>Find us</h4>
+          <address>Sci408, School of Life Sciences<br>Anglia Ruskin University<br>East Road, Cambridge CB1 1PT</address>
+        </div>
+        <div>
+          <h4>Elsewhere</h4>
+          <ul>
+            <li><a href="https://scholar.google.com/citations?user=1W1iLhEAAAAJ&hl=en">Google Scholar</a></li>
+            <li><a href="https://github.com/Euphrasiologist">GitHub</a></li>
+            <li><a href="https://github.com/tolkit">tolkit (Tree of Life tools)</a></li>
+            <li><a href="https://observablehq.com/@euphrasiologist">Observable</a></li>
+            <li><a href="contact.html">Email</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-base">
+        <span>&copy; 2026 Max Carter-Brown</span>
+        <span class="mono">5′–TTTAGGG–3′</span>
+      </div>
+    </div>
   </footer>
 </body>
-
-<script>
-  const items = document.querySelectorAll('.carousel-item');
-  let currentIndex = 0;
-
-  function showNextImage() {
-    // Hide the current item
-    items[currentIndex].style.display = 'none';
-
-    // Update the index to the next item
-    currentIndex = (currentIndex + 1) % items.length;
-
-    // Show the next item
-    items[currentIndex].style.display = 'block';
-  }
-
-  // Rotate images every 3 seconds
-  setInterval(showNextImage, 5000);
-
-</script>
 
 </html>

@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Software · Brown Lab</title>
+  <meta name="description" content="Open-source genomics and ecology software from the Brown Lab, including tidk, goat-cli, gfatk, lwPhylo and fasta_windows, with worked examples.">
+  <meta name="author" content="Max Carter-Brown">
+  <link rel="canonical" href="https://euphrasiologist.github.io/software.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Brown Lab">
+  <meta property="og:title" content="Software · Brown Lab">
+  <meta property="og:description" content="Open-source genomics and ecology software from the Brown Lab, including tidk, goat-cli, gfatk, lwPhylo and fasta_windows, with worked examples.">
+  <meta property="og:url" content="https://euphrasiologist.github.io/software.html">
+  <meta property="og:image" content="https://euphrasiologist.github.io/img/og.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#f7f5ef" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f1512" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+  <script src="site.js" defer></script>
+</head>
+
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="Brown Lab — home">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+  <g fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3">
+    <ellipse cx="12.2" cy="9.6" rx="3.8" ry="5.6" transform="rotate(-22 12.2 9.6)"/>
+    <ellipse cx="19.8" cy="9.6" rx="3.8" ry="5.6" transform="rotate(22 19.8 9.6)"/>
+    <ellipse cx="8.4" cy="19.4" rx="4" ry="6.2" transform="rotate(-58 8.4 19.4)"/>
+    <ellipse cx="23.6" cy="19.4" rx="4" ry="6.2" transform="rotate(58 23.6 19.4)"/>
+    <ellipse cx="16" cy="23.4" rx="4.2" ry="6.4"/>
+  </g>
+  <path d="M16 18v8M13.6 19.5l-1.4 5M18.4 19.5l1.4 5" stroke="var(--accent)" stroke-width="0.9" stroke-linecap="round" opacity=".7"/>
+  <circle cx="16" cy="16.4" r="3" fill="var(--gold)"/>
+</svg>
+        Brown Lab <small>Plant Ecology &amp; Genomics</small>
+      </a>
+      <nav class="nav" id="site-nav" aria-label="Main">
+        <a href="research.html">Research</a>
+        <a href="publications.html">Publications</a>
+        <a href="software.html" aria-current="page">Software</a>
+        <a href="figures.html">Figures</a>
+        <a href="people.html">People</a>
+        <a href="opportunities.html">Join</a>
+        <a href="contact.html">Contact</a>
+        <button class="icon-btn theme-toggle" type="button" aria-label="Toggle dark mode"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button>
+      </nav>
+      <button class="icon-btn menu-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="site-nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="page-head">
+      <div class="wrap">
+        <p class="eyebrow">Software</p>
+        <h1>Open tools for open science</h1>
+        <p class="lede">All lab software is open source. Most of it is written in Rust for speed and reliability, because the datasets — thousands of chromosome-level genomes — demand it.</p>
+        <div class="btn-row" style="margin-top:28px">
+          <a class="btn primary" href="https://github.com/Euphrasiologist"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg> Euphrasiologist on GitHub</a>
+          <a class="btn" href="https://github.com/tolkit"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg> tolkit</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Software development</p>
+            <h2>Under the hood</h2>
+            <p class="lede">What four of our tools actually do, with the commands to run them.</p>
+          </div>
+        </div>
+        <nav class="toc" aria-label="Tools" style="margin:0 0 8px">
+          <a href="#tidk">tidk</a><a href="#gfatk">gfatk</a><a href="#goat">goat-cli</a><a href="#lwphylo">lwPhylo</a>
+        </nav>
+      <article class="dev" id="tidk">
+        <div class="dev-text">
+          <p class="eyebrow">Rust · Bioinformatics 2025</p>
+          <h3><a href="https://github.com/tolkit/telomeric-identifier">tidk</a></h3>
+          <h2>Finding the ends of chromosomes</h2>
+          <p>Telomeres are short repeats at chromosome ends, but which repeat varies between lineages. <code>tidk explore</code> discovers the unit de novo, <code>search</code> maps it in windows along every chromosome, and <code>ends</code> checks whether an assembly is telomere-to-telomere.</p>
+          <p>It runs in seconds on a gigabase genome, and has been run across more than 3,400 Darwin Tree of Life assemblies to build a curated database of telomeric repeats by clade.</p>
+          <pre class="terminal" tabindex="0"><span class="p">$ </span>conda install -c bioconda tidk
+<span class="c"># discover the repeat unit</span>
+<span class="p">$ </span>tidk explore --minimum 5 --maximum 12 genome.fa
+<span class="c"># map it along every chromosome, then plot</span>
+<span class="p">$ </span>tidk search --string TTTAGGG --output euphrasia --dir out genome.fa
+<span class="c"># telomere-to-telomere check</span>
+<span class="p">$ </span>tidk ends --min-sequence-length 1000000 -o euphrasia genome.fa</pre>
+        </div>
+        <figure class="viz reveal">
+          <div class="legend"><span><i class="sw s1"></i>TTTAGGG (forward)</span><span><i class="sw s2"></i>CCCTAAA (reverse)</span></div>
+          <svg class="chart" viewBox="0 0 560 220" role="img" aria-labelledby="tidk-t">
+<title id="tidk-t">Telomeric repeat counts in 300 kb windows along a 30 Mb chromosome: CCCTAAA spikes at the 5′ end, TTTAGGG at the 3′ end, with a small interstitial peak near 18 Mb.</title>
+<line class="grid" x1="44" x2="548" y1="170.2" y2="170.2"/>
+<text class="tick" x="38" y="173.2" text-anchor="end">1,000</text>
+<line class="grid" x1="44" x2="548" y1="137.1" y2="137.1"/>
+<text class="tick" x="38" y="140.1" text-anchor="end">500</text>
+<line class="grid" x1="44" x2="548" y1="70.9" y2="70.9"/>
+<text class="tick" x="38" y="73.9" text-anchor="end">500</text>
+<line class="grid" x1="44" x2="548" y1="37.8" y2="37.8"/>
+<text class="tick" x="38" y="40.8" text-anchor="end">1,000</text>
+<rect class="s2" x="45.0" y="104.0" width="3.0" height="78.1" rx="1"><title>CCCTAAA: 1,180 copies at 0.0–0.3 Mb</title></rect>
+<rect class="s1" x="50.0" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 2 copies at 0.3–0.6 Mb</title></rect>
+<rect class="s2" x="50.0" y="104.0" width="3.0" height="17.2" rx="1"><title>CCCTAAA: 260 copies at 0.3–0.6 Mb</title></rect>
+<rect class="s1" x="55.1" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 2 copies at 0.6–0.9 Mb</title></rect>
+<rect class="s1" x="70.2" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 2 copies at 1.5–1.8 Mb</title></rect>
+<rect class="s2" x="70.2" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 1 copies at 1.5–1.8 Mb</title></rect>
+<rect class="s1" x="75.2" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 1 copies at 1.8–2.1 Mb</title></rect>
+<rect class="s2" x="75.2" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 1 copies at 1.8–2.1 Mb</title></rect>
+<rect class="s1" x="80.3" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 3 copies at 2.1–2.4 Mb</title></rect>
+<rect class="s1" x="85.3" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 2 copies at 2.4–2.7 Mb</title></rect>
+<rect class="s2" x="90.4" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 2 copies at 2.7–3.0 Mb</title></rect>
+<rect class="s1" x="95.4" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 2 copies at 3.0–3.3 Mb</title></rect>
+<rect class="s2" x="95.4" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 2 copies at 3.0–3.3 Mb</title></rect>
+<rect class="s1" x="105.5" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 1 copies at 3.6–3.9 Mb</title></rect>
+<rect class="s2" x="105.5" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 1 copies at 3.6–3.9 Mb</title></rect>
+<rect class="s2" x="110.5" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 3 copies at 3.9–4.2 Mb</title></rect>
+<rect class="s1" x="115.6" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 2 copies at 4.2–4.5 Mb</title></rect>
+<rect class="s2" x="115.6" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 2 copies at 4.2–4.5 Mb</title></rect>
+<rect class="s2" x="125.6" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 2 copies at 4.8–5.1 Mb</title></rect>
+<rect class="s1" x="130.7" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 3 copies at 5.1–5.4 Mb</title></rect>
+<rect class="s1" x="135.7" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 1 copies at 5.4–5.7 Mb</title></rect>
+<rect class="s2" x="135.7" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 2 copies at 5.4–5.7 Mb</title></rect>
+<rect class="s1" x="140.8" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 2 copies at 5.7–6.0 Mb</title></rect>
+<rect class="s1" x="145.8" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 2 copies at 6.0–6.3 Mb</title></rect>
+<rect class="s1" x="150.8" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 1 copies at 6.3–6.6 Mb</title></rect>
+<rect class="s1" x="155.9" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 1 copies at 6.6–6.9 Mb</title></rect>
+<rect class="s1" x="160.9" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 3 copies at 6.9–7.2 Mb</title></rect>
+<rect class="s2" x="171.0" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 2 copies at 7.5–7.8 Mb</title></rect>
+<rect class="s1" x="176.0" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 3 copies at 7.8–8.1 Mb</title></rect>
+<rect class="s2" x="176.0" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 2 copies at 7.8–8.1 Mb</title></rect>
+<rect class="s1" x="186.1" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 2 copies at 8.4–8.7 Mb</title></rect>
+<rect class="s1" x="191.2" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 1 copies at 8.7–9.0 Mb</title></rect>
+<rect class="s2" x="191.2" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 1 copies at 8.7–9.0 Mb</title></rect>
+<rect class="s1" x="196.2" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 3 copies at 9.0–9.3 Mb</title></rect>
+<rect class="s2" x="201.2" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 2 copies at 9.3–9.6 Mb</title></rect>
+<rect class="s1" x="206.3" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 3 copies at 9.6–9.9 Mb</title></rect>
+<rect class="s2" x="216.4" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 3 copies at 10.2–10.5 Mb</title></rect>
+<rect class="s1" x="221.4" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 2 copies at 10.5–10.8 Mb</title></rect>
+<rect class="s1" x="246.6" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 1 copies at 12.0–12.3 Mb</title></rect>
+<rect class="s2" x="246.6" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 1 copies at 12.0–12.3 Mb</title></rect>
+<rect class="s1" x="251.6" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 2 copies at 12.3–12.6 Mb</title></rect>
+<rect class="s2" x="251.6" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 1 copies at 12.3–12.6 Mb</title></rect>
+<rect class="s1" x="256.7" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 3 copies at 12.6–12.9 Mb</title></rect>
+<rect class="s2" x="256.7" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 1 copies at 12.6–12.9 Mb</title></rect>
+<rect class="s1" x="261.7" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 1 copies at 12.9–13.2 Mb</title></rect>
+<rect class="s2" x="261.7" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 2 copies at 12.9–13.2 Mb</title></rect>
+<rect class="s1" x="266.8" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 3 copies at 13.2–13.5 Mb</title></rect>
+<rect class="s2" x="266.8" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 1 copies at 13.2–13.5 Mb</title></rect>
+<rect class="s1" x="271.8" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 1 copies at 13.5–13.8 Mb</title></rect>
+<rect class="s2" x="271.8" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 3 copies at 13.5–13.8 Mb</title></rect>
+<rect class="s1" x="276.8" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 1 copies at 13.8–14.1 Mb</title></rect>
+<rect class="s2" x="276.8" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 2 copies at 13.8–14.1 Mb</title></rect>
+<rect class="s1" x="281.9" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 3 copies at 14.1–14.4 Mb</title></rect>
+<rect class="s2" x="281.9" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 3 copies at 14.1–14.4 Mb</title></rect>
+<rect class="s1" x="286.9" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 2 copies at 14.4–14.7 Mb</title></rect>
+<rect class="s2" x="286.9" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 2 copies at 14.4–14.7 Mb</title></rect>
+<rect class="s1" x="292.0" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 1 copies at 14.7–15.0 Mb</title></rect>
+<rect class="s2" x="297.0" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 2 copies at 15.0–15.3 Mb</title></rect>
+<rect class="s2" x="302.0" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 2 copies at 15.3–15.6 Mb</title></rect>
+<rect class="s2" x="312.1" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 1 copies at 15.9–16.2 Mb</title></rect>
+<rect class="s2" x="317.2" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 3 copies at 16.2–16.5 Mb</title></rect>
+<rect class="s1" x="322.2" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 1 copies at 16.5–16.8 Mb</title></rect>
+<rect class="s2" x="322.2" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 3 copies at 16.5–16.8 Mb</title></rect>
+<rect class="s2" x="327.2" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 3 copies at 16.8–17.1 Mb</title></rect>
+<rect class="s1" x="337.3" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 3 copies at 17.4–17.7 Mb</title></rect>
+<rect class="s1" x="342.4" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 1 copies at 17.7–18.0 Mb</title></rect>
+<rect class="s2" x="342.4" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 1 copies at 17.7–18.0 Mb</title></rect>
+<rect class="s1" x="347.4" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 3 copies at 18.0–18.3 Mb</title></rect>
+<rect class="s1" x="352.4" y="99.4" width="3.0" height="4.6" rx="1"><title>TTTAGGG: 70 copies at 18.3–18.6 Mb</title></rect>
+<rect class="s2" x="352.4" y="104.0" width="3.0" height="3.6" rx="1"><title>CCCTAAA: 55 copies at 18.3–18.6 Mb</title></rect>
+<rect class="s1" x="357.5" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 1 copies at 18.6–18.9 Mb</title></rect>
+<rect class="s1" x="362.5" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 2 copies at 18.9–19.2 Mb</title></rect>
+<rect class="s2" x="362.5" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 2 copies at 18.9–19.2 Mb</title></rect>
+<rect class="s1" x="367.6" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 1 copies at 19.2–19.5 Mb</title></rect>
+<rect class="s1" x="372.6" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 2 copies at 19.5–19.8 Mb</title></rect>
+<rect class="s2" x="377.6" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 1 copies at 19.8–20.1 Mb</title></rect>
+<rect class="s1" x="382.7" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 2 copies at 20.1–20.4 Mb</title></rect>
+<rect class="s2" x="382.7" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 2 copies at 20.1–20.4 Mb</title></rect>
+<rect class="s1" x="387.7" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 2 copies at 20.4–20.7 Mb</title></rect>
+<rect class="s1" x="392.8" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 1 copies at 20.7–21.0 Mb</title></rect>
+<rect class="s1" x="397.8" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 2 copies at 21.0–21.3 Mb</title></rect>
+<rect class="s2" x="397.8" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 1 copies at 21.0–21.3 Mb</title></rect>
+<rect class="s2" x="402.8" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 2 copies at 21.3–21.6 Mb</title></rect>
+<rect class="s2" x="407.9" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 2 copies at 21.6–21.9 Mb</title></rect>
+<rect class="s1" x="412.9" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 3 copies at 21.9–22.2 Mb</title></rect>
+<rect class="s2" x="412.9" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 3 copies at 21.9–22.2 Mb</title></rect>
+<rect class="s1" x="428.0" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 2 copies at 22.8–23.1 Mb</title></rect>
+<rect class="s2" x="428.0" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 3 copies at 22.8–23.1 Mb</title></rect>
+<rect class="s1" x="433.1" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 3 copies at 23.1–23.4 Mb</title></rect>
+<rect class="s2" x="433.1" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 3 copies at 23.1–23.4 Mb</title></rect>
+<rect class="s1" x="438.1" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 3 copies at 23.4–23.7 Mb</title></rect>
+<rect class="s2" x="443.2" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 1 copies at 23.7–24.0 Mb</title></rect>
+<rect class="s1" x="448.2" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 3 copies at 24.0–24.3 Mb</title></rect>
+<rect class="s2" x="453.2" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 3 copies at 24.3–24.6 Mb</title></rect>
+<rect class="s1" x="458.3" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 2 copies at 24.6–24.9 Mb</title></rect>
+<rect class="s1" x="463.3" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 2 copies at 24.9–25.2 Mb</title></rect>
+<rect class="s2" x="463.3" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 2 copies at 24.9–25.2 Mb</title></rect>
+<rect class="s1" x="468.4" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 2 copies at 25.2–25.5 Mb</title></rect>
+<rect class="s2" x="468.4" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 3 copies at 25.2–25.5 Mb</title></rect>
+<rect class="s1" x="478.4" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 3 copies at 25.8–26.1 Mb</title></rect>
+<rect class="s2" x="478.4" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 3 copies at 25.8–26.1 Mb</title></rect>
+<rect class="s1" x="483.5" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 3 copies at 26.1–26.4 Mb</title></rect>
+<rect class="s2" x="483.5" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 1 copies at 26.1–26.4 Mb</title></rect>
+<rect class="s1" x="493.6" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 3 copies at 26.7–27.0 Mb</title></rect>
+<rect class="s2" x="493.6" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 2 copies at 26.7–27.0 Mb</title></rect>
+<rect class="s1" x="498.6" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 2 copies at 27.0–27.3 Mb</title></rect>
+<rect class="s2" x="503.6" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 3 copies at 27.3–27.6 Mb</title></rect>
+<rect class="s1" x="523.8" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 1 copies at 28.5–28.8 Mb</title></rect>
+<rect class="s2" x="523.8" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 3 copies at 28.5–28.8 Mb</title></rect>
+<rect class="s1" x="528.8" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 3 copies at 28.8–29.1 Mb</title></rect>
+<rect class="s2" x="528.8" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 1 copies at 28.8–29.1 Mb</title></rect>
+<rect class="s1" x="533.9" y="102.5" width="3.0" height="1.5" rx="1"><title>TTTAGGG: 1 copies at 29.1–29.4 Mb</title></rect>
+<rect class="s1" x="538.9" y="83.5" width="3.0" height="20.5" rx="1"><title>TTTAGGG: 310 copies at 29.4–29.7 Mb</title></rect>
+<rect class="s2" x="538.9" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 2 copies at 29.4–29.7 Mb</title></rect>
+<rect class="s1" x="544.0" y="22.0" width="3.0" height="82.0" rx="1"><title>TTTAGGG: 1,240 copies at 29.7–30.0 Mb</title></rect>
+<rect class="s2" x="544.0" y="104.0" width="3.0" height="1.5" rx="1"><title>CCCTAAA: 2 copies at 29.7–30.0 Mb</title></rect>
+<line class="axis" x1="44" x2="548" y1="104.0" y2="104.0"/>
+<text class="tick" x="44.0" y="210" text-anchor="middle">0 Mb</text>
+<text class="tick" x="212.0" y="210" text-anchor="middle">10 Mb</text>
+<text class="tick" x="380.0" y="210" text-anchor="middle">20 Mb</text>
+<text class="tick" x="548.0" y="210" text-anchor="middle">30 Mb</text>
+<text class="note" x="58" y="184.0">5′ end · CCCTAAA</text>
+<text class="note" x="534" y="30" text-anchor="end">3′ end · TTTAGGG</text>
+<text class="note" x="354.0" y="82.0" text-anchor="middle">interstitial</text>
+</svg>
+          <figcaption><b>Schematic</b> of <code>tidk search</code> output for one 30 Mb chromosome in 300 kb windows. Strand-specific repeats spike at each end, plus a small interstitial telomeric sequence. Hover a bar for counts.</figcaption>
+        </figure>
+      </article>
+      <article class="dev" id="gfatk">
+        <div class="dev-text">
+          <p class="eyebrow">Rust · graph algorithms</p>
+          <h3><a href="https://github.com/tolkit/gfatk">gfatk</a></h3>
+          <h2>Untangling mitochondrial assembly graphs</h2>
+          <p>Plant mitochondria recombine across repeats, so assemblers return a <em>graph</em>, not a sequence. gfatk reads these GFA graphs, separates mitochondrion from plastid, and finds a linear path that uses every segment as many times as its coverage suggests.</p>
+          <p>Its ideas went on to underpin <a href="https://github.com/c-zhou/oatk">Oatk</a>, now a widely used de novo organelle assembler.</p>
+          <pre class="terminal" tabindex="0"><span class="p">$ </span>gfatk stats mito.gfa -t
+<span class="p">$ </span>gfatk extract-mito assembly.gfa | gfatk linear &gt; mito.fa
+<span class="p">$ </span>gfatk dot mito.gfa | dot -Tsvg &gt; mito.svg</pre>
+        </div>
+        <figure class="viz reveal">
+          <div class="legend"><span><i class="sw s1"></i>u1 (unique)</span><span><i class="sw s2"></i>u2 (unique)</span></div>
+          <svg class="chart" viewBox="0 0 560 290" role="img" aria-labelledby="gfa-t">
+<title id="gfa-t">An assembly graph with a repeat segment u3 joining two loops, u1 and u2. gfatk walks u3, u1, u3, u2 to produce one 468 kb linear sequence.</title>
+<path class="seg s1" d="M330,100 C400,100 420,22 280,22 C140,22 160,100 230,100"><title>u1 · 182 kb · 1× coverage</title></path>
+<path class="seg s2" d="M330,100 C400,100 420,178 280,178 C140,178 160,100 230,100"><title>u2 · 238 kb · 1× coverage</title></path>
+<path class="seg rep" d="M230,100 L330,100"><title>u3 · 24 kb repeat · 2× coverage</title></path>
+<path class="walker" d="M230,100 L330,100 C400,100 420,22 280,22 C140,22 160,100 230,100 L330,100 C400,100 420,178 280,178 C140,178 160,100 230,100" pathLength="100"/>
+<text class="note" x="280" y="12" text-anchor="middle">u1 · 182 kb</text>
+<text class="note" x="280" y="200" text-anchor="middle">u2 · 238 kb</text>
+<text class="note strong" x="280" y="138" text-anchor="middle">u3 · repeat · 2×</text>
+<line class="axis" x1="280" y1="108" x2="280" y2="126"/>
+<text class="note" x="436" y="104">recombining</text>
+<text class="note" x="436" y="117">repeat pair</text>
+<g transform="translate(40,232)">
+  <text class="tick" x="0" y="-8">gfatk linear → one sequence, u3+ u1+ u3+ u2+</text>
+  <rect class="rep-f" x="0" y="0" width="24.6" height="16" rx="3"/>
+  <rect class="s1-f" x="26.6" y="0" width="184.7" height="16" rx="3"/>
+  <rect class="rep-f" x="213.3" y="0" width="22.6" height="16" rx="3"/>
+  <rect class="s2-f" x="237.9" y="0" width="242.1" height="16" rx="3"/>
+  <text class="tick" x="480" y="34" text-anchor="end">468 kb</text>
+  <text class="tick" x="0" y="34">0</text>
+</g>
+</svg>
+          <figcaption><b>Schematic.</b> Two unique segments joined by a repeat seen at twice the coverage. The animated walk traverses the repeat twice, giving one 468 kb sequence.</figcaption>
+        </figure>
+      </article>
+      <article class="dev" id="goat">
+        <div class="dev-text">
+          <p class="eyebrow">Rust · Wellcome Open Research 2023</p>
+          <h3><a href="https://github.com/genomehubs/goat-cli">goat-cli</a></h3>
+          <h2>Asking questions of the whole tree of life</h2>
+          <p>Genomes on a Tree (GoaT) holds genome size, chromosome number and sequencing status for every eukaryote. The command-line client turns a one-line question into an API query, so you can survey thousands of species from the shell.</p>
+          <p>The chart is built from the same API: every measured plant genome size in eight orders, 5,164 species in all.</p>
+          <pre class="terminal" tabindex="0"><span class="c"># which plants have genomes over 100 Gb?</span>
+<span class="p">$ </span>goat-cli taxon search -t Liliales -d --tax-rank species -e 'genome_size &gt; 1e11'
+<span class="c"># how many flowering plants have chromosome-level assemblies?</span>
+<span class="p">$ </span>goat-cli taxon count -t Magnoliopsida -d --tax-rank species -e 'assembly_level = chromosome'</pre>
+        </div>
+        <figure class="viz reveal">
+          
+          <svg class="chart" viewBox="0 0 560 300" role="img" aria-labelledby="goat-t">
+<title id="goat-t">Measured genome sizes of 5,164 plant species in eight orders, from the GoaT API, on a log scale from 40 Mb to 250 Gb. Medians rise from about 0.6 Gb in Brassicales to 26 Gb in Liliales.</title>
+<line class="grid" x1="139.6" x2="139.6" y1="20" y2="266"/>
+<text class="tick" x="139.6" y="282" text-anchor="middle">100 Mb</text>
+<line class="grid" x1="259.2" x2="259.2" y1="20" y2="266"/>
+<text class="tick" x="259.2" y="282" text-anchor="middle">1 Gb</text>
+<line class="grid" x1="378.8" x2="378.8" y1="20" y2="266"/>
+<text class="tick" x="378.8" y="282" text-anchor="middle">10 Gb</text>
+<line class="grid" x1="498.4" x2="498.4" y1="20" y2="266"/>
+<text class="tick" x="498.4" y="282" text-anchor="middle">100 Gb</text>
+<text class="tick lab" x="82" y="44.5" text-anchor="end">Brassicales</text>
+<circle class="dot" cx="169.0" cy="47.1" r="2.6"><title>Arabidopsis thaliana · 176 Mb</title></circle>
+<circle class="dot" cx="169.0" cy="42.7" r="2.6"><title>Hornungia alpina · 176 Mb</title></circle>
+<circle class="dot" cx="169.4" cy="39.7" r="2.6"><title>Cardamine impatiens · 178 Mb</title></circle>
+<circle class="dot" cx="175.7" cy="34.7" r="2.6"><title>Conringia orientalis · 200 Mb</title></circle>
+<circle class="dot" cx="176.0" cy="33.6" r="2.6"><title>Erysimum cheiranthoides · 202 Mb</title></circle>
+<circle class="dot" cx="178.0" cy="48.4" r="2.6"><title>Camelina laxa · 210 Mb</title></circle>
+<circle class="dot" cx="181.1" cy="36.8" r="2.6"><title>Rorippa austriaca · 222 Mb</title></circle>
+<circle class="dot" cx="183.9" cy="44.3" r="2.6"><title>Turritis glabra · 235 Mb</title></circle>
+<circle class="dot" cx="185.0" cy="37.1" r="2.6"><title>Barbarea stricta · 240 Mb</title></circle>
+<circle class="dot" cx="185.7" cy="46.2" r="2.6"><title>Sisymbrium loeselii · 243 Mb</title></circle>
+<circle class="dot" cx="186.0" cy="42.5" r="2.6"><title>Cardamine flexuosa · 244 Mb</title></circle>
+<circle class="dot" cx="188.1" cy="37.7" r="2.6"><title>Cardamine hirsuta · 254 Mb</title></circle>
+<circle class="dot" cx="188.1" cy="35.8" r="2.6"><title>Euclidium syriacum · 254 Mb</title></circle>
+<circle class="dot" cx="188.9" cy="44.5" r="2.6"><title>Arabis sagittata · 258 Mb</title></circle>
+<circle class="dot" cx="190.0" cy="34.1" r="2.6"><title>Rorippa palustris · 264 Mb</title></circle>
+<circle class="dot" cx="191.0" cy="36.7" r="2.6"><title>Cardamine glauca · 269 Mb</title></circle>
+<circle class="dot" cx="191.0" cy="41.9" r="2.6"><title>Draba lasiocarpa · 269 Mb</title></circle>
+<circle class="dot" cx="193.7" cy="46.6" r="2.6"><title>Sisymbrium altissimum · 284 Mb</title></circle>
+<circle class="dot" cx="193.9" cy="42.8" r="2.6"><title>Arabis montbretiana · 284 Mb</title></circle>
+<circle class="dot" cx="195.4" cy="37.5" r="2.6"><title>Thlaspi praecox · 293 Mb</title></circle>
+<circle class="dot" cx="196.6" cy="47.7" r="2.6"><title>Camelina hispida · 299 Mb</title></circle>
+<circle class="dot" cx="196.7" cy="36.3" r="2.6"><title>Cleome hassleriana · 300 Mb</title></circle>
+<circle class="dot" cx="198.7" cy="33.3" r="2.6"><title>Lepidium densiflorum · 312 Mb</title></circle>
+<circle class="dot" cx="198.9" cy="37.3" r="2.6"><title>Noccaea caerulescens · 313 Mb</title></circle>
+<circle class="dot" cx="200.5" cy="40.1" r="2.6"><title>Capsella bursa-pastoris · 323 Mb</title></circle>
+<circle class="dot" cx="202.0" cy="34.0" r="2.6"><title>Descurainia sophia · 333 Mb</title></circle>
+<circle class="dot" cx="203.5" cy="35.8" r="2.6"><title>Chorispora tenella · 342 Mb</title></circle>
+<circle class="dot" cx="203.5" cy="38.9" r="2.6"><title>Reseda scoparia · 342 Mb</title></circle>
+<circle class="dot" cx="205.4" cy="42.2" r="2.6"><title>Cardamine matthioli · 355 Mb</title></circle>
+<circle class="dot" cx="206.4" cy="35.1" r="2.6"><title>Olimarabidopsis pumila · 362 Mb</title></circle>
+<circle class="dot" cx="208.6" cy="38.8" r="2.6"><title>Pseudoturritis turrita · 378 Mb</title></circle>
+<circle class="dot" cx="209.1" cy="47.3" r="2.6"><title>Arabis alpina · 381 Mb</title></circle>
+<circle class="dot" cx="209.5" cy="48.7" r="2.6"><title>Carica papaya · 384 Mb</title></circle>
+<circle class="dot" cx="209.5" cy="43.5" r="2.6"><title>Arabidopsis arenosa · 384 Mb</title></circle>
+<circle class="dot" cx="213.0" cy="44.1" r="2.6"><title>Arabis scabra · 411 Mb</title></circle>
+<circle class="dot" cx="213.0" cy="42.4" r="2.6"><title>Salvadora persica · 411 Mb</title></circle>
+<circle class="dot" cx="214.2" cy="35.2" r="2.6"><title>Aubrieta libanotica · 421 Mb</title></circle>
+<circle class="dot" cx="214.4" cy="33.6" r="2.6"><title>Drabella muralis · 422 Mb</title></circle>
+<circle class="dot" cx="215.8" cy="33.3" r="2.6"><title>Lepidium coronopus · 434 Mb</title></circle>
+<circle class="dot" cx="217.1" cy="47.6" r="2.6"><title>Isatis indigotica · 445 Mb</title></circle>
+<circle class="dot" cx="218.8" cy="44.2" r="2.6"><title>Erysimum duriaei · 460 Mb</title></circle>
+<circle class="dot" cx="221.5" cy="48.4" r="2.6"><title>Noccaea goesingensis · 484 Mb</title></circle>
+<circle class="dot" cx="223.8" cy="33.3" r="2.6"><title>Arabidopsis kamchatica · 506 Mb</title></circle>
+<circle class="dot" cx="224.5" cy="43.2" r="2.6"><title>Thlaspi montanum · 513 Mb</title></circle>
+<circle class="dot" cx="224.6" cy="40.7" r="2.6"><title>Raphanus raphanistrum · 514 Mb</title></circle>
+<circle class="dot" cx="224.7" cy="44.7" r="2.6"><title>Teesdalia nudicaulis · 514 Mb</title></circle>
+<circle class="dot" cx="225.6" cy="38.1" r="2.6"><title>Rorippa amphibia · 524 Mb</title></circle>
+<circle class="dot" cx="226.0" cy="49.0" r="2.6"><title>Odontarrhena markgrafii · 528 Mb</title></circle>
+<circle class="dot" cx="226.0" cy="34.2" r="2.6"><title>Sisymbrium orientale · 528 Mb</title></circle>
+<circle class="dot" cx="228.4" cy="41.7" r="2.6"><title>Rapistrum rugosum · 553 Mb</title></circle>
+<circle class="dot" cx="229.7" cy="44.8" r="2.6"><title>Odontarrhena muralis · 567 Mb</title></circle>
+<circle class="dot" cx="230.6" cy="47.4" r="2.6"><title>Mutarda arvensis · 577 Mb</title></circle>
+<circle class="dot" cx="230.6" cy="44.8" r="2.6"><title>Ricotia lunaria · 577 Mb</title></circle>
+<circle class="dot" cx="230.9" cy="44.3" r="2.6"><title>Aurinia saxatilis · 580 Mb</title></circle>
+<circle class="dot" cx="231.5" cy="45.7" r="2.6"><title>Moringa oleifera · 587 Mb</title></circle>
+<circle class="dot" cx="232.6" cy="47.6" r="2.6"><title>Camelina rumelica · 599 Mb</title></circle>
+<circle class="dot" cx="233.1" cy="38.6" r="2.6"><title>Alyssum alyssoides · 605 Mb</title></circle>
+<circle class="dot" cx="233.2" cy="44.0" r="2.6"><title>Vasconcellea goudotiana · 606 Mb</title></circle>
+<circle class="dot" cx="233.4" cy="47.4" r="2.6"><title>Erysimum odoratum · 609 Mb</title></circle>
+<circle class="dot" cx="235.3" cy="46.9" r="2.6"><title>Gyrostemon ramulosus · 631 Mb</title></circle>
+<circle class="dot" cx="235.7" cy="39.7" r="2.6"><title>Microthlaspi perfoliatum · 636 Mb</title></circle>
+<circle class="dot" cx="236.5" cy="45.6" r="2.6"><title>Brassica nigra · 645 Mb</title></circle>
+<circle class="dot" cx="236.5" cy="46.8" r="2.6"><title>Lepidium tenuicaule · 645 Mb</title></circle>
+<circle class="dot" cx="237.7" cy="42.2" r="2.6"><title>Camelina microcarpa · 661 Mb</title></circle>
+<circle class="dot" cx="238.1" cy="43.0" r="2.6"><title>Rapistrum perenne · 667 Mb</title></circle>
+<circle class="dot" cx="238.8" cy="39.1" r="2.6"><title>Erysimum goniocaulon · 675 Mb</title></circle>
+<circle class="dot" cx="238.8" cy="42.3" r="2.6"><title>Lepidium latifolium · 675 Mb</title></circle>
+<circle class="dot" cx="239.5" cy="42.7" r="2.6"><title>Reseda luteola · 685 Mb</title></circle>
+<circle class="dot" cx="239.5" cy="34.3" r="2.6"><title>Sisymbrium strictissimum · 685 Mb</title></circle>
+<circle class="dot" cx="240.3" cy="43.2" r="2.6"><title>Arabis hirsuta · 694 Mb</title></circle>
+<circle class="dot" cx="241.0" cy="48.9" r="2.6"><title>Brassica oleracea · 704 Mb</title></circle>
+<circle class="dot" cx="243.7" cy="47.1" r="2.6"><title>Cardamine glanduligera · 742 Mb</title></circle>
+<circle class="dot" cx="243.8" cy="44.7" r="2.6"><title>Erysimum marschallianum · 743 Mb</title></circle>
+<circle class="dot" cx="245.1" cy="39.2" r="2.6"><title>Armoracia rusticana · 763 Mb</title></circle>
+<circle class="dot" cx="245.1" cy="44.8" r="2.6"><title>Rorippa sylvestris · 763 Mb</title></circle>
+<circle class="dot" cx="245.6" cy="42.3" r="2.6"><title>Camelina sativa · 770 Mb</title></circle>
+<circle class="dot" cx="245.8" cy="40.0" r="2.6"><title>Draba incana · 773 Mb</title></circle>
+<circle class="dot" cx="246.2" cy="46.4" r="2.6"><title>Camelina alyssum · 778 Mb</title></circle>
+<circle class="dot" cx="248.4" cy="34.3" r="2.6"><title>Cardamine pensylvanica · 812 Mb</title></circle>
+<circle class="dot" cx="248.4" cy="45.0" r="2.6"><title>Cochlearia officinalis · 812 Mb</title></circle>
+<circle class="dot" cx="249.0" cy="33.5" r="2.6"><title>Cakile edentula · 822 Mb</title></circle>
+<circle class="dot" cx="249.3" cy="42.6" r="2.6"><title>Berteroa incana · 826 Mb</title></circle>
+<circle class="dot" cx="250.2" cy="40.7" r="2.6"><title>Cochlearia micacea · 841 Mb</title></circle>
+<circle class="dot" cx="253.1" cy="36.7" r="2.6"><title>Cochlearia danica · 890 Mb</title></circle>
+<circle class="dot" cx="254.8" cy="44.2" r="2.6"><title>Cardamine yezoensis · 918 Mb</title></circle>
+<circle class="dot" cx="255.3" cy="41.0" r="2.6"><title>Erysimum diffusum · 928 Mb</title></circle>
+<circle class="dot" cx="257.0" cy="42.8" r="2.6"><title>Cardamine pratensis · 958 Mb</title></circle>
+<circle class="dot" cx="257.0" cy="47.7" r="2.6"><title>Reseda lutea · 958 Mb</title></circle>
+<circle class="dot" cx="257.4" cy="37.1" r="2.6"><title>Cylicomorpha parviflora · 966 Mb</title></circle>
+<circle class="dot" cx="259.1" cy="33.2" r="2.6"><title>Iberis amara · 998 Mb</title></circle>
+<circle class="dot" cx="261.6" cy="37.8" r="2.6"><title>Coincya wrightii · 1 Gb</title></circle>
+<circle class="dot" cx="261.6" cy="43.9" r="2.6"><title>Crambe tatarica · 1 Gb</title></circle>
+<circle class="dot" cx="261.9" cy="36.2" r="2.6"><title>Erucastrum gallicum · 1.1 Gb</title></circle>
+<circle class="dot" cx="262.4" cy="35.7" r="2.6"><title>Cardamine heptaphylla · 1.1 Gb</title></circle>
+<circle class="dot" cx="266.4" cy="47.5" r="2.6"><title>Floerkea proserpinacoides · 1.1 Gb</title></circle>
+<circle class="dot" cx="266.7" cy="43.6" r="2.6"><title>Cardamine torrentis · 1.2 Gb</title></circle>
+<circle class="dot" cx="267.5" cy="40.1" r="2.6"><title>Alliaria petiolata · 1.2 Gb</title></circle>
+<circle class="dot" cx="268.8" cy="47.3" r="2.6"><title>Tropaeolum majus · 1.2 Gb</title></circle>
+<circle class="dot" cx="270.3" cy="38.2" r="2.6"><title>Cardamine enneaphyllos · 1.2 Gb</title></circle>
+<circle class="dot" cx="271.7" cy="43.7" r="2.6"><title>Resetnikia triquetra · 1.3 Gb</title></circle>
+<circle class="dot" cx="275.9" cy="36.2" r="2.6"><title>Lepidium naufragorum · 1.4 Gb</title></circle>
+<circle class="dot" cx="281.3" cy="39.9" r="2.6"><title>Cardamine dentata · 1.5 Gb</title></circle>
+<circle class="dot" cx="283.4" cy="45.9" r="2.6"><title>Braya humilis · 1.6 Gb</title></circle>
+<circle class="dot" cx="284.4" cy="47.6" r="2.6"><title>Dontostemon micranthus · 1.6 Gb</title></circle>
+<circle class="dot" cx="289.4" cy="47.1" r="2.6"><title>Biscutella laevigata · 1.8 Gb</title></circle>
+<circle class="dot" cx="290.3" cy="39.2" r="2.6"><title>Cardamine bulbosa · 1.8 Gb</title></circle>
+<circle class="dot" cx="290.6" cy="42.3" r="2.6"><title>Subularia aquatica · 1.8 Gb</title></circle>
+<circle class="dot" cx="297.6" cy="38.1" r="2.6"><title>Aethionema cordifolium · 2.1 Gb</title></circle>
+<circle class="dot" cx="299.9" cy="35.2" r="2.6"><title>Crambe maritima · 2.2 Gb</title></circle>
+<circle class="dot" cx="309.1" cy="40.9" r="2.6"><title>Bunias orientalis · 2.6 Gb</title></circle>
+<circle class="dot" cx="334.8" cy="46.4" r="2.6"><title>Cardamine raphanifolia · 4.3 Gb</title></circle>
+<circle class="dot" cx="368.7" cy="46.6" r="2.6"><title>Hesperis matronalis · 8.2 Gb</title></circle>
+<line class="median" x1="233.2" x2="233.2" y1="31.0" y2="51.0"><title>Brassicales median · 606 Mb (n = 161)</title></line>
+<text class="tick lab" x="82" y="74.5" text-anchor="end">Rosales</text>
+<circle class="dot" cx="138.4" cy="72.6" r="2.6"><title>Fragaria viridis · 98 Mb</title></circle>
+<circle class="dot" cx="190.0" cy="68.8" r="2.6"><title>Rubus innominatus · 264 Mb</title></circle>
+<circle class="dot" cx="190.0" cy="67.6" r="2.6"><title>Rubus spectabilis · 264 Mb</title></circle>
+<circle class="dot" cx="191.9" cy="73.5" r="2.6"><title>Fragaria moschata · 274 Mb</title></circle>
+<circle class="dot" cx="194.6" cy="72.0" r="2.6"><title>Rubus pinfaensis · 289 Mb</title></circle>
+<circle class="dot" cx="195.5" cy="67.5" r="2.6"><title>Prunus pumila · 293 Mb</title></circle>
+<circle class="dot" cx="195.5" cy="74.5" r="2.6"><title>Rosa blanda · 293 Mb</title></circle>
+<circle class="dot" cx="197.2" cy="67.7" r="2.6"><title>Prunus pensylvanica · 303 Mb</title></circle>
+<circle class="dot" cx="197.2" cy="63.2" r="2.6"><title>Rubus lasiostylus · 303 Mb</title></circle>
+<circle class="dot" cx="200.5" cy="66.9" r="2.6"><title>Prunus dulcis · 323 Mb</title></circle>
+<circle class="dot" cx="201.2" cy="63.7" r="2.6"><title>Prunus besseyi · 328 Mb</title></circle>
+<circle class="dot" cx="205.7" cy="65.5" r="2.6"><title>Parietaria pensylvanica · 357 Mb</title></circle>
+<circle class="dot" cx="207.1" cy="75.1" r="2.6"><title>Prunus fenzliana · 367 Mb</title></circle>
+<circle class="dot" cx="210.4" cy="69.2" r="2.6"><title>Filipendula ulmaria · 391 Mb</title></circle>
+<circle class="dot" cx="212.4" cy="77.4" r="2.6"><title>Gillenia trifoliata · 406 Mb</title></circle>
+<circle class="dot" cx="214.0" cy="75.0" r="2.6"><title>Pomaderris cinerea · 419 Mb</title></circle>
+<circle class="dot" cx="214.8" cy="63.8" r="2.6"><title>Frangula caroliniana · 425 Mb</title></circle>
+<circle class="dot" cx="215.6" cy="78.8" r="2.6"><title>Pomaderris subplicata · 432 Mb</title></circle>
+<circle class="dot" cx="215.8" cy="78.1" r="2.6"><title>Pomaderris briagolensis · 434 Mb</title></circle>
+<circle class="dot" cx="216.2" cy="64.2" r="2.6"><title>Pomaderris velutina · 437 Mb</title></circle>
+<circle class="dot" cx="216.9" cy="77.5" r="2.6"><title>Pomaderris delicata · 443 Mb</title></circle>
+<circle class="dot" cx="217.1" cy="69.9" r="2.6"><title>Pomaderris mediora · 445 Mb</title></circle>
+<circle class="dot" cx="217.5" cy="70.6" r="2.6"><title>Pomaderris racemosa · 448 Mb</title></circle>
+<circle class="dot" cx="219.8" cy="78.6" r="2.6"><title>Pomaderris cocoparrana · 468 Mb</title></circle>
+<circle class="dot" cx="220.2" cy="66.9" r="2.6"><title>Pomaderris bodalla · 472 Mb</title></circle>
+<circle class="dot" cx="220.5" cy="71.4" r="2.6"><title>Crataegus sp. · 474 Mb</title></circle>
+<circle class="dot" cx="221.5" cy="78.0" r="2.6"><title>Pomaderris forrestiana · 484 Mb</title></circle>
+<circle class="dot" cx="223.1" cy="74.6" r="2.6"><title>Urtica urens · 499 Mb</title></circle>
+<circle class="dot" cx="225.1" cy="70.5" r="2.6"><title>Rhamnus davurica · 518 Mb</title></circle>
+<circle class="dot" cx="227.9" cy="78.7" r="2.6"><title>Argentina anserina · 548 Mb</title></circle>
+<circle class="dot" cx="228.4" cy="76.1" r="2.6"><title>Parietaria officinalis · 553 Mb</title></circle>
+<circle class="dot" cx="228.8" cy="72.7" r="2.6"><title>Prunus prostrata · 557 Mb</title></circle>
+<circle class="dot" cx="228.8" cy="64.8" r="2.6"><title>Rhamnus cathartica · 557 Mb</title></circle>
+<circle class="dot" cx="229.3" cy="73.0" r="2.6"><title>Pyrus elaeagrifolia · 562 Mb</title></circle>
+<circle class="dot" cx="230.6" cy="70.3" r="2.6"><title>Dasiphora fruticosa · 577 Mb</title></circle>
+<circle class="dot" cx="231.5" cy="66.3" r="2.6"><title>Rosa bracteata · 587 Mb</title></circle>
+<circle class="dot" cx="235.5" cy="63.8" r="2.6"><title>Morus alba · 633 Mb</title></circle>
+<circle class="dot" cx="236.5" cy="71.4" r="2.6"><title>Laportea canadensis · 645 Mb</title></circle>
+<circle class="dot" cx="236.5" cy="65.0" r="2.6"><title>Pyrus cordata · 645 Mb</title></circle>
+<circle class="dot" cx="237.3" cy="70.1" r="2.6"><title>Malus ombrophila · 656 Mb</title></circle>
+<circle class="dot" cx="237.6" cy="73.7" r="2.6"><title>Fragaria virginiana · 660 Mb</title></circle>
+<circle class="dot" cx="238.0" cy="70.3" r="2.6"><title>Holoptelea integrifolia · 665 Mb</title></circle>
+<circle class="dot" cx="239.5" cy="67.2" r="2.6"><title>Ficus pandurata · 685 Mb</title></circle>
+<circle class="dot" cx="239.5" cy="72.3" r="2.6"><title>Ficus religiosa · 685 Mb</title></circle>
+<circle class="dot" cx="239.5" cy="69.7" r="2.6"><title>Ficus retusa · 685 Mb</title></circle>
+<circle class="dot" cx="239.5" cy="75.4" r="2.6"><title>Ficus trigonata · 685 Mb</title></circle>
+<circle class="dot" cx="239.5" cy="71.5" r="2.6"><title>Prunus spinosa · 685 Mb</title></circle>
+<circle class="dot" cx="239.5" cy="79.0" r="2.6"><title>Spiraea alba · 685 Mb</title></circle>
+<circle class="dot" cx="241.0" cy="78.2" r="2.6"><title>Potentilla alba · 704 Mb</title></circle>
+<circle class="dot" cx="242.1" cy="74.7" r="2.6"><title>Malus x hartwigii · 719 Mb</title></circle>
+<circle class="dot" cx="242.4" cy="66.8" r="2.6"><title>Potentilla anglica · 724 Mb</title></circle>
+<circle class="dot" cx="242.8" cy="64.8" r="2.6"><title>Malus zhaojiaoensis · 729 Mb</title></circle>
+<circle class="dot" cx="243.1" cy="77.3" r="2.6"><title>Potentilla reptans · 734 Mb</title></circle>
+<circle class="dot" cx="243.2" cy="75.5" r="2.6"><title>Polylepis hieronymi · 734 Mb</title></circle>
+<circle class="dot" cx="244.2" cy="73.0" r="2.6"><title>Polylepis microphylla · 749 Mb</title></circle>
+<circle class="dot" cx="244.5" cy="68.7" r="2.6"><title>Polylepis neglecta · 754 Mb</title></circle>
+<circle class="dot" cx="244.6" cy="67.3" r="2.6"><title>Malus asiatica · 756 Mb</title></circle>
+<circle class="dot" cx="245.1" cy="74.0" r="2.6"><title>Malus orientalis · 763 Mb</title></circle>
+<circle class="dot" cx="245.8" cy="72.0" r="2.6"><title>Rubus saxatilis · 773 Mb</title></circle>
+<circle class="dot" cx="246.2" cy="72.5" r="2.6"><title>Malus x soulardii · 778 Mb</title></circle>
+<circle class="dot" cx="246.3" cy="73.1" r="2.6"><title>Malus sieversii · 780 Mb</title></circle>
+<circle class="dot" cx="246.5" cy="75.1" r="2.6"><title>Karpatiosorbus devoniensis · 782 Mb</title></circle>
+<circle class="dot" cx="246.8" cy="66.0" r="2.6"><title>Crataegus spathulata · 787 Mb</title></circle>
+<circle class="dot" cx="246.8" cy="67.0" r="2.6"><title>Crataegus wilsonii · 787 Mb</title></circle>
+<circle class="dot" cx="248.1" cy="78.7" r="2.6"><title>Eriobotrya japonica · 807 Mb</title></circle>
+<circle class="dot" cx="248.9" cy="77.7" r="2.6"><title>Pomaderris paniculosa · 821 Mb</title></circle>
+<circle class="dot" cx="252.6" cy="77.1" r="2.6"><title>Spiraea nipponica · 880 Mb</title></circle>
+<circle class="dot" cx="256.5" cy="63.6" r="2.6"><title>Cannabis sativa · 949 Mb</title></circle>
+<circle class="dot" cx="261.1" cy="64.0" r="2.6"><title>Rosa spinosissima · 1 Gb</title></circle>
+<circle class="dot" cx="261.1" cy="67.3" r="2.6"><title>Malus hupehensis · 1 Gb</title></circle>
+<circle class="dot" cx="261.6" cy="69.8" r="2.6"><title>Potentilla hirta · 1 Gb</title></circle>
+<circle class="dot" cx="264.1" cy="73.0" r="2.6"><title>Aria saxicola · 1.1 Gb</title></circle>
+<circle class="dot" cx="264.5" cy="64.6" r="2.6"><title>Aria cheddarensis · 1.1 Gb</title></circle>
+<circle class="dot" cx="265.2" cy="71.7" r="2.6"><title>Aria leighensis · 1.1 Gb</title></circle>
+<circle class="dot" cx="266.6" cy="64.2" r="2.6"><title>Crataegus rhipidophylla · 1.2 Gb</title></circle>
+<circle class="dot" cx="266.9" cy="64.4" r="2.6"><title>Malus toringoides · 1.2 Gb</title></circle>
+<circle class="dot" cx="267.1" cy="73.8" r="2.6"><title>Crataegus pinnatifida · 1.2 Gb</title></circle>
+<circle class="dot" cx="267.5" cy="71.8" r="2.6"><title>Geum macrophyllum · 1.2 Gb</title></circle>
+<circle class="dot" cx="267.8" cy="73.1" r="2.6"><title>Malus ioensis · 1.2 Gb</title></circle>
+<circle class="dot" cx="268.8" cy="69.0" r="2.6"><title>Urtica dioica · 1.2 Gb</title></circle>
+<circle class="dot" cx="272.3" cy="70.7" r="2.6"><title>Celtis australis · 1.3 Gb</title></circle>
+<circle class="dot" cx="274.4" cy="66.4" r="2.6"><title>Crataegus uniflora · 1.3 Gb</title></circle>
+<circle class="dot" cx="274.8" cy="68.5" r="2.6"><title>Cotoneaster cambricus · 1.3 Gb</title></circle>
+<circle class="dot" cx="275.7" cy="74.9" r="2.6"><title>Scandosorbus intermedia · 1.4 Gb</title></circle>
+<circle class="dot" cx="277.3" cy="76.4" r="2.6"><title>Rosa rubiginosa · 1.4 Gb</title></circle>
+<circle class="dot" cx="277.5" cy="64.2" r="2.6"><title>Aremonia agrimonioides · 1.4 Gb</title></circle>
+<circle class="dot" cx="278.2" cy="64.9" r="2.6"><title>Hedlundia hybrida · 1.4 Gb</title></circle>
+<circle class="dot" cx="279.1" cy="75.9" r="2.6"><title>Prinsepia uniflora · 1.5 Gb</title></circle>
+<circle class="dot" cx="279.1" cy="73.0" r="2.6"><title>Aria eminentoides · 1.5 Gb</title></circle>
+<circle class="dot" cx="279.2" cy="75.3" r="2.6"><title>Aria x leptophylla · 1.5 Gb</title></circle>
+<circle class="dot" cx="279.3" cy="66.4" r="2.6"><title>Aria margaretae · 1.5 Gb</title></circle>
+<circle class="dot" cx="279.4" cy="69.8" r="2.6"><title>Crataegus phaenopyrum · 1.5 Gb</title></circle>
+<circle class="dot" cx="280.3" cy="67.1" r="2.6"><title>Crataegus rivularis · 1.5 Gb</title></circle>
+<circle class="dot" cx="281.3" cy="76.0" r="2.6"><title>Malus coronaria · 1.5 Gb</title></circle>
+<circle class="dot" cx="282.0" cy="68.9" r="2.6"><title>Crataegus phippsii · 1.6 Gb</title></circle>
+<circle class="dot" cx="282.0" cy="73.5" r="2.6"><title>Karpatiosorbus admonitor · 1.6 Gb</title></circle>
+<circle class="dot" cx="282.1" cy="78.8" r="2.6"><title>Crataegus harbisonii · 1.6 Gb</title></circle>
+<circle class="dot" cx="282.2" cy="68.2" r="2.6"><title>Crataegus castlegarensis · 1.6 Gb</title></circle>
+<circle class="dot" cx="282.3" cy="71.8" r="2.6"><title>Crataegus ashei · 1.6 Gb</title></circle>
+<circle class="dot" cx="283.4" cy="74.9" r="2.6"><title>Crataegus agrestina · 1.6 Gb</title></circle>
+<circle class="dot" cx="284.5" cy="77.7" r="2.6"><title>Crataegus submollis · 1.6 Gb</title></circle>
+<circle class="dot" cx="284.7" cy="69.8" r="2.6"><title>Crataegus okennonii · 1.6 Gb</title></circle>
+<circle class="dot" cx="285.5" cy="68.9" r="2.6"><title>Malus sargentii · 1.7 Gb</title></circle>
+<circle class="dot" cx="288.6" cy="64.6" r="2.6"><title>Potentilla indica · 1.8 Gb</title></circle>
+<circle class="dot" cx="289.4" cy="77.0" r="2.6"><title>Alchemilla mollis · 1.8 Gb</title></circle>
+<circle class="dot" cx="289.7" cy="64.3" r="2.6"><title>Alchemilla alpina · 1.8 Gb</title></circle>
+<circle class="dot" cx="289.9" cy="64.3" r="2.6"><title>Alchemilla plicata · 1.8 Gb</title></circle>
+<circle class="dot" cx="290.5" cy="72.0" r="2.6"><title>Aria cambrensis · 1.8 Gb</title></circle>
+<circle class="dot" cx="316.0" cy="70.8" r="2.6"><title>Agrimonia eupatoria · 3 Gb</title></circle>
+<circle class="dot" cx="362.4" cy="74.0" r="2.6"><title>Pyrus pyraster · 7.3 Gb</title></circle>
+<line class="median" x1="244.5" x2="244.5" y1="61.0" y2="81.0"><title>Rosales median · 753 Mb (n = 420)</title></line>
+<text class="tick lab" x="82" y="104.5" text-anchor="end">Lamiales</text>
+<circle class="dot" cx="117.1" cy="99.6" r="2.6"><title>Genlisea tuberosa · 65 Mb</title></circle>
+<circle class="dot" cx="127.2" cy="101.4" r="2.6"><title>Utricularia purpurea · 79 Mb</title></circle>
+<circle class="dot" cx="147.6" cy="94.5" r="2.6"><title>Utricularia striata · 117 Mb</title></circle>
+<circle class="dot" cx="166.4" cy="101.9" r="2.6"><title>Genlisea margaretae · 168 Mb</title></circle>
+<circle class="dot" cx="173.6" cy="100.6" r="2.6"><title>Utricularia macrorhiza · 193 Mb</title></circle>
+<circle class="dot" cx="176.0" cy="108.0" r="2.6"><title>Utricularia asplundii · 202 Mb</title></circle>
+<circle class="dot" cx="177.0" cy="108.5" r="2.6"><title>Utricularia microcalyx · 205 Mb</title></circle>
+<circle class="dot" cx="186.0" cy="103.9" r="2.6"><title>Utricularia uniflora · 244 Mb</title></circle>
+<circle class="dot" cx="186.2" cy="104.5" r="2.6"><title>Utricularia livida · 245 Mb</title></circle>
+<circle class="dot" cx="194.3" cy="108.6" r="2.6"><title>Utricularia geminiloba · 286 Mb</title></circle>
+<circle class="dot" cx="195.5" cy="102.8" r="2.6"><title>Utricularia subulata · 293 Mb</title></circle>
+<circle class="dot" cx="203.7" cy="97.7" r="2.6"><title>Pinguicula vallisneriifolia · 343 Mb</title></circle>
+<circle class="dot" cx="205.0" cy="94.9" r="2.6"><title>Ocimum tenuiflorum · 352 Mb</title></circle>
+<circle class="dot" cx="206.4" cy="106.7" r="2.6"><title>Micromeria lachnophylla · 362 Mb</title></circle>
+<circle class="dot" cx="206.4" cy="99.7" r="2.6"><title>Veronica filiformis · 362 Mb</title></circle>
+<circle class="dot" cx="209.0" cy="94.4" r="2.6"><title>Utricularia laxa · 380 Mb</title></circle>
+<circle class="dot" cx="210.4" cy="96.6" r="2.6"><title>Globularia alypum · 391 Mb</title></circle>
+<circle class="dot" cx="211.7" cy="97.9" r="2.6"><title>Scutellaria galericulata · 401 Mb</title></circle>
+<circle class="dot" cx="212.0" cy="108.1" r="2.6"><title>Utricularia chrysantha · 403 Mb</title></circle>
+<circle class="dot" cx="214.2" cy="107.8" r="2.6"><title>Scutellaria minor · 421 Mb</title></circle>
+<circle class="dot" cx="216.6" cy="96.5" r="2.6"><title>Veronica serpyllifolia · 440 Mb</title></circle>
+<circle class="dot" cx="218.8" cy="95.6" r="2.6"><title>Penstemon dissectus · 460 Mb</title></circle>
+<circle class="dot" cx="221.5" cy="102.4" r="2.6"><title>Clinopodium menthifolium · 484 Mb</title></circle>
+<circle class="dot" cx="221.5" cy="108.9" r="2.6"><title>Salvia canariensis · 484 Mb</title></circle>
+<circle class="dot" cx="222.0" cy="104.8" r="2.6"><title>Anarrhinum orientale · 489 Mb</title></circle>
+<circle class="dot" cx="223.6" cy="102.1" r="2.6"><title>Verbena urticifolia · 504 Mb</title></circle>
+<circle class="dot" cx="224.1" cy="107.6" r="2.6"><title>Salvia pratensis · 509 Mb</title></circle>
+<circle class="dot" cx="225.6" cy="107.2" r="2.6"><title>Penstemon serrulatus · 523 Mb</title></circle>
+<circle class="dot" cx="225.6" cy="107.8" r="2.6"><title>Veronica pusilla · 523 Mb</title></circle>
+<circle class="dot" cx="226.0" cy="95.8" r="2.6"><title>Cymbalaria muralis · 528 Mb</title></circle>
+<circle class="dot" cx="229.7" cy="106.8" r="2.6"><title>Meehania urticifolia · 567 Mb</title></circle>
+<circle class="dot" cx="229.7" cy="108.0" r="2.6"><title>Penstemon rostriflorus · 567 Mb</title></circle>
+<circle class="dot" cx="230.1" cy="96.4" r="2.6"><title>Pinguicula moctezumae · 571 Mb</title></circle>
+<circle class="dot" cx="231.1" cy="99.1" r="2.6"><title>Penstemon pinifolius · 582 Mb</title></circle>
+<circle class="dot" cx="231.5" cy="93.8" r="2.6"><title>Clinopodium acinos · 587 Mb</title></circle>
+<circle class="dot" cx="231.9" cy="99.7" r="2.6"><title>Linaria saxatilis · 592 Mb</title></circle>
+<circle class="dot" cx="231.9" cy="96.9" r="2.6"><title>Penstemon fendleri · 592 Mb</title></circle>
+<circle class="dot" cx="233.9" cy="105.7" r="2.6"><title>Pinguicula mundi · 615 Mb</title></circle>
+<circle class="dot" cx="235.7" cy="105.9" r="2.6"><title>Parmentiera cereifera · 636 Mb</title></circle>
+<circle class="dot" cx="237.2" cy="100.7" r="2.6"><title>Penstemon albertinus · 655 Mb</title></circle>
+<circle class="dot" cx="237.6" cy="99.4" r="2.6"><title>Streptocarpus cyaneus · 660 Mb</title></circle>
+<circle class="dot" cx="238.0" cy="102.5" r="2.6"><title>Primulina laxiflora · 665 Mb</title></circle>
+<circle class="dot" cx="238.8" cy="105.2" r="2.6"><title>Pinguicula ibarrae · 675 Mb</title></circle>
+<circle class="dot" cx="238.8" cy="100.6" r="2.6"><title>Pinguicula rectifolia · 675 Mb</title></circle>
+<circle class="dot" cx="239.0" cy="100.8" r="2.6"><title>Salvia verticillata · 677 Mb</title></circle>
+<circle class="dot" cx="240.4" cy="103.0" r="2.6"><title>Pinguicula agnata · 697 Mb</title></circle>
+<circle class="dot" cx="240.6" cy="95.9" r="2.6"><title>Penstemon wilcoxii · 699 Mb</title></circle>
+<circle class="dot" cx="241.2" cy="100.8" r="2.6"><title>Pinguicula dertosensis · 707 Mb</title></circle>
+<circle class="dot" cx="241.3" cy="101.6" r="2.6"><title>Penstemon pseudospectabilis · 709 Mb</title></circle>
+<circle class="dot" cx="242.8" cy="99.7" r="2.6"><title>Origanum elongatum · 729 Mb</title></circle>
+<circle class="dot" cx="243.1" cy="93.8" r="2.6"><title>Streptocarpus ionanthus · 734 Mb</title></circle>
+<circle class="dot" cx="244.5" cy="97.4" r="2.6"><title>Stachys distans · 753 Mb</title></circle>
+<circle class="dot" cx="244.5" cy="108.2" r="2.6"><title>Veronica cymbalaria · 753 Mb</title></circle>
+<circle class="dot" cx="245.1" cy="102.9" r="2.6"><title>Scrophularia nodosa · 763 Mb</title></circle>
+<circle class="dot" cx="246.8" cy="101.3" r="2.6"><title>Pinguicula laueana · 787 Mb</title></circle>
+<circle class="dot" cx="247.2" cy="104.9" r="2.6"><title>Pinguicula esseriana · 794 Mb</title></circle>
+<circle class="dot" cx="247.7" cy="101.2" r="2.6"><title>Penstemon strictus · 802 Mb</title></circle>
+<circle class="dot" cx="250.2" cy="102.1" r="2.6"><title>Volkameria inermis · 841 Mb</title></circle>
+<circle class="dot" cx="252.6" cy="103.4" r="2.6"><title>Fraxinus nigra · 880 Mb</title></circle>
+<circle class="dot" cx="252.6" cy="96.5" r="2.6"><title>Primulina subulata · 880 Mb</title></circle>
+<circle class="dot" cx="253.7" cy="94.7" r="2.6"><title>Primulina medica · 900 Mb</title></circle>
+<circle class="dot" cx="253.7" cy="93.9" r="2.6"><title>Veronica scutellata · 900 Mb</title></circle>
+<circle class="dot" cx="254.3" cy="104.6" r="2.6"><title>Penstemon nitidus · 910 Mb</title></circle>
+<circle class="dot" cx="254.8" cy="105.4" r="2.6"><title>Buddleja lindleyana · 919 Mb</title></circle>
+<circle class="dot" cx="256.5" cy="95.2" r="2.6"><title>Primulina ronganensis · 949 Mb</title></circle>
+<circle class="dot" cx="256.7" cy="96.9" r="2.6"><title>Callitriche hermaphroditica · 954 Mb</title></circle>
+<circle class="dot" cx="257.0" cy="106.4" r="2.6"><title>Primulina yangshuoensis · 958 Mb</title></circle>
+<circle class="dot" cx="257.3" cy="94.9" r="2.6"><title>Primulina qingyuanensis · 963 Mb</title></circle>
+<circle class="dot" cx="257.5" cy="109.0" r="2.6"><title>Primulina liboensis · 968 Mb</title></circle>
+<circle class="dot" cx="258.8" cy="106.4" r="2.6"><title>Digitalis chalcantha · 993 Mb</title></circle>
+<circle class="dot" cx="259.1" cy="100.2" r="2.6"><title>Primulina cordata · 998 Mb</title></circle>
+<circle class="dot" cx="259.6" cy="106.7" r="2.6"><title>Primulina guihaiensis · 1 Gb</title></circle>
+<circle class="dot" cx="259.6" cy="99.1" r="2.6"><title>Primulina longii · 1 Gb</title></circle>
+<circle class="dot" cx="259.8" cy="97.1" r="2.6"><title>Veronica albicans · 1 Gb</title></circle>
+<circle class="dot" cx="260.6" cy="107.1" r="2.6"><title>Veronica pimeleoides · 1 Gb</title></circle>
+<circle class="dot" cx="261.6" cy="103.7" r="2.6"><title>Ruellia humilis · 1 Gb</title></circle>
+<circle class="dot" cx="262.0" cy="97.8" r="2.6"><title>Primulina tenuituba · 1.1 Gb</title></circle>
+<circle class="dot" cx="262.3" cy="102.7" r="2.6"><title>Primulina mollifolia · 1.1 Gb</title></circle>
+<circle class="dot" cx="263.7" cy="100.8" r="2.6"><title>Scutellaria lateriflora · 1.1 Gb</title></circle>
+<circle class="dot" cx="264.2" cy="96.0" r="2.6"><title>Satureja cuneifolia · 1.1 Gb</title></circle>
+<circle class="dot" cx="265.5" cy="101.2" r="2.6"><title>Ajuga spectabilis · 1.1 Gb</title></circle>
+<circle class="dot" cx="266.5" cy="95.0" r="2.6"><title>Sesamum prostratum · 1.2 Gb</title></circle>
+<circle class="dot" cx="267.0" cy="96.3" r="2.6"><title>Verbena rigida · 1.2 Gb</title></circle>
+<circle class="dot" cx="271.5" cy="99.6" r="2.6"><title>Ramonda myconi · 1.3 Gb</title></circle>
+<circle class="dot" cx="271.7" cy="100.7" r="2.6"><title>Jacaranda cuspidifolia · 1.3 Gb</title></circle>
+<circle class="dot" cx="271.9" cy="104.1" r="2.6"><title>Penstemon confertus · 1.3 Gb</title></circle>
+<circle class="dot" cx="273.6" cy="101.3" r="2.6"><title>Lamium maculatum · 1.3 Gb</title></circle>
+<circle class="dot" cx="274.0" cy="101.8" r="2.6"><title>Handroanthus serratifolius · 1.3 Gb</title></circle>
+<circle class="dot" cx="274.8" cy="98.0" r="2.6"><title>Bellardia viscosa · 1.3 Gb</title></circle>
+<circle class="dot" cx="277.0" cy="100.2" r="2.6"><title>Vitex pinnata · 1.4 Gb</title></circle>
+<circle class="dot" cx="277.3" cy="99.0" r="2.6"><title>Ballota nigra · 1.4 Gb</title></circle>
+<circle class="dot" cx="280.8" cy="107.1" r="2.6"><title>Lamium moschatum · 1.5 Gb</title></circle>
+<circle class="dot" cx="280.8" cy="106.4" r="2.6"><title>Veronica hederifolia · 1.5 Gb</title></circle>
+<circle class="dot" cx="281.8" cy="101.6" r="2.6"><title>Buddleja davidii · 1.5 Gb</title></circle>
+<circle class="dot" cx="281.9" cy="100.2" r="2.6"><title>Sesamum occidentale · 1.5 Gb</title></circle>
+<circle class="dot" cx="282.3" cy="95.2" r="2.6"><title>Scrophularia lyrata · 1.6 Gb</title></circle>
+<circle class="dot" cx="285.6" cy="101.3" r="2.6"><title>Coleus scutellarioides · 1.7 Gb</title></circle>
+<circle class="dot" cx="287.3" cy="98.7" r="2.6"><title>Picrorhiza kurrooa · 1.7 Gb</title></circle>
+<circle class="dot" cx="287.7" cy="94.6" r="2.6"><title>Galeopsis tetrahit · 1.7 Gb</title></circle>
+<circle class="dot" cx="289.3" cy="98.9" r="2.6"><title>Sideritis brevicaulis · 1.8 Gb</title></circle>
+<circle class="dot" cx="297.4" cy="102.8" r="2.6"><title>Odontitella virgata · 2.1 Gb</title></circle>
+<circle class="dot" cx="305.1" cy="95.2" r="2.6"><title>Orobanche lutea · 2.4 Gb</title></circle>
+<circle class="dot" cx="311.5" cy="106.6" r="2.6"><title>Collinsia tinctoria · 2.7 Gb</title></circle>
+<circle class="dot" cx="312.3" cy="105.0" r="2.6"><title>Pedicularis hoermanniana · 2.8 Gb</title></circle>
+<circle class="dot" cx="313.4" cy="100.7" r="2.6"><title>Justicia hyssopifolia · 2.8 Gb</title></circle>
+<circle class="dot" cx="335.5" cy="93.2" r="2.6"><title>Orobanche portoilicitana · 4.3 Gb</title></circle>
+<circle class="dot" cx="335.5" cy="105.2" r="2.6"><title>Callitriche hamulata · 4.3 Gb</title></circle>
+<circle class="dot" cx="335.9" cy="104.9" r="2.6"><title>Orobanche coelestis · 4.4 Gb</title></circle>
+<circle class="dot" cx="339.5" cy="103.6" r="2.6"><title>Phelipanche hirtiflora · 4.7 Gb</title></circle>
+<circle class="dot" cx="341.2" cy="94.1" r="2.6"><title>Plantago raoulii · 4.8 Gb</title></circle>
+<circle class="dot" cx="341.4" cy="106.6" r="2.6"><title>Betonica officinalis · 4.9 Gb</title></circle>
+<circle class="dot" cx="381.2" cy="101.9" r="2.6"><title>Melampyrum lineare · 10.5 Gb</title></circle>
+<line class="median" x1="250.5" x2="250.5" y1="91.0" y2="111.0"><title>Lamiales median · 846 Mb (n = 748)</title></line>
+<text class="tick lab" x="82" y="134.5" text-anchor="end">Poales</text>
+<circle class="dot" cx="174.4" cy="138.6" r="2.6"><title>Carex brownii · 196 Mb</title></circle>
+<circle class="dot" cx="174.4" cy="125.6" r="2.6"><title>Carex paxii · 196 Mb</title></circle>
+<circle class="dot" cx="195.5" cy="127.2" r="2.6"><title>Juncus effusus · 293 Mb</title></circle>
+<circle class="dot" cx="201.2" cy="127.6" r="2.6"><title>Bouteloua hirsuta · 328 Mb</title></circle>
+<circle class="dot" cx="202.0" cy="129.2" r="2.6"><title>Carex chordorrhiza · 333 Mb</title></circle>
+<circle class="dot" cx="202.8" cy="127.1" r="2.6"><title>Brachypodium arbuscula · 337 Mb</title></circle>
+<circle class="dot" cx="203.3" cy="132.8" r="2.6"><title>Carex tenera · 341 Mb</title></circle>
+<circle class="dot" cx="205.0" cy="135.4" r="2.6"><title>Oreojuncus trifidus · 352 Mb</title></circle>
+<circle class="dot" cx="206.2" cy="127.2" r="2.6"><title>Carex hoodii · 360 Mb</title></circle>
+<circle class="dot" cx="206.3" cy="134.3" r="2.6"><title>Carex projecta · 361 Mb</title></circle>
+<circle class="dot" cx="207.8" cy="133.4" r="2.6"><title>Trichophorum germanicum · 372 Mb</title></circle>
+<circle class="dot" cx="210.4" cy="135.0" r="2.6"><title>Carex makinoensis · 391 Mb</title></circle>
+<circle class="dot" cx="211.0" cy="133.7" r="2.6"><title>Tetraria thermalis · 396 Mb</title></circle>
+<circle class="dot" cx="211.7" cy="130.0" r="2.6"><title>Carex pairae · 401 Mb</title></circle>
+<circle class="dot" cx="213.6" cy="129.5" r="2.6"><title>Carex conjuncta · 415 Mb</title></circle>
+<circle class="dot" cx="214.3" cy="129.3" r="2.6"><title>Carex disperma · 421 Mb</title></circle>
+<circle class="dot" cx="215.1" cy="135.0" r="2.6"><title>Carex rosea · 428 Mb</title></circle>
+<circle class="dot" cx="215.4" cy="123.0" r="2.6"><title>Catopsis nitida · 430 Mb</title></circle>
+<circle class="dot" cx="216.6" cy="127.2" r="2.6"><title>Brachypodium sylvaticum · 440 Mb</title></circle>
+<circle class="dot" cx="217.7" cy="130.9" r="2.6"><title>Carex echinata · 450 Mb</title></circle>
+<circle class="dot" cx="221.0" cy="137.8" r="2.6"><title>Carex riloensis · 479 Mb</title></circle>
+<circle class="dot" cx="222.0" cy="126.6" r="2.6"><title>Carex conica · 489 Mb</title></circle>
+<circle class="dot" cx="225.1" cy="134.4" r="2.6"><title>Carex blanda · 518 Mb</title></circle>
+<circle class="dot" cx="225.6" cy="123.6" r="2.6"><title>Tillandsia bulbosa · 523 Mb</title></circle>
+<circle class="dot" cx="227.0" cy="137.1" r="2.6"><title>Pitcairnia tabuliformis · 538 Mb</title></circle>
+<circle class="dot" cx="229.3" cy="131.0" r="2.6"><title>Werauhia viridiflora · 562 Mb</title></circle>
+<circle class="dot" cx="230.2" cy="138.7" r="2.6"><title>Werauhia vittata · 572 Mb</title></circle>
+<circle class="dot" cx="231.5" cy="126.7" r="2.6"><title>Cyperus esculentus · 587 Mb</title></circle>
+<circle class="dot" cx="232.4" cy="132.9" r="2.6"><title>Carex brachystachys · 597 Mb</title></circle>
+<circle class="dot" cx="232.6" cy="124.9" r="2.6"><title>Pitcairnia macrochlamys · 599 Mb</title></circle>
+<circle class="dot" cx="232.8" cy="125.5" r="2.6"><title>Carex communis · 601 Mb</title></circle>
+<circle class="dot" cx="234.5" cy="129.9" r="2.6"><title>Sorghum timorense · 621 Mb</title></circle>
+<circle class="dot" cx="234.9" cy="130.5" r="2.6"><title>Pitcairnia hitchcockiana · 626 Mb</title></circle>
+<circle class="dot" cx="235.7" cy="134.1" r="2.6"><title>Carex albursina · 636 Mb</title></circle>
+<circle class="dot" cx="236.1" cy="123.4" r="2.6"><title>Pitcairnia glauca · 641 Mb</title></circle>
+<circle class="dot" cx="236.9" cy="127.3" r="2.6"><title>Cryptanthus sp. · 650 Mb</title></circle>
+<circle class="dot" cx="239.5" cy="135.3" r="2.6"><title>Carex livida · 685 Mb</title></circle>
+<circle class="dot" cx="239.5" cy="124.7" r="2.6"><title>Encholirium biflorum · 685 Mb</title></circle>
+<circle class="dot" cx="240.3" cy="128.3" r="2.6"><title>Carex kitaibeliana · 694 Mb</title></circle>
+<circle class="dot" cx="245.5" cy="123.9" r="2.6"><title>Tillandsia fasciculata · 768 Mb</title></circle>
+<circle class="dot" cx="247.1" cy="123.4" r="2.6"><title>Juncus triglumis · 792 Mb</title></circle>
+<circle class="dot" cx="250.1" cy="131.5" r="2.6"><title>Aechmea filicaulis · 840 Mb</title></circle>
+<circle class="dot" cx="252.6" cy="132.3" r="2.6"><title>Carex callitrichos · 880 Mb</title></circle>
+<circle class="dot" cx="254.3" cy="127.8" r="2.6"><title>Dyckia distachya · 910 Mb</title></circle>
+<circle class="dot" cx="254.5" cy="130.4" r="2.6"><title>Digitaria longiflora · 914 Mb</title></circle>
+<circle class="dot" cx="255.9" cy="123.9" r="2.6"><title>Carex vulpina · 939 Mb</title></circle>
+<circle class="dot" cx="256.5" cy="124.7" r="2.6"><title>Encholirium magalhaesii · 949 Mb</title></circle>
+<circle class="dot" cx="257.8" cy="126.5" r="2.6"><title>Schizachne purpurascens · 973 Mb</title></circle>
+<circle class="dot" cx="258.6" cy="138.9" r="2.6"><title>Encholirium luxor · 988 Mb</title></circle>
+<circle class="dot" cx="258.6" cy="124.1" r="2.6"><title>Restio macer · 988 Mb</title></circle>
+<circle class="dot" cx="262.0" cy="124.5" r="2.6"><title>Encholirium spectabile · 1.1 Gb</title></circle>
+<circle class="dot" cx="262.8" cy="134.3" r="2.6"><title>Sorghum stipoideum · 1.1 Gb</title></circle>
+<circle class="dot" cx="263.0" cy="123.8" r="2.6"><title>Cenchrus clandestinus · 1.1 Gb</title></circle>
+<circle class="dot" cx="263.0" cy="135.1" r="2.6"><title>Dichanthelium depauperatum · 1.1 Gb</title></circle>
+<circle class="dot" cx="263.0" cy="131.4" r="2.6"><title>Eleusine indica · 1.1 Gb</title></circle>
+<circle class="dot" cx="266.2" cy="127.6" r="2.6"><title>Thamnochortus schlechteri · 1.1 Gb</title></circle>
+<circle class="dot" cx="267.5" cy="137.9" r="2.6"><title>Colpodium versicolor · 1.2 Gb</title></circle>
+<circle class="dot" cx="268.4" cy="128.8" r="2.6"><title>Thyrsostachys siamensis · 1.2 Gb</title></circle>
+<circle class="dot" cx="271.3" cy="129.9" r="2.6"><title>Glyceria fluitans · 1.3 Gb</title></circle>
+<circle class="dot" cx="271.7" cy="129.4" r="2.6"><title>Cenchrus ciliaris · 1.3 Gb</title></circle>
+<circle class="dot" cx="271.7" cy="128.4" r="2.6"><title>Echinochloa frumentacea · 1.3 Gb</title></circle>
+<circle class="dot" cx="272.9" cy="138.3" r="2.6"><title>Elegia thyrsifera · 1.3 Gb</title></circle>
+<circle class="dot" cx="273.6" cy="127.7" r="2.6"><title>Eleocharis parvula · 1.3 Gb</title></circle>
+<circle class="dot" cx="274.8" cy="136.8" r="2.6"><title>Rytidosperma viride · 1.3 Gb</title></circle>
+<circle class="dot" cx="281.3" cy="136.7" r="2.6"><title>Rytidosperma telmaticum · 1.5 Gb</title></circle>
+<circle class="dot" cx="283.3" cy="131.5" r="2.6"><title>Microlaena carsei · 1.6 Gb</title></circle>
+<circle class="dot" cx="284.2" cy="126.4" r="2.6"><title>Tillandsia didisticha · 1.6 Gb</title></circle>
+<circle class="dot" cx="287.8" cy="137.7" r="2.6"><title>Puccinellia stricta · 1.7 Gb</title></circle>
+<circle class="dot" cx="291.4" cy="135.6" r="2.6"><title>Elegia galpinii · 1.9 Gb</title></circle>
+<circle class="dot" cx="294.0" cy="137.7" r="2.6"><title>Cenchrus ramosus · 2 Gb</title></circle>
+<circle class="dot" cx="295.4" cy="124.3" r="2.6"><title>Poa spania · 2 Gb</title></circle>
+<circle class="dot" cx="297.3" cy="129.9" r="2.6"><title>Blysmopsis rufa · 2.1 Gb</title></circle>
+<circle class="dot" cx="300.7" cy="130.6" r="2.6"><title>Sporobolus purpurascens · 2.2 Gb</title></circle>
+<circle class="dot" cx="301.9" cy="129.7" r="2.6"><title>Phyllostachys edulis · 2.3 Gb</title></circle>
+<circle class="dot" cx="303.5" cy="133.1" r="2.6"><title>Hesperostipa spartea · 2.3 Gb</title></circle>
+<circle class="dot" cx="304.3" cy="135.9" r="2.6"><title>Festuca inops · 2.4 Gb</title></circle>
+<circle class="dot" cx="306.8" cy="137.8" r="2.6"><title>Chionochloa spiralis · 2.5 Gb</title></circle>
+<circle class="dot" cx="308.5" cy="131.0" r="2.6"><title>Elegia racemosa · 2.6 Gb</title></circle>
+<circle class="dot" cx="309.2" cy="138.2" r="2.6"><title>Festuca lenensis · 2.6 Gb</title></circle>
+<circle class="dot" cx="325.2" cy="132.4" r="2.6"><title>Sorghum interjectum · 3.6 Gb</title></circle>
+<circle class="dot" cx="332.6" cy="129.7" r="2.6"><title>Miscanthus sacchariflorus · 4.1 Gb</title></circle>
+<circle class="dot" cx="334.0" cy="123.2" r="2.6"><title>Sesleria autumnalis · 4.2 Gb</title></circle>
+<circle class="dot" cx="335.0" cy="124.4" r="2.6"><title>Taeniatherum caput-medusae · 4.3 Gb</title></circle>
+<circle class="dot" cx="338.8" cy="125.9" r="2.6"><title>Festuca auquieri · 4.6 Gb</title></circle>
+<circle class="dot" cx="340.2" cy="138.8" r="2.6"><title>Sesleria heufleriana · 4.8 Gb</title></circle>
+<circle class="dot" cx="342.0" cy="132.8" r="2.6"><title>Deschampsia tenella · 4.9 Gb</title></circle>
+<circle class="dot" cx="342.6" cy="125.9" r="2.6"><title>Avena eriantha · 5 Gb</title></circle>
+<circle class="dot" cx="342.7" cy="138.5" r="2.6"><title>Sorghum bicolor · 5 Gb</title></circle>
+<circle class="dot" cx="345.6" cy="135.6" r="2.6"><title>Apera spica-venti · 5.3 Gb</title></circle>
+<circle class="dot" cx="345.6" cy="132.4" r="2.6"><title>Imperata cylindrica · 5.3 Gb</title></circle>
+<circle class="dot" cx="346.7" cy="138.0" r="2.6"><title>Poa schistacea · 5.4 Gb</title></circle>
+<circle class="dot" cx="347.8" cy="127.3" r="2.6"><title>Agrostis muelleriana · 5.5 Gb</title></circle>
+<circle class="dot" cx="351.2" cy="135.8" r="2.6"><title>Triticum monococcum · 5.9 Gb</title></circle>
+<circle class="dot" cx="351.6" cy="123.7" r="2.6"><title>Bromus arvensis · 5.9 Gb</title></circle>
+<circle class="dot" cx="356.6" cy="123.9" r="2.6"><title>Polypogon billardierei · 6.5 Gb</title></circle>
+<circle class="dot" cx="357.2" cy="124.0" r="2.6"><title>Bromus rubens · 6.6 Gb</title></circle>
+<circle class="dot" cx="357.3" cy="138.6" r="2.6"><title>Calamagrostis avenoides · 6.6 Gb</title></circle>
+<circle class="dot" cx="362.7" cy="138.2" r="2.6"><title>Festuca contracta · 7.3 Gb</title></circle>
+<circle class="dot" cx="364.5" cy="126.1" r="2.6"><title>Hordeum depressum · 7.6 Gb</title></circle>
+<circle class="dot" cx="365.4" cy="127.0" r="2.6"><title>Bromus lepidus · 7.7 Gb</title></circle>
+<circle class="dot" cx="367.5" cy="137.5" r="2.6"><title>Bromus arenarius · 8 Gb</title></circle>
+<circle class="dot" cx="368.4" cy="131.8" r="2.6"><title>Bromus marginatus · 8.2 Gb</title></circle>
+<circle class="dot" cx="370.1" cy="123.0" r="2.6"><title>Briza maxima · 8.5 Gb</title></circle>
+<circle class="dot" cx="370.5" cy="130.4" r="2.6"><title>Avena nuda · 8.5 Gb</title></circle>
+<circle class="dot" cx="374.7" cy="132.8" r="2.6"><title>Secale montanum · 9.2 Gb</title></circle>
+<circle class="dot" cx="376.2" cy="136.9" r="2.6"><title>Hordeum murinum · 9.5 Gb</title></circle>
+<circle class="dot" cx="378.0" cy="138.9" r="2.6"><title>Festuca brigantina · 9.8 Gb</title></circle>
+<circle class="dot" cx="378.2" cy="131.0" r="2.6"><title>Triticum timopheevii · 9.9 Gb</title></circle>
+<circle class="dot" cx="380.2" cy="135.6" r="2.6"><title>Dasypyrum hordeaceum · 10.3 Gb</title></circle>
+<circle class="dot" cx="384.6" cy="126.9" r="2.6"><title>Thinopyrum junceiforme · 11.2 Gb</title></circle>
+<circle class="dot" cx="412.1" cy="136.0" r="2.6"><title>Leymus arenarius · 19 Gb</title></circle>
+<circle class="dot" cx="419.3" cy="126.8" r="2.6"><title>Anthoxanthum amarum · 21.8 Gb</title></circle>
+<line class="median" x1="269.8" x2="269.8" y1="121.0" y2="141.0"><title>Poales median · 1.2 Gb (n = 1507)</title></line>
+<text class="tick lab" x="82" y="164.5" text-anchor="end">Asterales</text>
+<circle class="dot" cx="213.0" cy="160.5" r="2.6"><title>Gnaphalium uliginosum · 411 Mb</title></circle>
+<circle class="dot" cx="220.2" cy="157.8" r="2.6"><title>Erigeron canadensis · 472 Mb</title></circle>
+<circle class="dot" cx="231.2" cy="167.7" r="2.6"><title>Filago arvensis · 583 Mb</title></circle>
+<circle class="dot" cx="232.4" cy="156.3" r="2.6"><title>Facelis retusa · 597 Mb</title></circle>
+<circle class="dot" cx="233.2" cy="163.3" r="2.6"><title>Logfia minima · 606 Mb</title></circle>
+<circle class="dot" cx="239.1" cy="154.2" r="2.6"><title>Craspedia glabrata · 680 Mb</title></circle>
+<circle class="dot" cx="241.7" cy="167.8" r="2.6"><title>Centaurea hololeuca · 714 Mb</title></circle>
+<circle class="dot" cx="243.4" cy="168.2" r="2.6"><title>Cheirolophus lagunae · 738 Mb</title></circle>
+<circle class="dot" cx="245.8" cy="162.9" r="2.6"><title>Campanula buseri · 773 Mb</title></circle>
+<circle class="dot" cx="247.7" cy="158.1" r="2.6"><title>Sonchus asper · 802 Mb</title></circle>
+<circle class="dot" cx="248.1" cy="164.6" r="2.6"><title>Carduus acanthoides · 807 Mb</title></circle>
+<circle class="dot" cx="249.0" cy="167.5" r="2.6"><title>Hypochaeris cretensis · 822 Mb</title></circle>
+<circle class="dot" cx="249.3" cy="165.7" r="2.6"><title>Carduus personata · 826 Mb</title></circle>
+<circle class="dot" cx="258.0" cy="153.7" r="2.6"><title>Leontodon incanus · 978 Mb</title></circle>
+<circle class="dot" cx="259.3" cy="161.1" r="2.6"><title>Calendula stellata · 1 Gb</title></circle>
+<circle class="dot" cx="260.6" cy="155.2" r="2.6"><title>Leontopodium artemisiifolium · 1 Gb</title></circle>
+<circle class="dot" cx="261.6" cy="161.7" r="2.6"><title>Azorina vidalii · 1 Gb</title></circle>
+<circle class="dot" cx="262.5" cy="168.2" r="2.6"><title>Centaurea phrygia · 1.1 Gb</title></circle>
+<circle class="dot" cx="263.0" cy="166.8" r="2.6"><title>Bellium bellidioides · 1.1 Gb</title></circle>
+<circle class="dot" cx="263.1" cy="157.0" r="2.6"><title>Craspedia jamesii · 1.1 Gb</title></circle>
+<circle class="dot" cx="264.8" cy="161.8" r="2.6"><title>Crepis leontodontoides · 1.1 Gb</title></circle>
+<circle class="dot" cx="267.5" cy="158.1" r="2.6"><title>Taraxacum alatum · 1.2 Gb</title></circle>
+<circle class="dot" cx="267.5" cy="155.7" r="2.6"><title>Cirsium dissectum · 1.2 Gb</title></circle>
+<circle class="dot" cx="268.4" cy="164.9" r="2.6"><title>Picris hieracioides · 1.2 Gb</title></circle>
+<circle class="dot" cx="269.6" cy="165.1" r="2.6"><title>Vernonanthura chaquensis · 1.2 Gb</title></circle>
+<circle class="dot" cx="270.3" cy="158.4" r="2.6"><title>Helichrysum obconicum · 1.2 Gb</title></circle>
+<circle class="dot" cx="270.7" cy="159.7" r="2.6"><title>Taraxacum officinale · 1.2 Gb</title></circle>
+<circle class="dot" cx="270.9" cy="164.1" r="2.6"><title>Phyteuma spicatum · 1.3 Gb</title></circle>
+<circle class="dot" cx="272.1" cy="164.6" r="2.6"><title>Taraxacum crassum · 1.3 Gb</title></circle>
+<circle class="dot" cx="272.5" cy="160.4" r="2.6"><title>Crocodilium crocodylium · 1.3 Gb</title></circle>
+<circle class="dot" cx="272.9" cy="154.9" r="2.6"><title>Antennaria dioica · 1.3 Gb</title></circle>
+<circle class="dot" cx="273.1" cy="154.5" r="2.6"><title>Erigeron muralis · 1.3 Gb</title></circle>
+<circle class="dot" cx="274.6" cy="155.7" r="2.6"><title>Taraxacum obtusifrons · 1.3 Gb</title></circle>
+<circle class="dot" cx="276.6" cy="166.2" r="2.6"><title>Campanula herminii · 1.4 Gb</title></circle>
+<circle class="dot" cx="277.0" cy="160.9" r="2.6"><title>Chondrilla juncea · 1.4 Gb</title></circle>
+<circle class="dot" cx="277.2" cy="163.3" r="2.6"><title>Symphyotrichum ontarionis · 1.4 Gb</title></circle>
+<circle class="dot" cx="277.3" cy="158.8" r="2.6"><title>Craspedia crocata · 1.4 Gb</title></circle>
+<circle class="dot" cx="277.5" cy="158.9" r="2.6"><title>Reichardia intermedia · 1.4 Gb</title></circle>
+<circle class="dot" cx="277.5" cy="155.8" r="2.6"><title>Symphyotrichum lateriflorum · 1.4 Gb</title></circle>
+<circle class="dot" cx="277.5" cy="168.6" r="2.6"><title>Centaurea dealbata · 1.4 Gb</title></circle>
+<circle class="dot" cx="278.1" cy="162.7" r="2.6"><title>Edraianthus graminifolius · 1.4 Gb</title></circle>
+<circle class="dot" cx="280.0" cy="155.1" r="2.6"><title>Stylidium adnatum · 1.5 Gb</title></circle>
+<circle class="dot" cx="281.8" cy="164.2" r="2.6"><title>Edraianthus serpyllifolius · 1.5 Gb</title></circle>
+<circle class="dot" cx="281.8" cy="162.6" r="2.6"><title>Vernonanthura loretensis · 1.5 Gb</title></circle>
+<circle class="dot" cx="283.4" cy="162.8" r="2.6"><title>Andryala pinnatifida · 1.6 Gb</title></circle>
+<circle class="dot" cx="283.4" cy="165.3" r="2.6"><title>Serratula tinctoria · 1.6 Gb</title></circle>
+<circle class="dot" cx="285.9" cy="162.7" r="2.6"><title>Senecio vulgaris · 1.7 Gb</title></circle>
+<circle class="dot" cx="286.1" cy="167.0" r="2.6"><title>Edraianthus pumilio · 1.7 Gb</title></circle>
+<circle class="dot" cx="286.1" cy="168.5" r="2.6"><title>Launaea cervicornis · 1.7 Gb</title></circle>
+<circle class="dot" cx="287.7" cy="159.5" r="2.6"><title>Tussilago farfara · 1.7 Gb</title></circle>
+<circle class="dot" cx="289.4" cy="163.4" r="2.6"><title>Campanula glomerata · 1.8 Gb</title></circle>
+<circle class="dot" cx="291.5" cy="159.0" r="2.6"><title>Edraianthus wettsteinii · 1.9 Gb</title></circle>
+<circle class="dot" cx="291.9" cy="159.6" r="2.6"><title>Craspedia costiniana · 1.9 Gb</title></circle>
+<circle class="dot" cx="296.1" cy="158.9" r="2.6"><title>Centaurea nigra · 2 Gb</title></circle>
+<circle class="dot" cx="296.8" cy="163.4" r="2.6"><title>Andryala ragusina · 2.1 Gb</title></circle>
+<circle class="dot" cx="297.3" cy="158.6" r="2.6"><title>Aposeris foetida · 2.1 Gb</title></circle>
+<circle class="dot" cx="298.0" cy="158.6" r="2.6"><title>Jacobaea vulgaris · 2.1 Gb</title></circle>
+<circle class="dot" cx="298.3" cy="166.5" r="2.6"><title>Haplopappus velutinus · 2.1 Gb</title></circle>
+<circle class="dot" cx="299.6" cy="165.8" r="2.6"><title>Taraxacum stenocephalum · 2.2 Gb</title></circle>
+<circle class="dot" cx="303.8" cy="163.8" r="2.6"><title>Craspedia maxgrayi · 2.4 Gb</title></circle>
+<circle class="dot" cx="304.8" cy="166.5" r="2.6"><title>Scorzonera cana · 2.4 Gb</title></circle>
+<circle class="dot" cx="305.0" cy="159.2" r="2.6"><title>Baccharis pingraea · 2.4 Gb</title></circle>
+<circle class="dot" cx="305.2" cy="163.3" r="2.6"><title>Achillea crithmifolia · 2.4 Gb</title></circle>
+<circle class="dot" cx="306.3" cy="157.0" r="2.6"><title>Taraxacum nordstedtii · 2.5 Gb</title></circle>
+<circle class="dot" cx="306.6" cy="158.0" r="2.6"><title>Coreopsis tripteris · 2.5 Gb</title></circle>
+<circle class="dot" cx="308.5" cy="154.6" r="2.6"><title>Arctium lappa · 2.6 Gb</title></circle>
+<circle class="dot" cx="309.4" cy="165.8" r="2.6"><title>Calendula arvensis · 2.6 Gb</title></circle>
+<circle class="dot" cx="309.6" cy="167.7" r="2.6"><title>Polymnia canadensis · 2.6 Gb</title></circle>
+<circle class="dot" cx="311.1" cy="157.8" r="2.6"><title>Achillea coarctata · 2.7 Gb</title></circle>
+<circle class="dot" cx="311.1" cy="159.1" r="2.6"><title>Echinops borae · 2.7 Gb</title></circle>
+<circle class="dot" cx="312.4" cy="154.9" r="2.6"><title>Curio rowleyanus · 2.8 Gb</title></circle>
+<circle class="dot" cx="312.9" cy="155.3" r="2.6"><title>Achillea filipendulina · 2.8 Gb</title></circle>
+<circle class="dot" cx="315.1" cy="163.2" r="2.6"><title>Matricaria chamomilla · 2.9 Gb</title></circle>
+<circle class="dot" cx="315.4" cy="167.3" r="2.6"><title>Achyrocline alata · 2.9 Gb</title></circle>
+<circle class="dot" cx="316.1" cy="154.3" r="2.6"><title>Eupatorium altissimum · 3 Gb</title></circle>
+<circle class="dot" cx="316.5" cy="157.1" r="2.6"><title>Tripleurospermum maritimum · 3 Gb</title></circle>
+<circle class="dot" cx="317.6" cy="165.1" r="2.6"><title>Petasites albus · 3.1 Gb</title></circle>
+<circle class="dot" cx="318.9" cy="156.6" r="2.6"><title>Petasites hybridus · 3.2 Gb</title></circle>
+<circle class="dot" cx="323.3" cy="167.0" r="2.6"><title>Hieracium stelligerum · 3.4 Gb</title></circle>
+<circle class="dot" cx="327.5" cy="158.6" r="2.6"><title>Artemisia granatensis · 3.7 Gb</title></circle>
+<circle class="dot" cx="329.9" cy="160.6" r="2.6"><title>Artemisia assoana · 3.9 Gb</title></circle>
+<circle class="dot" cx="332.6" cy="156.2" r="2.6"><title>Hieracium kittanae · 4.1 Gb</title></circle>
+<circle class="dot" cx="333.7" cy="157.7" r="2.6"><title>Hieracium plumulosum · 4.2 Gb</title></circle>
+<circle class="dot" cx="336.7" cy="159.8" r="2.6"><title>Tephroseris crispa · 4.4 Gb</title></circle>
+<circle class="dot" cx="337.9" cy="157.5" r="2.6"><title>Hieracium longipilum · 4.5 Gb</title></circle>
+<circle class="dot" cx="339.0" cy="164.7" r="2.6"><title>Achillea collina · 4.6 Gb</title></circle>
+<circle class="dot" cx="340.5" cy="153.5" r="2.6"><title>Lessingianthus scabrifoliatus · 4.8 Gb</title></circle>
+<circle class="dot" cx="341.8" cy="163.2" r="2.6"><title>Achillea pratensis · 4.9 Gb</title></circle>
+<circle class="dot" cx="343.7" cy="165.8" r="2.6"><title>Tanacetum vulgare · 5.1 Gb</title></circle>
+<circle class="dot" cx="344.7" cy="158.2" r="2.6"><title>Hieracium gymnocerinthe · 5.2 Gb</title></circle>
+<circle class="dot" cx="345.3" cy="156.1" r="2.6"><title>Tephroseris integrifolia · 5.2 Gb</title></circle>
+<circle class="dot" cx="345.8" cy="154.9" r="2.6"><title>Cancrinia maximowiczii · 5.3 Gb</title></circle>
+<circle class="dot" cx="345.9" cy="154.2" r="2.6"><title>Hieracium rohlenae · 5.3 Gb</title></circle>
+<circle class="dot" cx="347.5" cy="165.7" r="2.6"><title>Parthenium integrifolium · 5.5 Gb</title></circle>
+<circle class="dot" cx="348.1" cy="162.6" r="2.6"><title>Hieracium aggregatifolium · 5.5 Gb</title></circle>
+<circle class="dot" cx="348.5" cy="153.2" r="2.6"><title>Hieracium glaucum · 5.6 Gb</title></circle>
+<circle class="dot" cx="348.9" cy="160.3" r="2.6"><title>Catananche caerulea · 5.6 Gb</title></circle>
+<circle class="dot" cx="350.3" cy="162.6" r="2.6"><title>Helianthus anomalus · 5.8 Gb</title></circle>
+<circle class="dot" cx="350.3" cy="158.1" r="2.6"><title>Helianthus heterophyllus · 5.8 Gb</title></circle>
+<circle class="dot" cx="351.2" cy="153.6" r="2.6"><title>Artemisia alba · 5.9 Gb</title></circle>
+<circle class="dot" cx="359.8" cy="159.7" r="2.6"><title>Hieracium pannosum · 6.9 Gb</title></circle>
+<circle class="dot" cx="363.4" cy="158.7" r="2.6"><title>Pratia angulata · 7.4 Gb</title></circle>
+<circle class="dot" cx="376.3" cy="168.6" r="2.6"><title>Chrysanthemum chanetii · 9.5 Gb</title></circle>
+<circle class="dot" cx="376.4" cy="158.8" r="2.6"><title>Tanacetum corymbosum · 9.6 Gb</title></circle>
+<circle class="dot" cx="377.6" cy="167.8" r="2.6"><title>Tripolium pannonicum · 9.8 Gb</title></circle>
+<circle class="dot" cx="378.2" cy="166.9" r="2.6"><title>Senecio aloides · 9.9 Gb</title></circle>
+<circle class="dot" cx="378.9" cy="162.2" r="2.6"><title>Kleinia stapeliiformis · 10 Gb</title></circle>
+<circle class="dot" cx="386.6" cy="155.0" r="2.6"><title>Ajania pallasiana · 11.6 Gb</title></circle>
+<circle class="dot" cx="387.6" cy="165.9" r="2.6"><title>Helianthus agrestis · 11.8 Gb</title></circle>
+<circle class="dot" cx="397.6" cy="154.4" r="2.6"><title>Santolina chamaecyparissus · 14.4 Gb</title></circle>
+<circle class="dot" cx="402.5" cy="161.9" r="2.6"><title>Leucanthemum illyricum · 15.8 Gb</title></circle>
+<line class="median" x1="301.1" x2="301.1" y1="151.0" y2="171.0"><title>Asterales median · 2.2 Gb (n = 832)</title></line>
+<text class="tick lab" x="82" y="194.5" text-anchor="end">Asparagales</text>
+<circle class="dot" cx="207.1" cy="189.3" r="2.6"><title>Apostasia nuda · 367 Mb</title></circle>
+<circle class="dot" cx="233.0" cy="190.6" r="2.6"><title>Dracaena trifasciata · 604 Mb</title></circle>
+<circle class="dot" cx="233.2" cy="196.1" r="2.6"><title>Polystachya maculata · 606 Mb</title></circle>
+<circle class="dot" cx="255.5" cy="192.9" r="2.6"><title>Apostasia fogangica · 931 Mb</title></circle>
+<circle class="dot" cx="258.0" cy="194.7" r="2.6"><title>Dendrobium taylorii · 978 Mb</title></circle>
+<circle class="dot" cx="261.1" cy="186.8" r="2.6"><title>Asparagus falcatus · 1 Gb</title></circle>
+<circle class="dot" cx="262.4" cy="184.7" r="2.6"><title>Astelia fragrans · 1.1 Gb</title></circle>
+<circle class="dot" cx="267.5" cy="183.5" r="2.6"><title>Dendrobium bicaudatum · 1.2 Gb</title></circle>
+<circle class="dot" cx="267.5" cy="192.6" r="2.6"><title>Dendrobium helix · 1.2 Gb</title></circle>
+<circle class="dot" cx="267.9" cy="190.6" r="2.6"><title>Epidendrum rigidum · 1.2 Gb</title></circle>
+<circle class="dot" cx="271.7" cy="188.8" r="2.6"><title>Hesperoxiphion peruvianum · 1.3 Gb</title></circle>
+<circle class="dot" cx="275.5" cy="194.5" r="2.6"><title>Dendrobium violaceoflavens · 1.4 Gb</title></circle>
+<circle class="dot" cx="277.3" cy="189.6" r="2.6"><title>Polystachya fusiformis · 1.4 Gb</title></circle>
+<circle class="dot" cx="281.8" cy="189.8" r="2.6"><title>Polystachya tsaratananae · 1.5 Gb</title></circle>
+<circle class="dot" cx="283.1" cy="186.6" r="2.6"><title>Ansellia africana · 1.6 Gb</title></circle>
+<circle class="dot" cx="288.6" cy="185.5" r="2.6"><title>Chysis bractescens · 1.8 Gb</title></circle>
+<circle class="dot" cx="291.4" cy="195.0" r="2.6"><title>Gomesa imperatoris-maximiliani · 1.9 Gb</title></circle>
+<circle class="dot" cx="292.7" cy="190.8" r="2.6"><title>Cyrtochilum tricostatum · 1.9 Gb</title></circle>
+<circle class="dot" cx="296.6" cy="186.7" r="2.6"><title>Vitekorchis excavata · 2.1 Gb</title></circle>
+<circle class="dot" cx="299.0" cy="183.9" r="2.6"><title>Sisyrinchium littorale · 2.2 Gb</title></circle>
+<circle class="dot" cx="305.6" cy="192.8" r="2.6"><title>Dendrobium densiflorum · 2.4 Gb</title></circle>
+<circle class="dot" cx="305.6" cy="183.9" r="2.6"><title>Sisyrinchium idahoense · 2.4 Gb</title></circle>
+<circle class="dot" cx="308.7" cy="188.3" r="2.6"><title>Yucca glauca · 2.6 Gb</title></circle>
+<circle class="dot" cx="309.6" cy="189.4" r="2.6"><title>Cyrtochilum serratum · 2.6 Gb</title></circle>
+<circle class="dot" cx="310.4" cy="184.6" r="2.6"><title>Gastrochilus calceolaris · 2.7 Gb</title></circle>
+<circle class="dot" cx="310.6" cy="183.2" r="2.6"><title>Brassia arcuigera · 2.7 Gb</title></circle>
+<circle class="dot" cx="311.5" cy="197.9" r="2.6"><title>Trichopilia marginata · 2.7 Gb</title></circle>
+<circle class="dot" cx="316.5" cy="187.2" r="2.6"><title>Phalaenopsis fasciata · 3 Gb</title></circle>
+<circle class="dot" cx="316.8" cy="197.1" r="2.6"><title>Oncidium ansiferum · 3 Gb</title></circle>
+<circle class="dot" cx="319.2" cy="183.5" r="2.6"><title>Phalaenopsis lueddemanniana · 3.2 Gb</title></circle>
+<circle class="dot" cx="319.9" cy="186.9" r="2.6"><title>Angraecum sesquipedale · 3.2 Gb</title></circle>
+<circle class="dot" cx="320.1" cy="190.7" r="2.6"><title>Oncidium bracteatum · 3.2 Gb</title></circle>
+<circle class="dot" cx="323.1" cy="186.1" r="2.6"><title>Oncidium noezlianum · 3.4 Gb</title></circle>
+<circle class="dot" cx="326.0" cy="193.0" r="2.6"><title>Brassia ocanensis · 3.6 Gb</title></circle>
+<circle class="dot" cx="327.4" cy="187.0" r="2.6"><title>Trichopilia sanguinolenta · 3.7 Gb</title></circle>
+<circle class="dot" cx="328.6" cy="194.9" r="2.6"><title>Epidendrum falcatum · 3.8 Gb</title></circle>
+<circle class="dot" cx="328.7" cy="198.9" r="2.6"><title>Brassia verrucosa · 3.8 Gb</title></circle>
+<circle class="dot" cx="328.7" cy="196.7" r="2.6"><title>Echinoagave stricta · 3.8 Gb</title></circle>
+<circle class="dot" cx="330.7" cy="184.8" r="2.6"><title>Agave utahensis · 4 Gb</title></circle>
+<circle class="dot" cx="334.4" cy="183.7" r="2.6"><title>Trimezia spathata · 4.3 Gb</title></circle>
+<circle class="dot" cx="335.6" cy="183.5" r="2.6"><title>Echeandia nana · 4.4 Gb</title></circle>
+<circle class="dot" cx="335.9" cy="197.3" r="2.6"><title>Iris sibirica · 4.4 Gb</title></circle>
+<circle class="dot" cx="338.4" cy="195.7" r="2.6"><title>Miltonia regnellii · 4.6 Gb</title></circle>
+<circle class="dot" cx="340.6" cy="192.4" r="2.6"><title>Trichocentrum microchilum · 4.8 Gb</title></circle>
+<circle class="dot" cx="346.1" cy="188.2" r="2.6"><title>Platanthera clavellata · 5.3 Gb</title></circle>
+<circle class="dot" cx="349.3" cy="190.4" r="2.6"><title>Orchis purpurea · 5.7 Gb</title></circle>
+<circle class="dot" cx="350.7" cy="196.8" r="2.6"><title>Iris reichenbachii · 5.8 Gb</title></circle>
+<circle class="dot" cx="351.3" cy="191.9" r="2.6"><title>Agave gigantensis · 5.9 Gb</title></circle>
+<circle class="dot" cx="352.6" cy="186.7" r="2.6"><title>Dactylorhiza fuchsii · 6 Gb</title></circle>
+<circle class="dot" cx="356.1" cy="194.5" r="2.6"><title>Coelogyne barbata · 6.5 Gb</title></circle>
+<circle class="dot" cx="356.1" cy="186.2" r="2.6"><title>Goodyera pubescens · 6.5 Gb</title></circle>
+<circle class="dot" cx="356.1" cy="195.0" r="2.6"><title>Nolina matapensis · 6.5 Gb</title></circle>
+<circle class="dot" cx="362.0" cy="189.9" r="2.6"><title>Herminium gramineum · 7.2 Gb</title></circle>
+<circle class="dot" cx="367.4" cy="191.5" r="2.6"><title>Triteleia laxa · 8 Gb</title></circle>
+<circle class="dot" cx="372.5" cy="183.3" r="2.6"><title>Beaucarnea hookeri · 8.9 Gb</title></circle>
+<circle class="dot" cx="373.3" cy="196.0" r="2.6"><title>Ophiopogon bockianus · 9 Gb</title></circle>
+<circle class="dot" cx="373.5" cy="196.7" r="2.6"><title>Agave cupreata · 9 Gb</title></circle>
+<circle class="dot" cx="375.0" cy="184.3" r="2.6"><title>Narcissus triandrus · 9.3 Gb</title></circle>
+<circle class="dot" cx="375.8" cy="186.6" r="2.6"><title>Ipheion uniflorum · 9.4 Gb</title></circle>
+<circle class="dot" cx="376.9" cy="193.0" r="2.6"><title>Nerine filamentosa · 9.6 Gb</title></circle>
+<circle class="dot" cx="377.3" cy="187.0" r="2.6"><title>Narcissus bulbocodium · 9.7 Gb</title></circle>
+<circle class="dot" cx="378.0" cy="183.1" r="2.6"><title>Iris orchioides · 9.8 Gb</title></circle>
+<circle class="dot" cx="379.2" cy="188.9" r="2.6"><title>Phaius wallichii · 10.1 Gb</title></circle>
+<circle class="dot" cx="379.4" cy="197.7" r="2.6"><title>Ferraria crispa · 10.1 Gb</title></circle>
+<circle class="dot" cx="379.5" cy="194.7" r="2.6"><title>Liriope muscari · 10.1 Gb</title></circle>
+<circle class="dot" cx="383.4" cy="193.9" r="2.6"><title>Bellevalia pycnantha · 10.9 Gb</title></circle>
+<circle class="dot" cx="384.3" cy="187.1" r="2.6"><title>Agapanthus campanulatus · 11.1 Gb</title></circle>
+<circle class="dot" cx="385.1" cy="183.2" r="2.6"><title>Nerine frithii · 11.3 Gb</title></circle>
+<circle class="dot" cx="385.6" cy="198.7" r="2.6"><title>Romulea phoenicia · 11.4 Gb</title></circle>
+<circle class="dot" cx="385.8" cy="187.2" r="2.6"><title>Agapanthus caulescens · 11.4 Gb</title></circle>
+<circle class="dot" cx="395.1" cy="189.5" r="2.6"><title>Nerine pusilla · 13.7 Gb</title></circle>
+<circle class="dot" cx="395.6" cy="195.4" r="2.6"><title>Hyacinthella nervosa · 13.8 Gb</title></circle>
+<circle class="dot" cx="397.7" cy="188.2" r="2.6"><title>Allium mairei · 14.4 Gb</title></circle>
+<circle class="dot" cx="399.2" cy="189.5" r="2.6"><title>Narcissus tazetta · 14.8 Gb</title></circle>
+<circle class="dot" cx="402.1" cy="184.1" r="2.6"><title>Corallorhiza maculata · 15.6 Gb</title></circle>
+<circle class="dot" cx="402.4" cy="196.4" r="2.6"><title>Corallorhiza odontorhiza · 15.7 Gb</title></circle>
+<circle class="dot" cx="404.3" cy="196.5" r="2.6"><title>Allium vvedenskyanum · 16.4 Gb</title></circle>
+<circle class="dot" cx="404.6" cy="186.5" r="2.6"><title>Aloe forbesii · 16.4 Gb</title></circle>
+<circle class="dot" cx="405.5" cy="188.7" r="2.6"><title>Hippeastrum machupijchense · 16.7 Gb</title></circle>
+<circle class="dot" cx="405.8" cy="195.7" r="2.6"><title>Aloe suffulta · 16.8 Gb</title></circle>
+<circle class="dot" cx="407.5" cy="187.8" r="2.6"><title>Gasteria glauca · 17.4 Gb</title></circle>
+<circle class="dot" cx="407.5" cy="196.3" r="2.6"><title>Gasteria glomerata · 17.4 Gb</title></circle>
+<circle class="dot" cx="407.6" cy="190.3" r="2.6"><title>Allium heldreichii · 17.4 Gb</title></circle>
+<circle class="dot" cx="407.7" cy="192.3" r="2.6"><title>Gasteria disticha · 17.5 Gb</title></circle>
+<circle class="dot" cx="408.5" cy="197.1" r="2.6"><title>Scilla peruviana · 17.7 Gb</title></circle>
+<circle class="dot" cx="410.9" cy="183.3" r="2.6"><title>Allium intradarvazicum · 18.5 Gb</title></circle>
+<circle class="dot" cx="412.2" cy="188.1" r="2.6"><title>Limodorum abortivum · 19 Gb</title></circle>
+<circle class="dot" cx="412.3" cy="191.3" r="2.6"><title>Bulbine bulbosa · 19.1 Gb</title></circle>
+<circle class="dot" cx="412.3" cy="194.4" r="2.6"><title>Allium victorialis · 19.1 Gb</title></circle>
+<circle class="dot" cx="413.3" cy="191.7" r="2.6"><title>Allium rosenorum · 19.4 Gb</title></circle>
+<circle class="dot" cx="413.6" cy="191.3" r="2.6"><title>Allium cardiostemon · 19.6 Gb</title></circle>
+<circle class="dot" cx="414.2" cy="188.9" r="2.6"><title>Allium schubertii · 19.8 Gb</title></circle>
+<circle class="dot" cx="417.6" cy="194.4" r="2.6"><title>Allium senescens · 21.1 Gb</title></circle>
+<circle class="dot" cx="418.1" cy="190.9" r="2.6"><title>Paphiopedilum insigne · 21.3 Gb</title></circle>
+<circle class="dot" cx="419.1" cy="192.7" r="2.6"><title>Allium neriniflorum · 21.7 Gb</title></circle>
+<circle class="dot" cx="422.3" cy="195.1" r="2.6"><title>Allium macleanii · 23.1 Gb</title></circle>
+<circle class="dot" cx="422.5" cy="189.9" r="2.6"><title>Paphiopedilum glanduliferum · 23.2 Gb</title></circle>
+<circle class="dot" cx="424.2" cy="192.5" r="2.6"><title>Bellevalia desertorum · 24 Gb</title></circle>
+<circle class="dot" cx="426.5" cy="184.3" r="2.6"><title>Hyacinthus orientalis · 25.1 Gb</title></circle>
+<circle class="dot" cx="426.8" cy="188.7" r="2.6"><title>Cryptostephanus haemanthoides · 25.2 Gb</title></circle>
+<circle class="dot" cx="428.1" cy="192.2" r="2.6"><title>Allium thunbergii · 25.8 Gb</title></circle>
+<circle class="dot" cx="428.6" cy="197.5" r="2.6"><title>Allium splendens · 26.1 Gb</title></circle>
+<circle class="dot" cx="431.5" cy="189.3" r="2.6"><title>Galanthus peshmenii · 27.6 Gb</title></circle>
+<circle class="dot" cx="432.1" cy="196.5" r="2.6"><title>Beauverdia dialystemon · 27.9 Gb</title></circle>
+<circle class="dot" cx="435.4" cy="195.0" r="2.6"><title>Nothoscordum nudicaule · 29.7 Gb</title></circle>
+<circle class="dot" cx="440.0" cy="185.2" r="2.6"><title>Tristagma violaceum · 32.5 Gb</title></circle>
+<circle class="dot" cx="442.5" cy="191.9" r="2.6"><title>Galanthus nivalis · 34.1 Gb</title></circle>
+<circle class="dot" cx="442.8" cy="187.8" r="2.6"><title>Allium nutans · 34.3 Gb</title></circle>
+<circle class="dot" cx="444.8" cy="194.6" r="2.6"><title>Cypripedium flavum · 35.6 Gb</title></circle>
+<circle class="dot" cx="448.1" cy="195.2" r="2.6"><title>Cypripedium henryi · 37.9 Gb</title></circle>
+<circle class="dot" cx="448.3" cy="190.9" r="2.6"><title>Allium cyrilli · 38.1 Gb</title></circle>
+<circle class="dot" cx="487.0" cy="185.7" r="2.6"><title>Galanthus lagodechianus · 80.3 Gb</title></circle>
+<line class="median" x1="368.5" x2="368.5" y1="181.0" y2="201.0"><title>Asparagales median · 8.2 Gb (n = 1179)</title></line>
+<text class="tick lab" x="82" y="224.5" text-anchor="end">Santalales</text>
+<circle class="dot" cx="188.1" cy="221.8" r="2.6"><title>Thesium pyrenaicum · 254 Mb</title></circle>
+<circle class="dot" cx="193.3" cy="222.7" r="2.6"><title>Santalum album · 281 Mb</title></circle>
+<circle class="dot" cx="197.2" cy="219.9" r="2.6"><title>Rhoiacarpos capensis · 303 Mb</title></circle>
+<circle class="dot" cx="234.0" cy="216.8" r="2.6"><title>Thesium alpinum · 616 Mb</title></circle>
+<circle class="dot" cx="253.7" cy="217.9" r="2.6"><title>Thesium humifusum · 900 Mb</title></circle>
+<circle class="dot" cx="265.1" cy="224.1" r="2.6"><title>Comandra umbellata · 1.1 Gb</title></circle>
+<circle class="dot" cx="283.3" cy="227.2" r="2.6"><title>Ximenia americana · 1.6 Gb</title></circle>
+<circle class="dot" cx="309.6" cy="218.1" r="2.6"><title>Dendrophthoe glabrescens · 2.6 Gb</title></circle>
+<circle class="dot" cx="313.3" cy="218.0" r="2.6"><title>Nuytsia floribunda · 2.8 Gb</title></circle>
+<circle class="dot" cx="318.5" cy="220.2" r="2.6"><title>Dendrophthoe odontocalyx · 3.1 Gb</title></circle>
+<circle class="dot" cx="327.4" cy="219.9" r="2.6"><title>Ileostylus micranthus · 3.7 Gb</title></circle>
+<circle class="dot" cx="331.3" cy="223.1" r="2.6"><title>Tupeia antarctica · 4 Gb</title></circle>
+<circle class="dot" cx="337.3" cy="225.1" r="2.6"><title>Dendrophthoe homoplastica · 4.5 Gb</title></circle>
+<circle class="dot" cx="339.5" cy="225.3" r="2.6"><title>Dendrophthoe vitellina · 4.7 Gb</title></circle>
+<circle class="dot" cx="352.8" cy="225.9" r="2.6"><title>Dendrophthoe falcata · 6.1 Gb</title></circle>
+<circle class="dot" cx="353.6" cy="224.6" r="2.6"><title>Peraxilla colensoi · 6.2 Gb</title></circle>
+<circle class="dot" cx="355.3" cy="228.5" r="2.6"><title>Muellerina eucalyptoides · 6.4 Gb</title></circle>
+<circle class="dot" cx="358.4" cy="220.2" r="2.6"><title>Sogerianthe sessiliflora · 6.7 Gb</title></circle>
+<circle class="dot" cx="361.3" cy="220.1" r="2.6"><title>Alepis flavida · 7.1 Gb</title></circle>
+<circle class="dot" cx="366.1" cy="223.4" r="2.6"><title>Decaisnina brittenii · 7.8 Gb</title></circle>
+<circle class="dot" cx="367.7" cy="218.0" r="2.6"><title>Loranthus europaeus · 8.1 Gb</title></circle>
+<circle class="dot" cx="369.8" cy="226.3" r="2.6"><title>Decaisnina signata · 8.4 Gb</title></circle>
+<circle class="dot" cx="373.3" cy="219.7" r="2.6"><title>Amyema lucasii · 9 Gb</title></circle>
+<circle class="dot" cx="375.0" cy="221.9" r="2.6"><title>Arceuthobium oxycedri · 9.3 Gb</title></circle>
+<circle class="dot" cx="375.5" cy="221.3" r="2.6"><title>Amyema maidenii · 9.4 Gb</title></circle>
+<circle class="dot" cx="375.5" cy="218.8" r="2.6"><title>Amyema quandang · 9.4 Gb</title></circle>
+<circle class="dot" cx="376.1" cy="213.2" r="2.6"><title>Amyema congener · 9.5 Gb</title></circle>
+<circle class="dot" cx="376.6" cy="217.5" r="2.6"><title>Amyema queenslandica · 9.6 Gb</title></circle>
+<circle class="dot" cx="378.2" cy="220.6" r="2.6"><title>Benthamina alyxifolia · 9.9 Gb</title></circle>
+<circle class="dot" cx="382.1" cy="228.2" r="2.6"><title>Amyema gaudichaudii · 10.7 Gb</title></circle>
+<circle class="dot" cx="382.6" cy="215.2" r="2.6"><title>Lysiana casuarinae · 10.8 Gb</title></circle>
+<circle class="dot" cx="383.5" cy="227.4" r="2.6"><title>Lysiana spathulata · 11 Gb</title></circle>
+<circle class="dot" cx="384.9" cy="228.6" r="2.6"><title>Amyema melaleucae · 11.2 Gb</title></circle>
+<circle class="dot" cx="385.8" cy="225.7" r="2.6"><title>Lysiana subfalcata · 11.4 Gb</title></circle>
+<circle class="dot" cx="389.2" cy="217.5" r="2.6"><title>Amyema cambagei · 12.2 Gb</title></circle>
+<circle class="dot" cx="390.5" cy="213.3" r="2.6"><title>Amyema nestor · 12.5 Gb</title></circle>
+<circle class="dot" cx="390.9" cy="227.1" r="2.6"><title>Lysiana linearifolia · 12.6 Gb</title></circle>
+<circle class="dot" cx="390.9" cy="214.1" r="2.6"><title>Lysiana murrayi · 12.6 Gb</title></circle>
+<circle class="dot" cx="394.0" cy="217.8" r="2.6"><title>Amylotheca dictyophleba · 13.4 Gb</title></circle>
+<circle class="dot" cx="394.4" cy="228.0" r="2.6"><title>Amyema friesiana · 13.5 Gb</title></circle>
+<circle class="dot" cx="394.8" cy="223.8" r="2.6"><title>Amyema finisterrae · 13.6 Gb</title></circle>
+<circle class="dot" cx="398.7" cy="226.2" r="2.6"><title>Decaisnina hollrungii · 14.7 Gb</title></circle>
+<circle class="dot" cx="399.4" cy="226.3" r="2.6"><title>Plicosepalus acaciae · 14.9 Gb</title></circle>
+<circle class="dot" cx="399.7" cy="215.9" r="2.6"><title>Amyema preissii · 15 Gb</title></circle>
+<circle class="dot" cx="399.7" cy="221.1" r="2.6"><title>Lysiana exocarpi · 15 Gb</title></circle>
+<circle class="dot" cx="402.1" cy="214.5" r="2.6"><title>Diplatia furcata · 15.6 Gb</title></circle>
+<circle class="dot" cx="405.2" cy="219.1" r="2.6"><title>Amyema miquelii · 16.6 Gb</title></circle>
+<circle class="dot" cx="406.7" cy="220.9" r="2.6"><title>Macrosolen cochinchinensis · 17.1 Gb</title></circle>
+<circle class="dot" cx="472.7" cy="226.1" r="2.6"><title>Viscum minimum · 60.9 Gb</title></circle>
+<circle class="dot" cx="486.9" cy="217.6" r="2.6"><title>Viscum crassulae · 80.2 Gb</title></circle>
+<circle class="dot" cx="487.9" cy="223.7" r="2.6"><title>Viscum cruciatum · 81.8 Gb</title></circle>
+<circle class="dot" cx="491.2" cy="215.3" r="2.6"><title>Viscum album · 87.1 Gb</title></circle>
+<line class="median" x1="376.1" x2="376.1" y1="211.0" y2="231.0"><title>Santalales median · 9.5 Gb (n = 52)</title></line>
+<text class="tick lab" x="82" y="254.5" text-anchor="end">Liliales</text>
+<circle class="dot" cx="236.1" cy="244.3" r="2.6"><title>Schoenocaulon texanum · 641 Mb</title></circle>
+<circle class="dot" cx="281.8" cy="253.6" r="2.6"><title>Anticlea occidentalis · 1.5 Gb</title></circle>
+<circle class="dot" cx="285.0" cy="257.9" r="2.6"><title>Stenanthium gramineum · 1.6 Gb</title></circle>
+<circle class="dot" cx="296.0" cy="252.8" r="2.6"><title>Veratrum schindleri · 2 Gb</title></circle>
+<circle class="dot" cx="299.4" cy="250.8" r="2.6"><title>Veratrum woodii · 2.2 Gb</title></circle>
+<circle class="dot" cx="301.0" cy="251.2" r="2.6"><title>Veratrum longibracteatum · 2.2 Gb</title></circle>
+<circle class="dot" cx="305.7" cy="249.6" r="2.6"><title>Helonias koreana · 2.4 Gb</title></circle>
+<circle class="dot" cx="307.8" cy="245.9" r="2.6"><title>Colchicum speciosum · 2.5 Gb</title></circle>
+<circle class="dot" cx="310.3" cy="246.2" r="2.6"><title>Veratrum nigrum · 2.7 Gb</title></circle>
+<circle class="dot" cx="314.1" cy="255.7" r="2.6"><title>Veratrum parviflorum · 2.9 Gb</title></circle>
+<circle class="dot" cx="316.5" cy="251.3" r="2.6"><title>Xerophyllum tenax · 3 Gb</title></circle>
+<circle class="dot" cx="317.6" cy="243.6" r="2.6"><title>Helonias orientalis · 3.1 Gb</title></circle>
+<circle class="dot" cx="320.3" cy="252.8" r="2.6"><title>Veratrum album · 3.2 Gb</title></circle>
+<circle class="dot" cx="320.8" cy="256.3" r="2.6"><title>Veratrum viride · 3.3 Gb</title></circle>
+<circle class="dot" cx="333.3" cy="253.4" r="2.6"><title>Smilax ecirrhata · 4.2 Gb</title></circle>
+<circle class="dot" cx="335.3" cy="245.9" r="2.6"><title>Tricyrtis hirta · 4.3 Gb</title></circle>
+<circle class="dot" cx="335.8" cy="258.2" r="2.6"><title>Colchicum cupanii · 4.4 Gb</title></circle>
+<circle class="dot" cx="339.5" cy="245.9" r="2.6"><title>Smilax lasioneura · 4.7 Gb</title></circle>
+<circle class="dot" cx="343.3" cy="251.1" r="2.6"><title>Helonias thibetica · 5 Gb</title></circle>
+<circle class="dot" cx="345.2" cy="250.4" r="2.6"><title>Colchicum lusitanum · 5.2 Gb</title></circle>
+<circle class="dot" cx="346.1" cy="245.7" r="2.6"><title>Gagea minima · 5.3 Gb</title></circle>
+<circle class="dot" cx="352.1" cy="247.3" r="2.6"><title>Colchicum autumnale · 6 Gb</title></circle>
+<circle class="dot" cx="353.0" cy="246.0" r="2.6"><title>Gagea pusilla · 6.1 Gb</title></circle>
+<circle class="dot" cx="356.3" cy="245.7" r="2.6"><title>Lapageria rosea · 6.5 Gb</title></circle>
+<circle class="dot" cx="370.3" cy="243.7" r="2.6"><title>Gagea wilczekii · 8.5 Gb</title></circle>
+<circle class="dot" cx="371.4" cy="253.3" r="2.6"><title>Uvularia sessilifolia · 8.7 Gb</title></circle>
+<circle class="dot" cx="373.6" cy="253.7" r="2.6"><title>Gagea soleirolii · 9 Gb</title></circle>
+<circle class="dot" cx="374.9" cy="247.0" r="2.6"><title>Gagea lojaconoi · 9.3 Gb</title></circle>
+<circle class="dot" cx="375.5" cy="258.2" r="2.6"><title>Gagea chrysantha · 9.4 Gb</title></circle>
+<circle class="dot" cx="383.3" cy="249.8" r="2.6"><title>Ripogonum papuanum · 10.9 Gb</title></circle>
+<circle class="dot" cx="388.5" cy="250.3" r="2.6"><title>Gagea villosa · 12.1 Gb</title></circle>
+<circle class="dot" cx="394.0" cy="257.8" r="2.6"><title>Lilium amabile · 13.4 Gb</title></circle>
+<circle class="dot" cx="405.1" cy="253.4" r="2.6"><title>Uvularia grandiflora · 16.6 Gb</title></circle>
+<circle class="dot" cx="413.5" cy="250.5" r="2.6"><title>Gagea pratensis · 19.5 Gb</title></circle>
+<circle class="dot" cx="415.7" cy="255.0" r="2.6"><title>Tulipa borszczowii · 20.3 Gb</title></circle>
+<circle class="dot" cx="419.5" cy="254.8" r="2.6"><title>Tulipa ferganica · 21.9 Gb</title></circle>
+<circle class="dot" cx="419.7" cy="247.9" r="2.6"><title>Tulipa altaica · 22 Gb</title></circle>
+<circle class="dot" cx="421.8" cy="244.1" r="2.6"><title>Tulipa urumiensis · 22.9 Gb</title></circle>
+<circle class="dot" cx="423.0" cy="254.7" r="2.6"><title>Tulipa praestans · 23.4 Gb</title></circle>
+<circle class="dot" cx="425.4" cy="255.0" r="2.6"><title>Alstroemeria brasiliensis · 24.5 Gb</title></circle>
+<circle class="dot" cx="425.6" cy="252.6" r="2.6"><title>Tulipa biebersteiniana · 24.6 Gb</title></circle>
+<circle class="dot" cx="425.6" cy="244.9" r="2.6"><title>Notholirion bulbuliferum · 24.6 Gb</title></circle>
+<circle class="dot" cx="427.7" cy="254.9" r="2.6"><title>Tulipa alberti · 25.6 Gb</title></circle>
+<circle class="dot" cx="427.7" cy="245.8" r="2.6"><title>Tulipa persica · 25.6 Gb</title></circle>
+<circle class="dot" cx="427.7" cy="255.8" r="2.6"><title>Tulipa regelii · 25.6 Gb</title></circle>
+<circle class="dot" cx="428.6" cy="252.9" r="2.6"><title>Tulipa kuschkensis · 26.1 Gb</title></circle>
+<circle class="dot" cx="428.8" cy="253.2" r="2.6"><title>Tulipa ingens · 26.2 Gb</title></circle>
+<circle class="dot" cx="429.6" cy="244.2" r="2.6"><title>Alstroemeria aurea · 26.6 Gb</title></circle>
+<circle class="dot" cx="430.2" cy="248.8" r="2.6"><title>Tulipa patens · 26.9 Gb</title></circle>
+<circle class="dot" cx="432.7" cy="254.7" r="2.6"><title>Tulipa hageri · 28.2 Gb</title></circle>
+<circle class="dot" cx="432.9" cy="244.8" r="2.6"><title>Tulipa schmidtii · 28.3 Gb</title></circle>
+<circle class="dot" cx="433.4" cy="243.6" r="2.6"><title>Tulipa hoogiana · 28.6 Gb</title></circle>
+<circle class="dot" cx="434.7" cy="249.6" r="2.6"><title>Tulipa tetraphylla · 29.3 Gb</title></circle>
+<circle class="dot" cx="436.0" cy="256.6" r="2.6"><title>Tulipa schrenkii · 30.1 Gb</title></circle>
+<circle class="dot" cx="436.1" cy="253.1" r="2.6"><title>Tulipa julia · 30.1 Gb</title></circle>
+<circle class="dot" cx="438.5" cy="246.7" r="2.6"><title>Tulipa sprengeri · 31.6 Gb</title></circle>
+<circle class="dot" cx="439.0" cy="244.3" r="2.6"><title>Fritillaria davidii · 31.8 Gb</title></circle>
+<circle class="dot" cx="439.3" cy="256.4" r="2.6"><title>Tulipa hungarica · 32.1 Gb</title></circle>
+<circle class="dot" cx="439.4" cy="256.5" r="2.6"><title>Tulipa lanata · 32.1 Gb</title></circle>
+<circle class="dot" cx="439.7" cy="254.2" r="2.6"><title>Tulipa celsiana · 32.3 Gb</title></circle>
+<circle class="dot" cx="441.1" cy="246.3" r="2.6"><title>Lilium bosniacum · 33.2 Gb</title></circle>
+<circle class="dot" cx="441.3" cy="255.0" r="2.6"><title>Lilium carniolicum · 33.3 Gb</title></circle>
+<circle class="dot" cx="441.8" cy="243.2" r="2.6"><title>Tulipa saxatilis · 33.6 Gb</title></circle>
+<circle class="dot" cx="442.9" cy="245.8" r="2.6"><title>Lilium pomponium · 34.4 Gb</title></circle>
+<circle class="dot" cx="443.0" cy="248.1" r="2.6"><title>Lilium pyrenaicum · 34.4 Gb</title></circle>
+<circle class="dot" cx="443.0" cy="258.3" r="2.6"><title>Lilium longiflorum · 34.4 Gb</title></circle>
+<circle class="dot" cx="444.7" cy="243.6" r="2.6"><title>Notholirion thomsonianum · 35.6 Gb</title></circle>
+<circle class="dot" cx="448.2" cy="245.6" r="2.6"><title>Fritillaria thunbergii · 38 Gb</title></circle>
+<circle class="dot" cx="448.8" cy="254.7" r="2.6"><title>Trillium undulatum · 38.4 Gb</title></circle>
+<circle class="dot" cx="450.8" cy="255.2" r="2.6"><title>Fritillaria persica · 40 Gb</title></circle>
+<circle class="dot" cx="451.0" cy="247.3" r="2.6"><title>Lilium davidii · 40.1 Gb</title></circle>
+<circle class="dot" cx="456.7" cy="244.2" r="2.6"><title>Fritillaria tubiformis · 44.8 Gb</title></circle>
+<circle class="dot" cx="457.7" cy="256.7" r="2.6"><title>Fritillaria imperialis · 45.7 Gb</title></circle>
+<circle class="dot" cx="457.9" cy="258.5" r="2.6"><title>Trillium albidum · 45.8 Gb</title></circle>
+<circle class="dot" cx="458.4" cy="257.5" r="2.6"><title>Fritillaria meleagris · 46.3 Gb</title></circle>
+<circle class="dot" cx="458.7" cy="252.1" r="2.6"><title>Trillium camschatcense · 46.6 Gb</title></circle>
+<circle class="dot" cx="459.0" cy="244.4" r="2.6"><title>Lilium canadense · 46.8 Gb</title></circle>
+<circle class="dot" cx="459.9" cy="254.8" r="2.6"><title>Trillium flexipes · 47.7 Gb</title></circle>
+<circle class="dot" cx="460.8" cy="253.4" r="2.6"><title>Trillium sulcatum · 48.5 Gb</title></circle>
+<circle class="dot" cx="461.3" cy="256.3" r="2.6"><title>Trillium kurabayashii · 48.9 Gb</title></circle>
+<circle class="dot" cx="461.6" cy="255.2" r="2.6"><title>Trillium catesbaei · 49.3 Gb</title></circle>
+<circle class="dot" cx="462.0" cy="251.0" r="2.6"><title>Trillium grandiflorum · 49.6 Gb</title></circle>
+<circle class="dot" cx="462.8" cy="258.6" r="2.6"><title>Trillium viride · 50.4 Gb</title></circle>
+<circle class="dot" cx="463.7" cy="250.4" r="2.6"><title>Fritillaria pyrenaica · 51.3 Gb</title></circle>
+<circle class="dot" cx="464.0" cy="250.1" r="2.6"><title>Fritillaria liliacea · 51.6 Gb</title></circle>
+<circle class="dot" cx="464.1" cy="253.2" r="2.6"><title>Paris quadrifolia · 51.7 Gb</title></circle>
+<circle class="dot" cx="464.3" cy="255.6" r="2.6"><title>Trillium lancifolium · 51.9 Gb</title></circle>
+<circle class="dot" cx="464.6" cy="252.4" r="2.6"><title>Trillium ovatum · 52.2 Gb</title></circle>
+<circle class="dot" cx="464.7" cy="258.1" r="2.6"><title>Fritillaria camschatcensis · 52.3 Gb</title></circle>
+<circle class="dot" cx="465.1" cy="247.3" r="2.6"><title>Trillium maculatum · 52.7 Gb</title></circle>
+<circle class="dot" cx="465.3" cy="257.3" r="2.6"><title>Trillium sessile · 52.9 Gb</title></circle>
+<circle class="dot" cx="465.4" cy="257.1" r="2.6"><title>Paris polyphylla · 53 Gb</title></circle>
+<circle class="dot" cx="465.8" cy="248.5" r="2.6"><title>Paris thibetica · 53.4 Gb</title></circle>
+<circle class="dot" cx="465.9" cy="243.5" r="2.6"><title>Fritillaria alfredae · 53.5 Gb</title></circle>
+<circle class="dot" cx="466.1" cy="252.6" r="2.6"><title>Trillium chloropetalum · 53.7 Gb</title></circle>
+<circle class="dot" cx="466.5" cy="252.9" r="2.6"><title>Tulipa sylvestris · 54.1 Gb</title></circle>
+<circle class="dot" cx="467.0" cy="258.4" r="2.6"><title>Paris mairei · 54.7 Gb</title></circle>
+<circle class="dot" cx="467.6" cy="251.9" r="2.6"><title>Trillium decipiens · 55.2 Gb</title></circle>
+<circle class="dot" cx="470.1" cy="254.6" r="2.6"><title>Trillium underwoodii · 57.9 Gb</title></circle>
+<circle class="dot" cx="475.4" cy="255.2" r="2.6"><title>Fritillaria olivieri · 64.2 Gb</title></circle>
+<circle class="dot" cx="476.0" cy="245.7" r="2.6"><title>Fritillaria pudica · 64.9 Gb</title></circle>
+<circle class="dot" cx="476.1" cy="253.7" r="2.6"><title>Fritillaria crassifolia · 65.1 Gb</title></circle>
+<circle class="dot" cx="479.4" cy="250.0" r="2.6"><title>Fritillaria acmopetala · 69.3 Gb</title></circle>
+<circle class="dot" cx="481.5" cy="246.5" r="2.6"><title>Fritillaria pinardii · 72.2 Gb</title></circle>
+<circle class="dot" cx="482.2" cy="247.4" r="2.6"><title>Trillium taiwanense · 73.1 Gb</title></circle>
+<circle class="dot" cx="482.4" cy="248.8" r="2.6"><title>Erythronium americanum · 73.5 Gb</title></circle>
+<circle class="dot" cx="483.7" cy="254.8" r="2.6"><title>Fritillaria fleischeriana · 75.4 Gb</title></circle>
+<circle class="dot" cx="484.2" cy="251.8" r="2.6"><title>Fritillaria elwesii · 76 Gb</title></circle>
+<circle class="dot" cx="485.3" cy="248.1" r="2.6"><title>Fritillaria davisii · 77.7 Gb</title></circle>
+<circle class="dot" cx="489.1" cy="243.9" r="2.6"><title>Trillium smallii · 83.6 Gb</title></circle>
+<circle class="dot" cx="519.1" cy="255.6" r="2.6"><title>Paris japonica · 148.9 Gb</title></circle>
+<line class="median" x1="429.4" x2="429.4" y1="241.0" y2="261.0"><title>Liliales median · 26.5 Gb (n = 265)</title></line>
+<circle class="hit" cx="117.1" cy="99.6" r="4"/>
+<text class="note halo" x="125.1" y="92.6" text-anchor="start"><tspan font-style="italic">Genlisea tuberosa</tspan> 65 Mb</text>
+<circle class="hit" cx="491.2" cy="215.3" r="4"/>
+<text class="note halo" x="483.2" y="208.3" text-anchor="end"><tspan font-style="italic">Viscum album</tspan> 87.1 Gb</text>
+<circle class="hit" cx="519.1" cy="255.6" r="4"/>
+<text class="note halo" x="511.1" y="248.6" text-anchor="end"><tspan font-style="italic">Paris japonica</tspan> 148.9 Gb</text>
+<circle class="dot" cx="96" cy="11" r="3"/><text class="tick" x="104" y="14.5">species</text>
+<line class="median" x1="166" x2="166" y1="5" y2="17"/><text class="tick" x="174" y="14.5">median</text>
+</svg>
+          <figcaption><b>Live data</b> from the <a href="https://goat.genomehubs.org">GoaT</a> API (October 2026): measured genome sizes on a log scale. Each row shows up to 110 species, and medians use all 5,164. The European mistletoe genome is one we are working on.</figcaption>
+        </figure>
+      </article>
+      <article class="dev" id="lwphylo">
+        <div class="dev-text">
+          <p class="eyebrow">JavaScript · D3</p>
+          <h3><a href="https://github.com/Euphrasiologist/lwPhylo">lwPhylo</a></h3>
+          <h2>Phylogenies for the web</h2>
+          <p>A lightweight library that turns a Newick string into rectangular, radial or unrooted layouts for D3. It draws every tree figure on our <a href="figures.html">Figures</a> page.</p>
+          <p>This is the library itself, running live. Switch layouts, grow a new random tree, or click an internal node to rotate its clade.</p>
+          <pre class="terminal" tabindex="0"><span class="k">import</span> { randomTree } <span class="k">from</span> <span class="s">"@euphrasiologist/lwphylo"</span>;
+<span class="k">import</span> drawPhylogeny <span class="k">from</span> <span class="s">"@euphrasiologist/lwphylo/draw"</span>;
+
+<span class="k">const</span> tree = randomTree(<span class="n">28</span>);
+drawPhylogeny(tree, {
+  layout: <span class="s">"radial"</span>, container: <span class="s">"#tree"</span>,
+  rotateOnClick: <span class="n">true</span>,
+});</pre>
+        </div>
+        <figure class="viz reveal">
+          <div class="seg-ctrl" role="group" aria-label="Tree layout">
+            <button type="button" data-layout="rect" aria-pressed="false">Rectangular</button>
+            <button type="button" data-layout="radial" aria-pressed="true">Radial</button>
+            <button type="button" data-layout="unrooted" aria-pressed="false">Unrooted</button>
+            <button type="button" class="reroll">New tree ↻</button>
+          </div>
+          <div class="plate tree-plate"><div id="tree"><p class="muted tree-fallback">Loading lwPhylo…</p></div></div>
+          <figcaption><b>Live</b> lwPhylo 1.5.1, loaded from npm. Hover a branch to see its root-to-tip distance.</figcaption>
+        </figure>
+      </article>
+      </div>
+    </section>
+
+    <section class="section band-dark">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Genomics</p>
+            <h2>All genomics tools</h2>
+          </div>
+        </div>
+        <div class="repos">
+        <a class="repo reveal" href="https://github.com/tolkit/telomeric-identifier">
+          <div class="repo-head">
+            <span class="repo-name"><span class="repo-org">tolkit/</span>tidk</span>
+            <span class="badge">Bioinformatics, 2025</span>
+          </div>
+          <p>Telomere identification toolkit. Discovers and maps telomeric repeats across whole genomes — built to survey the thousands of assemblies coming out of the Darwin Tree of Life.</p>
+          <div class="terminal"><span class="p">$ </span>conda install -c bioconda tidk</div>
+          <div class="repo-meta"><span><i class="lang-dot" style="--c:#dea584"></i>Rust</span><span>★ 180</span></div>
+        </a>
+        <a class="repo reveal" href="https://github.com/genomehubs/goat-cli">
+          <div class="repo-head">
+            <span class="repo-name"><span class="repo-org">genomehubs/</span>goat-cli</span>
+            <span class="badge">Wellcome Open Res, 2023</span>
+          </div>
+          <p>Command line interface for Genomes on a Tree. Query genome size, chromosome number, assembly status and sequencing-project metadata for any taxon across eukaryotes.</p>
+          <div class="repo-meta"><span><i class="lang-dot" style="--c:#dea584"></i>Rust</span><span>★ 14</span></div>
+        </a>
+        <a class="repo reveal" href="https://github.com/c-zhou/oatk">
+          <div class="repo-head">
+            <span class="repo-name"><span class="repo-org">c-zhou/</span>oatk</span>
+            <span class="badge">Genome Biology, 2025</span>
+          </div>
+          <p>De novo assembly of complex plant mitochondrial and plastid genomes from HiFi reads. Co-developed with Chenxi Zhou and Richard Durbin.</p>
+          <div class="repo-meta"><span><i class="lang-dot" style="--c:#8c9eb0"></i>C</span><span>★ 89</span></div>
+        </a>
+        <a class="repo reveal" href="https://github.com/tolkit/gfatk">
+          <div class="repo-head">
+            <span class="repo-name"><span class="repo-org">tolkit/</span>gfatk</span>
+            
+          </div>
+          <p>A Graphical Fragment Assembly toolkit for plant organelles. Uses graph algorithms to resolve tangled mitochondrial and chloroplast assembly graphs into linear sequences.</p>
+          <div class="repo-meta"><span><i class="lang-dot" style="--c:#dea584"></i>Rust</span><span>★ 17</span></div>
+        </a>
+        <a class="repo reveal" href="https://github.com/tolkit/fasta_windows">
+          <div class="repo-head">
+            <span class="repo-name"><span class="repo-org">tolkit/</span>fasta_windows</span>
+            <span class="badge">In production at Sanger</span>
+          </div>
+          <p>Fast sliding-window statistics (GC content, entropy, k-mer statistics) over FASTA files. Runs in production in the Wellcome Sanger Institute's Tree of Life pipelines.</p>
+          <div class="repo-meta"><span><i class="lang-dot" style="--c:#dea584"></i>Rust</span><span>★ 15</span></div>
+        </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Ecology &amp; statistics</p>
+            <h2>Networks, trees and mixed models</h2>
+          </div>
+        </div>
+        <div class="repos">
+        <a class="repo reveal" href="https://github.com/Euphrasiologist/oxygraphis">
+          <div class="repo-head">
+            <span class="repo-name"><span class="repo-org">Euphrasiologist/</span>oxygraphis</span>
+            
+          </div>
+          <p>An ecological graph library and CLI for bipartite host–parasite networks — being applied to field data on wild British eyebrights.</p>
+          <div class="repo-meta"><span><i class="lang-dot" style="--c:#dea584"></i>Rust</span></div>
+        </a>
+        <a class="repo reveal" href="https://github.com/Euphrasiologist/lwPhylo">
+          <div class="repo-head">
+            <span class="repo-name"><span class="repo-org">Euphrasiologist/</span>lwPhylo</span>
+            
+          </div>
+          <p>A lightweight, low-level JavaScript library for drawing interactive phylogenies from Newick files in a range of layouts.</p>
+          <div class="repo-meta"><span><i class="lang-dot" style="--c:#e9d44d"></i>JavaScript</span><span>★ 1</span></div>
+        </a>
+        <a class="repo reveal" href="https://github.com/Euphrasiologist/VCVglmm">
+          <div class="repo-head">
+            <span class="repo-name"><span class="repo-org">Euphrasiologist/</span>VCVglmm</span>
+            
+          </div>
+          <p>Convenience functions to extract and manipulate variance–covariance matrices from lme4 and MCMCglmm random effects.</p>
+          <div class="repo-meta"><span><i class="lang-dot" style="--c:#4a8fd8"></i>R</span></div>
+        </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap two-col">
+        <div>
+          <p class="eyebrow">Approach</p>
+          <h2>How we build software</h2>
+        </div>
+        <div class="prose">
+          <p>Research code should outlive the paper it was written for. We aim for tools that are installable in one line, documented, tested and fast enough to run across entire genome collections rather than a handful of samples.</p>
+          <p>Beyond the packages above, recent work includes inverted-repeat detection, annotation of plant mitochondria and plastids, codon-aware alignment conversion, GFF statistics and transposable element alignment.</p>
+          <p>Languages: Rust, Python, R, JavaScript, SQL and the shell.</p>
+        </div>
+      </div>
+    </section>
+  <script type="module">
+    const tree$ = document.getElementById("tree");
+    try {
+      const [{ randomTree }, { default: drawPhylogeny }] = await Promise.all([
+        import("https://cdn.jsdelivr.net/npm/@euphrasiologist/lwphylo@1.5.1/dist/index.js/+esm"),
+        import("https://cdn.jsdelivr.net/npm/@euphrasiologist/lwphylo@1.5.1/dist/drawPhylogeny.esm.js/+esm"),
+      ]);
+      let layout = "radial";
+      let seed = 7;
+      let tree = randomTree(28, { seed, maxBranchLength: 100, labelPrefix: "taxon " });
+      const draw = () => {
+        tree$.replaceChildren();
+        const size = Math.min(tree$.clientWidth || 460, 520);
+        drawPhylogeny(tree, {
+          layout, container: tree$, rotateOnClick: true,
+          width: size, height: size, tipLabels: false, tipRadius: 3,
+          internalNodeRadius: 3.5, strokeWidth: 1.6,
+          margin: { top: 16, right: 16, bottom: 16, left: 16 },
+          radialMargin: layout === "unrooted" ? 0 : 20,
+          hoverStroke: "#6a4c9c", highlightStroke: "#a8770a",
+        });
+      };
+      document.querySelectorAll(".seg-ctrl [data-layout]").forEach((b) =>
+        b.addEventListener("click", () => {
+          layout = b.dataset.layout;
+          document.querySelectorAll(".seg-ctrl [data-layout]").forEach((o) => o.setAttribute("aria-pressed", String(o === b)));
+          draw();
+        }));
+      document.querySelector(".seg-ctrl .reroll").addEventListener("click", () => {
+        seed += 1;
+        tree = randomTree(28, { seed, maxBranchLength: 100, labelPrefix: "taxon " });
+        draw();
+      });
+      draw();
+    } catch (e) {
+      tree$.innerHTML = '<p class="muted tree-fallback">The live demo could not load. <a href="https://euphrasiologist.github.io/lwPhylo/">Try it on the lwPhylo site</a>.</p>';
+    }
+  </script>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-grid">
+        <div>
+          <a class="brand" href="index.html"><svg viewBox="0 0 32 32" aria-hidden="true">
+  <g fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3">
+    <ellipse cx="12.2" cy="9.6" rx="3.8" ry="5.6" transform="rotate(-22 12.2 9.6)"/>
+    <ellipse cx="19.8" cy="9.6" rx="3.8" ry="5.6" transform="rotate(22 19.8 9.6)"/>
+    <ellipse cx="8.4" cy="19.4" rx="4" ry="6.2" transform="rotate(-58 8.4 19.4)"/>
+    <ellipse cx="23.6" cy="19.4" rx="4" ry="6.2" transform="rotate(58 23.6 19.4)"/>
+    <ellipse cx="16" cy="23.4" rx="4.2" ry="6.4"/>
+  </g>
+  <path d="M16 18v8M13.6 19.5l-1.4 5M18.4 19.5l1.4 5" stroke="var(--accent)" stroke-width="0.9" stroke-linecap="round" opacity=".7"/>
+  <circle cx="16" cy="16.4" r="3" fill="var(--gold)"/>
+</svg> Brown Lab</a>
+          <p style="margin-top:14px;max-width:30em">Plant ecology, evolution and genomics at Anglia Ruskin University, Cambridge.</p>
+        </div>
+        <div>
+          <h4>Find us</h4>
+          <address>Sci408, School of Life Sciences<br>Anglia Ruskin University<br>East Road, Cambridge CB1 1PT</address>
+        </div>
+        <div>
+          <h4>Elsewhere</h4>
+          <ul>
+            <li><a href="https://scholar.google.com/citations?user=1W1iLhEAAAAJ&hl=en">Google Scholar</a></li>
+            <li><a href="https://github.com/Euphrasiologist">GitHub</a></li>
+            <li><a href="https://github.com/tolkit">tolkit (Tree of Life tools)</a></li>
+            <li><a href="https://observablehq.com/@euphrasiologist">Observable</a></li>
+            <li><a href="contact.html">Email</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-base">
+        <span>&copy; 2026 Max Carter-Brown</span>
+        <span class="mono">5′–TTTAGGG–3′</span>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>

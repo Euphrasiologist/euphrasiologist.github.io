@@ -1,55 +1,432 @@
-<!-- publications.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Publications - Brown Lab</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <title>Publications · Brown Lab</title>
+  <meta name="description" content="Publications, preprints and talks by Max R Brown (Max Carter-Brown) and the Brown Lab.">
+  <meta name="author" content="Max Carter-Brown">
+  <link rel="canonical" href="https://euphrasiologist.github.io/publications.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Brown Lab">
+  <meta property="og:title" content="Publications · Brown Lab">
+  <meta property="og:description" content="Publications, preprints and talks by Max R Brown (Max Carter-Brown) and the Brown Lab.">
+  <meta property="og:url" content="https://euphrasiologist.github.io/publications.html">
+  <meta property="og:image" content="https://euphrasiologist.github.io/img/og.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#f7f5ef" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f1512" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+  <script src="site.js" defer></script>
 </head>
 
 <body>
-  <header>
-    <h1>Brown Lab</h1>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="research.html">Research</a>
-      <a href="people.html">People</a>
-      <a href="publications.html">Publications</a>
-      <a href="opportunities.html">Opportunities</a>
-      <a href="contact.html">Contact</a>
-    </nav>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="Brown Lab — home">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+  <g fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3">
+    <ellipse cx="12.2" cy="9.6" rx="3.8" ry="5.6" transform="rotate(-22 12.2 9.6)"/>
+    <ellipse cx="19.8" cy="9.6" rx="3.8" ry="5.6" transform="rotate(22 19.8 9.6)"/>
+    <ellipse cx="8.4" cy="19.4" rx="4" ry="6.2" transform="rotate(-58 8.4 19.4)"/>
+    <ellipse cx="23.6" cy="19.4" rx="4" ry="6.2" transform="rotate(58 23.6 19.4)"/>
+    <ellipse cx="16" cy="23.4" rx="4.2" ry="6.4"/>
+  </g>
+  <path d="M16 18v8M13.6 19.5l-1.4 5M18.4 19.5l1.4 5" stroke="var(--accent)" stroke-width="0.9" stroke-linecap="round" opacity=".7"/>
+  <circle cx="16" cy="16.4" r="3" fill="var(--gold)"/>
+</svg>
+        Brown Lab <small>Plant Ecology &amp; Genomics</small>
+      </a>
+      <nav class="nav" id="site-nav" aria-label="Main">
+        <a href="research.html">Research</a>
+        <a href="publications.html" aria-current="page">Publications</a>
+        <a href="software.html">Software</a>
+        <a href="figures.html">Figures</a>
+        <a href="people.html">People</a>
+        <a href="opportunities.html">Join</a>
+        <a href="contact.html">Contact</a>
+        <button class="icon-btn theme-toggle" type="button" aria-label="Toggle dark mode"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button>
+      </nav>
+      <button class="icon-btn menu-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="site-nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    </div>
   </header>
-  <main>
-    <h2>Our Recent Publications</h2>
-    <p>The lab is only just beginning, so these are select publications from my time in the <a
-        href="https://twyford.bio.ed.ac.uk/home">Twyford Lab</a> and the <a
-        href="https://www.sanger.ac.uk/group/blaxter-group/">Blaxter Group</a> at the Tree of Life in Sanger.</p>
-    <p>Please see my <a href="https://scholar.google.com/citations?user=1W1iLhEAAAAJ&hl=en">Google Scholar</a> for a
-      more comprehensive list.</p>
 
-    <ul>
-      <li><a href="#">Max R Brown, Pablo Gonzalez de La Rosa, and Mark Blaxter. tidk: a toolkit to
-          rapidly identify telomeric repeats from genomic datasets. Bioinformatics, 2024.</a> (Accepted in
-        Bioinformatics)</li>
-      <li><a href="https://www.biorxiv.org/content/10.1101/2024.10.23.619857v1.full.pdf">Chenxi Zhou, Max R Brown, Mark
-          Blaxter, Darwin Tree of Life Project Consortium, Shane A McCarthy and Richard Durbin. "Oatk: a de novo
-          assembly tool for complex plant organelle genomes. BioRxiv. 2024."</a> (Submitted to Genome Biology)</li>
-      <li><a href="https://www.pnas.org/doi/pdf/10.1073/pnas.2220261120">Max R Brown, et al. "Genetic factors predict
-          hybrid formation in the British flora." Proceedings of the National Academy of Sciences 120.16 (2023):
-          e2220261120.</a></li>
-      <li><a href="https://nph.onlinelibrary.wiley.com/doi/pdfdirect/10.1111/nph.17752">Max R Brown, Paloma GP Moore,
-          and Alex D. Twyford. "Performance of generalist hemiparasitic Euphrasia across a phylogenetically diverse host
-          spectrum." New Phytologist 232.5 (2021): 2165-2174.</a></li>
-      <li><a href="https://bsapubs.onlinelibrary.wiley.com/doi/pdfdirect/10.1002/ajb2.1445">Max R Brown, et al. "Life
-          history evolution, species differences, and phenotypic plasticity in
-          hemiparasitic eyebrights (Euphrasia)." American Journal of Botany 107.3 (2020): 456-465.</a></li>
-    </ul>
+  <main id="main">
+    <section class="page-head">
+      <div class="wrap">
+        <p class="eyebrow">Publications</p>
+        <h1>Papers, preprints &amp; talks</h1>
+        <p class="lede">Max publishes as <b>Max R Brown</b>. Citation counts are from <a href="https://scholar.google.com/citations?user=1W1iLhEAAAAJ&hl=en">Google Scholar</a> (October 2026), where the most up-to-date list lives.</p>
+        <div class="stats" style="margin-top:32px">
+          <div class="stat"><div class="num">1,731</div><div class="label">Citations</div></div>
+          <div class="stat"><div class="num">12</div><div class="label">h-index</div></div>
+          <div class="stat"><div class="num">12</div><div class="label">i10-index</div></div>
+          <div class="stat"><div class="num">8</div><div class="label">Lead-author outputs</div></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="pub-controls">
+      <div class="wrap">
+        <label class="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="pub-search" type="search" placeholder="Search titles, authors, journals…" aria-label="Search publications">
+        </label>
+        <div class="chips" role="group" aria-label="Filter by topic">
+          <button class="chip" type="button" data-topic="all" aria-pressed="true">All</button>
+          <button class="chip" type="button" data-topic="tools" aria-pressed="false">Software & methods</button>
+          <button class="chip" type="button" data-topic="genomes" aria-pressed="false">Genomes</button>
+          <button class="chip" type="button" data-topic="hybrid" aria-pressed="false">Hybridisation & polyploidy</button>
+          <button class="chip" type="button" data-topic="parasites" aria-pressed="false">Parasitic plants</button>
+          <button class="chip" type="button" data-topic="resources" aria-pressed="false">Data resources</button>
+          <button class="chip" type="button" data-lead aria-pressed="false">Lead author</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap" style="padding-bottom:24px">
+      <p class="muted" style="margin:20px 0 0;font-size:.88rem">Showing <span id="pub-count">18</span> of 18</p>
+      <div id="pub-list">
+      <section class="year-group">
+        <h2>2026</h2>
+        <ul class="pubs">
+        <li class="pub" data-topics="genomes" data-lead="0">
+          <div>
+            <h3 class="pub-title"><a href="https://wellcomeopenresearch.org/articles/11-800">The genome sequence of the Butterfly-bush, <i>Buddleja davidii</i> Franch. (Lamiales: Scrophulariaceae)</a></h3>
+            <p class="pub-authors">MJM Christenhusz, <b>MR Brown</b>, IJ Leitch, et al.</p>
+            <p class="pub-venue"><i>Wellcome Open Research</i> 11, 800, 2026</p>
+            <div class="tags"><span class="tag-pill">Genomes</span></div>
+          </div>
+          <div class="pub-meta"><div class="cites-label">New</div></div>
+        </li>
+        <li class="pub" data-topics="genomes" data-lead="0">
+          <div>
+            <h3 class="pub-title"><a href="https://wellcomeopenresearch.org/articles/11-420">The genome sequence of <i>Draba verna</i> L., 1753 (Brassicales: Brassicaceae)</a></h3>
+            <p class="pub-authors">M Ruhsam, A Griffiths, <b>MR Brown</b>, RBGE Genome Acquisition Lab, Darwin Tree of Life Consortium, et al.</p>
+            <p class="pub-venue"><i>Wellcome Open Research</i> 11, 420, 2026</p>
+            <div class="tags"><span class="tag-pill">Genomes</span></div>
+          </div>
+          <div class="pub-meta"><div class="cites-label">New</div></div>
+        </li>
+        </ul>
+      </section>
+      <section class="year-group">
+        <h2>2025</h2>
+        <ul class="pubs">
+        <li class="pub" data-topics="tools genomes" data-lead="0">
+          <div>
+            <h3 class="pub-title"><a href="https://doi.org/10.1186/s13059-025-03676-6">Oatk: a de novo assembly tool for complex plant organelle genomes</a></h3>
+            <p class="pub-authors">C Zhou, <b>MR Brown</b>, M Blaxter, Darwin Tree of Life Project Consortium, SA McCarthy, R Durbin</p>
+            <p class="pub-venue"><i>Genome Biology</i> 26, 235, 2025 · <span class="mono" style="font-size:.8em">doi:10.1186/s13059-025-03676-6</span></p>
+            <div class="tags"><span class="tag-pill">Software & methods</span><span class="tag-pill">Genomes</span></div>
+          </div>
+          <div class="pub-meta" title="Citations on Google Scholar, October 2026">
+            <div class="cites">411</div>
+            <div class="cites-label">citations</div>
+            <div class="cites-bar"><span style="--w:59.9%"></span></div>
+          </div>
+        </li>
+        <li class="pub" data-topics="tools genomes" data-lead="1">
+          <div>
+            <h3 class="pub-title"><a href="https://doi.org/10.1093/bioinformatics/btaf049">tidk: a toolkit to rapidly identify telomeric repeats from genomic datasets</a></h3>
+            <p class="pub-authors"><b>MR Brown</b>, P Gonzalez de la Rosa, M Blaxter</p>
+            <p class="pub-venue"><i>Bioinformatics</i> 41, btaf049, 2025 · <span class="mono" style="font-size:.8em">doi:10.1093/bioinformatics/btaf049</span></p>
+            <div class="tags"><span class="tag-pill lead">Lead author</span><span class="tag-pill">Software & methods</span><span class="tag-pill">Genomes</span></div>
+          </div>
+          <div class="pub-meta" title="Citations on Google Scholar, October 2026">
+            <div class="cites">236</div>
+            <div class="cites-label">citations</div>
+            <div class="cites-bar"><span style="--w:34.4%"></span></div>
+          </div>
+        </li>
+        <li class="pub" data-topics="genomes" data-lead="0">
+          <div>
+            <h3 class="pub-title"><a href="https://wellcomeopenresearch.org/articles/10-271">The genome sequence of the apple, <i>Malus</i> × <i>robusta</i> (Carrière) Rehder</a></h3>
+            <p class="pub-authors">A Karlström, <b>MR Brown</b>, et al.</p>
+            <p class="pub-venue"><i>Wellcome Open Research</i> 10, 271, 2025</p>
+            <div class="tags"><span class="tag-pill">Genomes</span></div>
+          </div>
+          <div class="pub-meta" title="Citations on Google Scholar, October 2026">
+            <div class="cites">1</div>
+            <div class="cites-label">citations</div>
+            <div class="cites-bar"><span style="--w:0.6%"></span></div>
+          </div>
+        </li>
+        </ul>
+      </section>
+      <section class="year-group">
+        <h2>2024</h2>
+        <ul class="pubs">
+        <li class="pub" data-topics="hybrid" data-lead="1">
+          <div>
+            <h3 class="pub-title"><a href="https://doi.org/10.1111/mec.17315">The emerging importance of cross-ploidy hybridisation and introgression</a></h3>
+            <p class="pub-authors"><b>MR Brown</b>, RJ Abbott, AD Twyford</p>
+            <p class="pub-venue"><i>Molecular Ecology</i> 33(8), e17315, 2024 · <span class="mono" style="font-size:.8em">doi:10.1111/mec.17315</span></p>
+            <div class="tags"><span class="tag-pill lead">Lead author</span><span class="tag-pill">Hybridisation & polyploidy</span></div>
+          </div>
+          <div class="pub-meta" title="Citations on Google Scholar, October 2026">
+            <div class="cites">43</div>
+            <div class="cites-label">citations</div>
+            <div class="cites-bar"><span style="--w:6.3%"></span></div>
+          </div>
+        </li>
+        <li class="pub" data-topics="genomes" data-lead="0">
+          <div>
+            <h3 class="pub-title"><a href="https://doi.org/10.1186/s13100-024-00319-8">Teaching transposon classification as a means to crowd source the curation of repeat annotation – a tardigrade perspective</a></h3>
+            <p class="pub-authors">V Peona, J Martelossi, D Almojil, J Bocharkina, I Brännström, <b>MR Brown</b>, et al.</p>
+            <p class="pub-venue"><i>Mobile DNA</i> 15, 10, 2024 · <span class="mono" style="font-size:.8em">doi:10.1186/s13100-024-00319-8</span></p>
+            <div class="tags"><span class="tag-pill">Genomes</span></div>
+          </div>
+          <div class="pub-meta" title="Citations on Google Scholar, October 2026">
+            <div class="cites">19</div>
+            <div class="cites-label">citations</div>
+            <div class="cites-bar"><span style="--w:2.8%"></span></div>
+          </div>
+        </li>
+        </ul>
+      </section>
+      <section class="year-group">
+        <h2>2023</h2>
+        <ul class="pubs">
+        <li class="pub" data-topics="tools resources" data-lead="0">
+          <div>
+            <h3 class="pub-title"><a href="https://doi.org/10.12688/wellcomeopenres.18658.1">Genomes on a Tree (GoaT): A versatile, scalable search engine for genomic and sequencing project metadata across the eukaryotic tree of life</a></h3>
+            <p class="pub-authors">R Challis, S Kumar, C Sotero-Caio, <b>MR Brown</b>, M Blaxter</p>
+            <p class="pub-venue"><i>Wellcome Open Research</i> 8, 24, 2023 · <span class="mono" style="font-size:.8em">doi:10.12688/wellcomeopenres.18658.1</span></p>
+            <div class="tags"><span class="tag-pill">Software & methods</span><span class="tag-pill">Data resources</span></div>
+          </div>
+          <div class="pub-meta" title="Citations on Google Scholar, October 2026">
+            <div class="cites">686</div>
+            <div class="cites-label">citations</div>
+            <div class="cites-bar"><span style="--w:100.0%"></span></div>
+          </div>
+        </li>
+        <li class="pub" data-topics="hybrid" data-lead="1">
+          <div>
+            <h3 class="pub-title"><a href="https://doi.org/10.1073/pnas.2220261120">Genetic factors predict hybrid formation in the British flora</a></h3>
+            <p class="pub-authors"><b>MR Brown</b>, PM Hollingsworth, L Forrest, M Hart, IJ Leitch, L Jones, C Ford, N de Vere, AD Twyford</p>
+            <p class="pub-venue"><i>Proceedings of the National Academy of Sciences</i> 120(16), e2220261120, 2023 · <span class="mono" style="font-size:.8em">doi:10.1073/pnas.2220261120</span></p>
+            <div class="tags"><span class="tag-pill lead">Lead author</span><span class="tag-pill">Hybridisation & polyploidy</span></div>
+          </div>
+          <div class="pub-meta" title="Citations on Google Scholar, October 2026">
+            <div class="cites">20</div>
+            <div class="cites-label">citations</div>
+            <div class="cites-bar"><span style="--w:2.9%"></span></div>
+          </div>
+        </li>
+        <li class="pub" data-topics="hybrid parasites" data-lead="1">
+          <div>
+            <h3 class="pub-title"><a href="https://doi.org/10.1002/ajb2.16100">Is there hybridization between diploid and tetraploid <i>Euphrasia</i> in a secondary contact zone?</a></h3>
+            <p class="pub-authors"><b>MR Brown</b>, H Becher, S Williams, AD Twyford</p>
+            <p class="pub-venue"><i>American Journal of Botany</i> 110(1), e16100, 2023 · <span class="mono" style="font-size:.8em">doi:10.1002/ajb2.16100</span></p>
+            <div class="tags"><span class="tag-pill lead">Lead author</span><span class="tag-pill">Hybridisation & polyploidy</span><span class="tag-pill">Parasitic plants</span></div>
+          </div>
+          <div class="pub-meta" title="Citations on Google Scholar, October 2026">
+            <div class="cites">9</div>
+            <div class="cites-label">citations</div>
+            <div class="cites-bar"><span style="--w:1.3%"></span></div>
+          </div>
+        </li>
+        </ul>
+      </section>
+      <section class="year-group">
+        <h2>2022</h2>
+        <ul class="pubs">
+        <li class="pub" data-topics="resources" data-lead="0">
+          <div>
+            <h3 class="pub-title"><a href="https://doi.org/10.1038/s41597-021-01104-5">A taxonomic, genetic and ecological data resource for the vascular plants of Britain and Ireland</a></h3>
+            <p class="pub-authors">MC Henniges, RF Powell, S Mian, CA Stace, KJ Walker, RJ Gornall, MJM Christenhusz, <b>MR Brown</b>, AD Twyford, PM Hollingsworth, et al.</p>
+            <p class="pub-venue"><i>Scientific Data</i> 9, 1, 2022 · <span class="mono" style="font-size:.8em">doi:10.1038/s41597-021-01104-5</span></p>
+            <div class="tags"><span class="tag-pill">Data resources</span></div>
+          </div>
+          <div class="pub-meta" title="Citations on Google Scholar, October 2026">
+            <div class="cites">73</div>
+            <div class="cites-label">citations</div>
+            <div class="cites-bar"><span style="--w:10.6%"></span></div>
+          </div>
+        </li>
+        </ul>
+      </section>
+      <section class="year-group">
+        <h2>2021</h2>
+        <ul class="pubs">
+        <li class="pub" data-topics="resources" data-lead="0">
+          <div>
+            <h3 class="pub-title"><a href="https://doi.org/10.1111/1755-0998.13388">Barcode UK: A complete DNA barcoding resource for the flowering plants and conifers of the United Kingdom</a></h3>
+            <p class="pub-authors">L Jones, AD Twyford, CR Ford, TCG Rich, H Davies, LL Forrest, ML Hart, H McHaffie, <b>MR Brown</b>, PM Hollingsworth, et al.</p>
+            <p class="pub-venue"><i>Molecular Ecology Resources</i> 21(6), 2050–2062, 2021 · <span class="mono" style="font-size:.8em">doi:10.1111/1755-0998.13388</span></p>
+            <div class="tags"><span class="tag-pill">Data resources</span></div>
+          </div>
+          <div class="pub-meta" title="Citations on Google Scholar, October 2026">
+            <div class="cites">102</div>
+            <div class="cites-label">citations</div>
+            <div class="cites-bar"><span style="--w:14.9%"></span></div>
+          </div>
+        </li>
+        <li class="pub" data-topics="genomes parasites" data-lead="0">
+          <div>
+            <h3 class="pub-title"><a href="https://doi.org/10.1093/aob/mcab102">The nature of intraspecific and interspecific genome size variation in taxonomically complex eyebrights</a></h3>
+            <p class="pub-authors">H Becher, RF Powell, <b>MR Brown</b>, C Metherell, J Pellicer, IJ Leitch, AD Twyford</p>
+            <p class="pub-venue"><i>Annals of Botany</i> 128(5), 639–651, 2021 · <span class="mono" style="font-size:.8em">doi:10.1093/aob/mcab102</span></p>
+            <div class="tags"><span class="tag-pill">Genomes</span><span class="tag-pill">Parasitic plants</span></div>
+          </div>
+          <div class="pub-meta" title="Citations on Google Scholar, October 2026">
+            <div class="cites">57</div>
+            <div class="cites-label">citations</div>
+            <div class="cites-bar"><span style="--w:8.3%"></span></div>
+          </div>
+        </li>
+        <li class="pub" data-topics="parasites" data-lead="1">
+          <div>
+            <h3 class="pub-title"><a href="https://doi.org/10.1111/nph.17752">Performance of generalist hemiparasitic <i>Euphrasia</i> across a phylogenetically diverse host spectrum</a></h3>
+            <p class="pub-authors"><b>MR Brown</b>, PGP Moore, AD Twyford</p>
+            <p class="pub-venue"><i>New Phytologist</i> 232(5), 2165–2174, 2021 · <span class="mono" style="font-size:.8em">doi:10.1111/nph.17752</span></p>
+            <div class="tags"><span class="tag-pill lead">Lead author</span><span class="tag-pill">Parasitic plants</span></div>
+          </div>
+          <div class="pub-meta" title="Citations on Google Scholar, October 2026">
+            <div class="cites">15</div>
+            <div class="cites-label">citations</div>
+            <div class="cites-bar"><span style="--w:2.2%"></span></div>
+          </div>
+        </li>
+        <li class="pub" data-topics="parasites" data-lead="1">
+          <div>
+            <h3 class="pub-title">Horticultural protocols for experimental studies of eyebrights (<i>Euphrasia</i>, Orobanchaceae)</h3>
+            <p class="pub-authors"><b>MR Brown</b>, H Becher, G Laverack, AD Twyford</p>
+            <p class="pub-venue"><i>Sibbaldia: the International Journal of Botanic Garden Horticulture</i>, 23–38, 2021</p>
+            <div class="tags"><span class="tag-pill lead">Lead author</span><span class="tag-pill">Parasitic plants</span></div>
+          </div>
+          <div class="pub-meta" title="Citations on Google Scholar, October 2026">
+            <div class="cites">1</div>
+            <div class="cites-label">citations</div>
+            <div class="cites-bar"><span style="--w:0.6%"></span></div>
+          </div>
+        </li>
+        <li class="pub" data-topics="hybrid parasites" data-lead="1">
+          <div>
+            <h3 class="pub-title">Taxonomic complexity in eyebrights (<i>Euphrasia</i> L., Orobanchaceae) and the British flora</h3>
+            <p class="pub-authors"><b>MR Brown</b></p>
+            <p class="pub-venue">PhD thesis, University of Edinburgh, 2021</p>
+            <div class="tags"><span class="tag-pill lead">Lead author</span><span class="tag-pill">Hybridisation & polyploidy</span><span class="tag-pill">Parasitic plants</span></div>
+          </div>
+          <div class="pub-meta" title="Citations on Google Scholar, October 2026">
+            <div class="cites">1</div>
+            <div class="cites-label">citations</div>
+            <div class="cites-bar"><span style="--w:0.6%"></span></div>
+          </div>
+        </li>
+        </ul>
+      </section>
+      <section class="year-group">
+        <h2>2020</h2>
+        <ul class="pubs">
+        <li class="pub" data-topics="hybrid parasites" data-lead="0">
+          <div>
+            <h3 class="pub-title"><a href="https://doi.org/10.1016/j.xplc.2020.100105">Maintenance of species differences in closely related tetraploid parasitic <i>Euphrasia</i> (Orobanchaceae) on an isolated island</a></h3>
+            <p class="pub-authors">H Becher, <b>MR Brown</b>, G Powell, C Metherell, NJ Riddiford, AD Twyford</p>
+            <p class="pub-venue"><i>Plant Communications</i> 1(6), 100105, 2020 · <span class="mono" style="font-size:.8em">doi:10.1016/j.xplc.2020.100105</span></p>
+            <div class="tags"><span class="tag-pill">Hybridisation & polyploidy</span><span class="tag-pill">Parasitic plants</span></div>
+          </div>
+          <div class="pub-meta" title="Citations on Google Scholar, October 2026">
+            <div class="cites">36</div>
+            <div class="cites-label">citations</div>
+            <div class="cites-bar"><span style="--w:5.2%"></span></div>
+          </div>
+        </li>
+        <li class="pub" data-topics="parasites" data-lead="1">
+          <div>
+            <h3 class="pub-title"><a href="https://doi.org/10.1002/ajb2.1445">Life history evolution, species differences, and phenotypic plasticity in hemiparasitic eyebrights (<i>Euphrasia</i>)</a></h3>
+            <p class="pub-authors"><b>MR Brown</b>, N Frachon, ELY Wong, C Metherell, AD Twyford</p>
+            <p class="pub-venue"><i>American Journal of Botany</i> 107(3), 456–465, 2020 · <span class="mono" style="font-size:.8em">doi:10.1002/ajb2.1445</span></p>
+            <div class="tags"><span class="tag-pill lead">Lead author</span><span class="tag-pill">Parasitic plants</span></div>
+          </div>
+          <div class="pub-meta" title="Citations on Google Scholar, October 2026">
+            <div class="cites">21</div>
+            <div class="cites-label">citations</div>
+            <div class="cites-bar"><span style="--w:3.1%"></span></div>
+          </div>
+        </li>
+        </ul>
+      </section>
+      </div>
+      <p class="empty" id="pub-empty" hidden>No publications match that search.</p>
+    </div>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="two-col">
+          <div>
+            <p class="eyebrow">In preparation</p>
+            <ul class="pubs">
+              <li class="pub"><div>
+                <h3 class="pub-title">Structure and synteny across diverse plant mitochondrial genomes</h3>
+                <p class="pub-authors"><b>MR Brown</b>, J Downie, N Riley, R Craig, L Campos, EBI collaborators, DToL Consortium, AD Twyford</p>
+              </div></li>
+              <li class="pub"><div>
+                <h3 class="pub-title">The structure, packing and evolution of the giant genome of European mistletoe (<i>Viscum album</i>)</h3>
+                <p class="pub-authors">Many authors, including <b>MR Brown</b></p>
+              </div></li>
+            </ul>
+          </div>
+          <div>
+            <p class="eyebrow">Selected talks</p>
+            <ul class="talks">
+              <li><span class="when">2026</span><div><div class="what">Structure and synteny across diverse plant mitochondrial genomes</div><div class="where">Population Genetics Group conference · Lille, France</div></div></li>
+              <li><span class="when">2024</span><div><div class="what">Genetic factors predict hybridisation in the British flora</div><div class="where">Population Genetics Group conference · St Andrews, Scotland</div></div></li>
+              <li><span class="when">2022</span><div><div class="what">Resolving mitochondrial genomes across vascular plants</div><div class="where">International Genome Graph Symposium (IGGSy) · Ascona, Switzerland</div></div></li>
+              <li><span class="when">2019</span><div><div class="what">The hybrid flora of the British Isles in a phylogenetic context</div><div class="where">British Ecological Society annual meeting · Belfast, Northern Ireland</div></div></li>
+              <li><span class="when">2019</span><div><div class="what">Host identity not functional group determines the performance of a parasitic plant</div><div class="where">Botany 2019 · Arizona, USA</div></div></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
-  <footer>
-    <p>&copy; 2025 Brown Lab</p>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-grid">
+        <div>
+          <a class="brand" href="index.html"><svg viewBox="0 0 32 32" aria-hidden="true">
+  <g fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3">
+    <ellipse cx="12.2" cy="9.6" rx="3.8" ry="5.6" transform="rotate(-22 12.2 9.6)"/>
+    <ellipse cx="19.8" cy="9.6" rx="3.8" ry="5.6" transform="rotate(22 19.8 9.6)"/>
+    <ellipse cx="8.4" cy="19.4" rx="4" ry="6.2" transform="rotate(-58 8.4 19.4)"/>
+    <ellipse cx="23.6" cy="19.4" rx="4" ry="6.2" transform="rotate(58 23.6 19.4)"/>
+    <ellipse cx="16" cy="23.4" rx="4.2" ry="6.4"/>
+  </g>
+  <path d="M16 18v8M13.6 19.5l-1.4 5M18.4 19.5l1.4 5" stroke="var(--accent)" stroke-width="0.9" stroke-linecap="round" opacity=".7"/>
+  <circle cx="16" cy="16.4" r="3" fill="var(--gold)"/>
+</svg> Brown Lab</a>
+          <p style="margin-top:14px;max-width:30em">Plant ecology, evolution and genomics at Anglia Ruskin University, Cambridge.</p>
+        </div>
+        <div>
+          <h4>Find us</h4>
+          <address>Sci408, School of Life Sciences<br>Anglia Ruskin University<br>East Road, Cambridge CB1 1PT</address>
+        </div>
+        <div>
+          <h4>Elsewhere</h4>
+          <ul>
+            <li><a href="https://scholar.google.com/citations?user=1W1iLhEAAAAJ&hl=en">Google Scholar</a></li>
+            <li><a href="https://github.com/Euphrasiologist">GitHub</a></li>
+            <li><a href="https://github.com/tolkit">tolkit (Tree of Life tools)</a></li>
+            <li><a href="https://observablehq.com/@euphrasiologist">Observable</a></li>
+            <li><a href="contact.html">Email</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-base">
+        <span>&copy; 2026 Max Carter-Brown</span>
+        <span class="mono">5′–TTTAGGG–3′</span>
+      </div>
+    </div>
   </footer>
 </body>
 

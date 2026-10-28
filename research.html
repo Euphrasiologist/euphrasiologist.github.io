@@ -1,52 +1,222 @@
-<!-- research.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Research - Brown Lab</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <title>Research · Brown Lab</title>
+  <meta name="description" content="Research themes in the Brown Lab: somatic mutation, plant organelle genomes, telomeres, hybridisation and polyploidy, hemiparasitic plants and reference genomes.">
+  <meta name="author" content="Max Carter-Brown">
+  <link rel="canonical" href="https://euphrasiologist.github.io/research.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Brown Lab">
+  <meta property="og:title" content="Research · Brown Lab">
+  <meta property="og:description" content="Research themes in the Brown Lab: somatic mutation, plant organelle genomes, telomeres, hybridisation and polyploidy, hemiparasitic plants and reference genomes.">
+  <meta property="og:url" content="https://euphrasiologist.github.io/research.html">
+  <meta property="og:image" content="https://euphrasiologist.github.io/img/og.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#f7f5ef" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f1512" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+  <script src="site.js" defer></script>
 </head>
 
 <body>
-  <header>
-    <h1>Brown Lab</h1>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="research.html">Research</a>
-      <a href="people.html">People</a>
-      <a href="publications.html">Publications</a>
-      <a href="opportunities.html">Opportunities</a>
-      <a href="contact.html">Contact</a>
-    </nav>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="Brown Lab — home">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+  <g fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3">
+    <ellipse cx="12.2" cy="9.6" rx="3.8" ry="5.6" transform="rotate(-22 12.2 9.6)"/>
+    <ellipse cx="19.8" cy="9.6" rx="3.8" ry="5.6" transform="rotate(22 19.8 9.6)"/>
+    <ellipse cx="8.4" cy="19.4" rx="4" ry="6.2" transform="rotate(-58 8.4 19.4)"/>
+    <ellipse cx="23.6" cy="19.4" rx="4" ry="6.2" transform="rotate(58 23.6 19.4)"/>
+    <ellipse cx="16" cy="23.4" rx="4.2" ry="6.4"/>
+  </g>
+  <path d="M16 18v8M13.6 19.5l-1.4 5M18.4 19.5l1.4 5" stroke="var(--accent)" stroke-width="0.9" stroke-linecap="round" opacity=".7"/>
+  <circle cx="16" cy="16.4" r="3" fill="var(--gold)"/>
+</svg>
+        Brown Lab <small>Plant Ecology &amp; Genomics</small>
+      </a>
+      <nav class="nav" id="site-nav" aria-label="Main">
+        <a href="research.html" aria-current="page">Research</a>
+        <a href="publications.html">Publications</a>
+        <a href="software.html">Software</a>
+        <a href="figures.html">Figures</a>
+        <a href="people.html">People</a>
+        <a href="opportunities.html">Join</a>
+        <a href="contact.html">Contact</a>
+        <button class="icon-btn theme-toggle" type="button" aria-label="Toggle dark mode"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button>
+      </nav>
+      <button class="icon-btn menu-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="site-nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    </div>
   </header>
-  <main>
-    <h2>Current research directions</h2>
-    <h3>Somatic mutation variation in plants</h3>
-    <p>Along with <a href="https://www.gen.cam.ac.uk/research/research-groups/cagan-group">Alex Cagan</a>, we are
-      developing lines of research to investigate somatic mutation in plants. As little is known compared to animals, we
-      aim for this research to be fairly fundamental, measuring somatic mutation rates in long lived vs short lived
-      plant
-      species and comparing sequencing technologies for variant calling reliability.
-    </p>
 
-    <h3>Telomeres across the tree of life</h3>
-    <p>Having developed a <a href="https://github.com/tolkit/telomeric-identifier">telomere identification toolkit</a>,
-      we
-      are in the process of analysing the Darwin Tree of Life genomes for patterns across the tree of life. There is
-      much more variation in canonical telomeric repeats than previously thought for some groups.
-    </p>
+  <main id="main">
+    <section class="page-head">
+      <div class="wrap">
+        <p class="eyebrow">Research</p>
+        <h1>From whole floras to single cells</h1>
+        <p class="lede">We use field experiments, large comparative datasets and new genome-scale software to understand how plant genomes — and the plants that carry them — evolve.</p>
+        <nav class="toc" aria-label="Research themes">
+          <a href="#somatic">01 · Somatic mutation variation in plants</a><a href="#organelles">02 · Plant organelle genomes</a><a href="#telomeres">03 · Telomeres across the tree of life</a><a href="#hybridisation">04 · Hybridisation & polyploidy</a><a href="#parasites">05 · Host–parasite interactions in hemiparasites</a><a href="#genomes">06 · Reference genomes for the British flora</a>
+        </nav>
+      </div>
+    </section>
 
-    <h3>Host-parasite interactions in hemiparasites</h3>
-    <p>Hemiparasitic plants tend to have wider host ranges than holoparasitic plants, but this has not been rigorously
-      quantified or related to fitness in wild plants. We are developing <a
-        href="https://github.com/Euphrasiologist/oxygraphis">oxygraphis</a>, a toolkit to analyse bipartite ecological
-      graphs. This toolkit will be applied to wild Eyebright data from the UK.</p>
+    <div class="wrap">
+      <article class="theme" id="somatic">
+        <div class="theme-aside">
+          <div class="theme-num">01</div>
+          <div class="kicker">PhD project · 2025–2028</div>
+        </div>
+        <div class="theme-body">
+          <h2>Somatic mutation variation in plants</h2>
+          <p>Plants have no segregated germline: a mutation arising in a growing shoot can be passed on through the flowers that shoot eventually bears. Yet compared with animals, remarkably little is known about how often somatic mutations occur in plants or what governs their rate.</p>
+          <p>With <a href="https://www.gen.cam.ac.uk/research/research-groups/cagan-group">Alex Cagan</a> (University of Cambridge) and the Wellcome Sanger Institute, we are measuring somatic mutation rates in long-lived versus short-lived plant species, and benchmarking sequencing technologies for how reliably they call low-frequency variants. This work is supported by a Cambridge Philosophical Society Sedgwick PhD studentship.</p>
+          <div class="outputs">
+            <div class="output"><small>Funding</small>Sedgwick PhD studentship, Cambridge Philosophical Society (2025–2028)</div>
+            <div class="output"><small>Partners</small>University of Cambridge · Wellcome Sanger Institute</div>
+          </div>
+        </div>
+      </article>
+      <article class="theme" id="organelles">
+        <div class="theme-aside">
+          <div class="theme-num">02</div>
+          <div class="kicker">Genome structure</div>
+        </div>
+        <div class="theme-body">
+          <h2>Plant organelle genomes</h2>
+          <p>Plant mitochondrial genomes are among the strangest in biology: they recombine across repeats, exist as multiple alternative structures within one cell, and vary more than a hundred-fold in size. That makes them notoriously hard to assemble — and fascinating to compare.</p>
+          <p>Building on tools developed at the Sanger Institute (gfatk and Oatk), we are assembling mitochondrial genomes across a phylogenetically diverse sample of plants to ask how structure and gene order (synteny) evolve. A synthesis paper is in preparation with collaborators at EMBL-EBI and the Darwin Tree of Life.</p>
+          <div class="outputs">
+            <a class="output" href="https://doi.org/10.1186/s13059-025-03676-6"><small>Paper</small>Oatk — <i>Genome Biology</i>, 2025</a>
+            <a class="output" href="https://github.com/tolkit/gfatk"><small>Software</small>gfatk — organelle assembly graphs</a>
+            <a class="output" href="figures.html"><small>Interactive figure</small>Mitochondrial assembly complexity across land plants</a>
+            <div class="output"><small>Talk</small>Structure and synteny across diverse plant mitochondrial genomes — PopGroup 2026, Lille</div>
+            <div class="output"><small>In preparation</small>Structure and synteny across diverse plant mitochondrial genomes</div>
+          </div>
+        </div>
+      </article>
+      <article class="theme" id="telomeres">
+        <div class="theme-aside">
+          <div class="theme-num">03</div>
+          <div class="kicker">Comparative genomics</div>
+        </div>
+        <div class="theme-body">
+          <h2>Telomeres across the tree of life</h2>
+          <p>Telomeres cap the ends of linear chromosomes with short tandem repeats — TTAGGG in vertebrates, TTTAGGG in most plants. But as reference genomes multiply, it is clear that canonical repeats vary far more than once thought, with some lineages having switched sequence entirely.</p>
+          <p>We developed the <a href="https://github.com/tolkit/telomeric-identifier">telomere identification toolkit (tidk)</a> to discover and map these repeats rapidly, and are now applying it across the Darwin Tree of Life genomes to chart where and how often telomere sequences have changed.</p>
+          <div class="outputs">
+            <a class="output" href="https://doi.org/10.1093/bioinformatics/btaf049"><small>Paper</small>tidk — <i>Bioinformatics</i>, 2025</a>
+            <a class="output" href="https://github.com/tolkit/telomeric-identifier"><small>Software</small>tolkit/telomeric-identifier · ★180</a>
+          </div>
+        </div>
+      </article>
+      <article class="theme" id="hybridisation">
+        <div class="theme-aside">
+          <div class="theme-num">04</div>
+          <div class="kicker">Evolutionary ecology</div>
+        </div>
+        <div class="theme-body">
+          <h2>Hybridisation & polyploidy</h2>
+          <p>Hybridisation is a creative force in plant evolution, but it is far from evenly distributed: some genera hybridise constantly, others almost never. Using the whole British flora as a natural experiment, we showed that genetic factors — notably genome size and ploidy differences — predict where hybrids form.</p>
+          <p>We are particularly interested in crosses between plants of different ploidy, once assumed to be evolutionary dead ends but increasingly recognised as an important route for gene flow.</p>
+          <div class="outputs">
+            <a class="output" href="https://doi.org/10.1073/pnas.2220261120"><small>Paper</small>Genetic factors predict hybrid formation in the British flora — <i>PNAS</i>, 2023</a>
+            <a class="output" href="https://doi.org/10.1111/mec.17315"><small>Review</small>The emerging importance of cross-ploidy hybridisation — <i>Mol. Ecol.</i>, 2024</a>
+            <a class="output" href="https://observablehq.com/d/edc2b7a7cc252f93"><small>Interactive figure</small>Cross-ploidy hybrids across the British flora</a>
+            <a class="output" href="https://doi.org/10.1002/ajb2.16100"><small>Paper</small>Diploid–tetraploid <i>Euphrasia</i> contact zone — <i>Am. J. Bot.</i>, 2023</a>
+          </div>
+        </div>
+      </article>
+      <article class="theme" id="parasites">
+        <div class="theme-aside">
+          <div class="theme-num">05</div>
+          <div class="kicker">Field & greenhouse ecology</div>
+        </div>
+        <div class="theme-body">
+          <h2>Host–parasite interactions in hemiparasites</h2>
+          <p>Hemiparasitic plants such as eyebrights photosynthesise for themselves yet tap the roots of neighbours for water and nutrients. They tend to have far wider host ranges than full (holo)parasites, but this generalism has rarely been quantified or linked to fitness in wild populations.</p>
+          <p>Large common-garden experiments showed that host identity, rather than broad functional group, determines how well <i>Euphrasia</i> performs. We are now developing <a href="https://github.com/Euphrasiologist/oxygraphis">oxygraphis</a>, a toolkit for analysing bipartite ecological networks, to map host–parasite links in wild British eyebright populations.</p>
+          <div class="outputs">
+            <a class="output" href="https://doi.org/10.1111/nph.17752"><small>Paper</small>Performance across a diverse host spectrum — <i>New Phytologist</i>, 2021</a>
+            <a class="output" href="https://doi.org/10.1002/ajb2.1445"><small>Paper</small>Life history evolution in eyebrights — <i>Am. J. Bot.</i>, 2020</a>
+            <a class="output" href="https://github.com/Euphrasiologist/oxygraphis"><small>Software</small>oxygraphis — ecological graph analysis</a>
+          </div>
+          <figure class="figure theme-figure reveal">
+            <div class="frame"><img src="img/euphrasia.jpg" alt="Eyebright plants flowering among grasses and bird's-foot trefoil" width="1600" height="1200" loading="lazy"></div>
+            <figcaption><b>Fig.</b><i>Euphrasia</i> in the field. Eyebrights attach to the roots of a wide range of host plants.</figcaption>
+          </figure>
+        </div>
+      </article>
+      <article class="theme" id="genomes">
+        <div class="theme-aside">
+          <div class="theme-num">06</div>
+          <div class="kicker">Darwin Tree of Life</div>
+        </div>
+        <div class="theme-body">
+          <h2>Reference genomes for the British flora</h2>
+          <p>The Darwin Tree of Life project aims to sequence every eukaryotic species in Britain and Ireland. As a Research Associate at the Royal Botanic Garden Edinburgh, Max sits on the project's plant sampling working group and maintains its progress dashboard.</p>
+          <p>The lab contributes to chromosome-level reference genomes for British plants — from crop wild relatives like apple to the giant, densely packed genome of European mistletoe (<i>Viscum album</i>), currently in preparation.</p>
+          <div class="outputs">
+            <a class="output" href="https://wellcomeopenresearch.org/articles/10-271"><small>Genome note</small><i>Malus</i> × <i>robusta</i> — <i>Wellcome Open Res.</i>, 2025</a>
+            <a class="output" href="https://wellcomeopenresearch.org/articles/11-420"><small>Genome note</small><i>Draba verna</i> — <i>Wellcome Open Res.</i>, 2026</a>
+            <a class="output" href="https://wellcomeopenresearch.org/articles/11-800"><small>Genome note</small><i>Buddleja davidii</i> — <i>Wellcome Open Res.</i>, 2026</a>
+            <div class="output"><small>In preparation</small>The giant genome of European mistletoe (<i>Viscum album</i>)</div>
+          </div>
+          <figure class="figure theme-figure reveal">
+            <div class="frame"><img src="img/tulbaghia.jpg" alt="Microscope field of view showing root-tip cells with dark-stained nuclei and condensed chromosomes" width="1600" height="1200" loading="lazy"></div>
+            <figcaption><b>Fig.</b>The very large chromosomes of <i>Tulbaghia</i>, visible in dividing root-tip cells. Genome size varies more than 2,000-fold across flowering plants.</figcaption>
+          </figure>
+        </div>
+      </article>
+    </div>
   </main>
-  <footer>
-    <p>&copy; 2025 Brown Lab</p>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-grid">
+        <div>
+          <a class="brand" href="index.html"><svg viewBox="0 0 32 32" aria-hidden="true">
+  <g fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3">
+    <ellipse cx="12.2" cy="9.6" rx="3.8" ry="5.6" transform="rotate(-22 12.2 9.6)"/>
+    <ellipse cx="19.8" cy="9.6" rx="3.8" ry="5.6" transform="rotate(22 19.8 9.6)"/>
+    <ellipse cx="8.4" cy="19.4" rx="4" ry="6.2" transform="rotate(-58 8.4 19.4)"/>
+    <ellipse cx="23.6" cy="19.4" rx="4" ry="6.2" transform="rotate(58 23.6 19.4)"/>
+    <ellipse cx="16" cy="23.4" rx="4.2" ry="6.4"/>
+  </g>
+  <path d="M16 18v8M13.6 19.5l-1.4 5M18.4 19.5l1.4 5" stroke="var(--accent)" stroke-width="0.9" stroke-linecap="round" opacity=".7"/>
+  <circle cx="16" cy="16.4" r="3" fill="var(--gold)"/>
+</svg> Brown Lab</a>
+          <p style="margin-top:14px;max-width:30em">Plant ecology, evolution and genomics at Anglia Ruskin University, Cambridge.</p>
+        </div>
+        <div>
+          <h4>Find us</h4>
+          <address>Sci408, School of Life Sciences<br>Anglia Ruskin University<br>East Road, Cambridge CB1 1PT</address>
+        </div>
+        <div>
+          <h4>Elsewhere</h4>
+          <ul>
+            <li><a href="https://scholar.google.com/citations?user=1W1iLhEAAAAJ&hl=en">Google Scholar</a></li>
+            <li><a href="https://github.com/Euphrasiologist">GitHub</a></li>
+            <li><a href="https://github.com/tolkit">tolkit (Tree of Life tools)</a></li>
+            <li><a href="https://observablehq.com/@euphrasiologist">Observable</a></li>
+            <li><a href="contact.html">Email</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-base">
+        <span>&copy; 2026 Max Carter-Brown</span>
+        <span class="mono">5′–TTTAGGG–3′</span>
+      </div>
+    </div>
   </footer>
 </body>
 
