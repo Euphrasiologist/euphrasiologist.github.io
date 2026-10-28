@@ -14,7 +14,7 @@ Some highlights:
 - **DNA transfer into the mitochondrion** is roughly three times more frequent from the nuclear genome than from the plastid, but it does not itself drive genome expansion.
 - **TE's** - we found lots of evidence of TE's in our mitochondrial genomes, but they were all non-functional even though in some lineages they had been copied in the mitochondrion post-transfer from the nucleus.
 
-![Circular phylogeny of land plants with rings showing mitochondrial genome length, repeat content, introns and plastid-derived DNA](/img/fig-mito-complexity.jpg)
+![Circular phylogeny of land plants with rings showing mitochondrial genome length, repeat content, introns and plastid-derived DNA](/img/fig-mito-complexity.svg)
 
 You can explore the complexity data interactively on our [figures page](/figures.html).
 
