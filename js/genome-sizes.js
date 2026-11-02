@@ -2,6 +2,7 @@
 // are read live from the plant-sequencing-status pipeline, which updates weekly.
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.17/+esm";
+import { addDownloads } from "./plot-download.js";
 
 const DATA_URL = "https://dtol-plant-working-group.github.io/plant-sequencing-status/data/all_genome_size_data.tsv";
 
@@ -420,6 +421,7 @@ new MutationObserver(render).observe(root, { attributes: true, attributeFilter: 
 
 $("status").remove();
 $("app").hidden = false;
+addDownloads($("app"), { colorLabel: () => $("colorBy").selectedOptions[0].text });
 render();
 let width = innerWidth, timer;
 addEventListener("resize", () => {

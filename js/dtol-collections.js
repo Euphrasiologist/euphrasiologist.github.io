@@ -2,6 +2,7 @@
 // Observable Plot. The data are read live from the collectors' published sheets.
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.17/+esm";
+import { addDownloads } from "./plot-download.js";
 
 const SHEET = "https://docs.google.com/spreadsheets/d/e/";
 const URLS = {
@@ -285,6 +286,7 @@ const cv = cRows ? cvalues(cRows, bySpecies) : [];
 
 $("status").remove();
 $("app").hidden = false;
+addDownloads($("app"));
 const names = [...new Set([...taxa.map((d) => d.species), ...cv.map((d) => d.species)])].sort(d3.ascending);
 $("names").replaceChildren(...names.map((value) => Object.assign(document.createElement("option"), { value })));
 $("search").addEventListener("change", (e) => {
