@@ -51,7 +51,7 @@
         <a href="/research.html">Research</a>
         <a href="/publications.html">Publications</a>
         <a href="/software.html">Software</a>
-        <a href="/figures.html">Figures</a>
+        <a href="/figures.html"{% if page.section == "figures" %} aria-current="page"{% endif %}>Figures</a>
         <a href="/news.html"{% if page.url contains "/news" %} aria-current="page"{% endif %}>News</a>
         <a href="/people.html">People</a>
         <a href="/opportunities.html">Join</a>

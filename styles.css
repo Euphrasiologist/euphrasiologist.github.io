@@ -2869,3 +2869,265 @@ a.output:hover {
     -webkit-backdrop-filter: none;
   }
 }
+
+/* ---------- Genome sizes page (js/genome-sizes.js) ---------- */
+
+.gs {
+  --plot-background: var(--surface);
+}
+
+.gs-status {
+  color: var(--ink-3);
+}
+
+.gs-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+}
+
+.gs-tile {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.gs-tile b {
+  display: block;
+  font-family: var(--serif);
+  font-size: 1.7rem;
+  font-weight: 500;
+  line-height: 1.15;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.gs-tile span {
+  font-size: 0.84rem;
+  color: var(--ink-3);
+}
+
+.gs-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  align-items: center;
+  margin: 28px 0 0;
+  padding: 0 0 14px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.gs-search {
+  flex: 0 1 260px;
+}
+
+.gs-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--ink-2);
+}
+
+.gs-select select {
+  font: inherit;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  padding: 8px 12px;
+}
+
+.gs-legend {
+  width: 100%;
+  min-height: 26px;
+  color: var(--ink-2);
+  font-size: 0.82rem;
+}
+
+.gs-legend svg {
+  display: block;
+}
+
+.gs-section {
+  margin-top: 56px;
+}
+
+.gs-section h2 {
+  margin-bottom: 0.4em;
+}
+
+.gs-note {
+  max-width: 46em;
+  margin: 0 0 18px;
+  color: var(--ink-2);
+  font-size: 1.02rem;
+}
+
+.gs-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr);
+  gap: 14px;
+}
+
+@media (max-width: 860px) {
+  .gs-pair {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.gs-card {
+  min-width: 0;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 14px;
+}
+
+.gs-card h3 {
+  margin: 0 0 8px;
+  font-family: var(--sans);
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.gs-plot {
+  color: var(--ink-2);
+}
+
+.gs-plot svg {
+  display: block;
+  max-width: 100%;
+  cursor: pointer;
+}
+
+.gs-caveat {
+  max-width: 56em;
+  margin: 10px 0 0;
+  font-size: 0.86rem;
+  color: var(--ink-3);
+}
+
+.gs-source {
+  margin-top: 48px;
+}
+
+.gs-tablewrap {
+  overflow-x: auto;
+}
+
+.gs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.gs-table th,
+.gs-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--rule);
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.gs-table th.l,
+.gs-table td.l {
+  text-align: left;
+}
+
+.gs-table th {
+  color: var(--ink-3);
+  font-weight: 600;
+}
+
+.gs-table th button {
+  all: unset;
+  cursor: pointer;
+}
+
+.gs-table th button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.gs-table tbody tr {
+  cursor: pointer;
+}
+
+.gs-table tbody tr:hover {
+  background: var(--paper-2);
+}
+
+.gs-more {
+  margin-top: 12px;
+}
+
+.gs-detail {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 20;
+  width: min(340px, calc(100vw - 32px));
+  max-height: 70vh;
+  overflow: auto;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--rule-strong);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  font-size: 0.88rem;
+}
+
+.gs-detail h3 {
+  margin: 0 24px 2px 0;
+  font-size: 1.15rem;
+  font-style: italic;
+}
+
+.gs-detail p {
+  margin: 0;
+  color: var(--ink-3);
+}
+
+.gs-detail dl {
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: space-between;
+  gap: 2px 14px;
+  margin: 10px 0 0;
+}
+
+.gs-detail dt {
+  color: var(--ink-3);
+}
+
+.gs-detail dd {
+  margin: 0;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.gs-detail .gs-flag {
+  margin-top: 8px;
+  color: var(--ink-2);
+}
+
+.gs-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  border: 0;
+  background: none;
+  color: var(--ink-3);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.section.gs {
+  padding-top: 36px;
+}
