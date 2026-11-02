@@ -3131,3 +3131,22 @@ a.output:hover {
 .section.gs {
   padding-top: 36px;
 }
+
+.gs-tile b small {
+  font-size: 0.6em;
+  color: var(--ink-3);
+}
+
+.gs-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 14px;
+}
+
+.gs-legend i {
+  width: 12px;
+  height: 12px;
+  border: 1px solid;
+  border-radius: 2px;
+}
