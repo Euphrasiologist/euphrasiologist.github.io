@@ -245,7 +245,7 @@
           <h3><a href="https://github.com/tolkit/gfatk">gfatk</a></h3>
           <h2>Untangling mitochondrial assembly graphs</h2>
           <p>Plant mitochondria recombine across repeats, so assemblers return a <em>graph</em>, not a sequence. gfatk reads these GFA graphs, separates mitochondrion from plastid, and finds a linear path that uses every segment as many times as its coverage suggests.</p>
-          <p>Its ideas went on to underpin <a href="https://github.com/c-zhou/oatk">Oatk</a>, now a widely used de novo organelle assembler.</p>
+          <p>Its ideas went on to underpin <a href="https://github.com/c-zhou/oatk">Oatk</a>, now a widely used de novo organelle assembler. You can browse the Oatk graphs of over 1,200 plant mitochondria and plastids in our <a href="organelles.html">organelle genome atlas</a>.</p>
           <pre class="terminal" tabindex="0"><span class="p">$ </span>gfatk stats mito.gfa -t
 <span class="p">$ </span>gfatk extract-mito assembly.gfa | gfatk linear &gt; mito.fa
 <span class="p">$ </span>gfatk dot mito.gfa | dot -Tsvg &gt; mito.svg</pre>
