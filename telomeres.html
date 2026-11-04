@@ -1,0 +1,172 @@
+---
+layout: default
+title: Telomeric repeat database
+section: figures
+permalink: /telomeres.html
+summary: Telomeric repeats, telomerase RNA and TERT across 3,400 chromosome-level genomes from the Darwin Tree of Life, with sequences to download.
+---
+
+<section class="page-head">
+  <div class="wrap">
+    <p class="eyebrow"><a href="/figures.html">Figures</a> · Live data</p>
+    <h1>Telomeric repeat database</h1>
+    <p class="lede">
+      The telomeric repeat, the telomerase RNA (TR) and the telomerase reverse
+      transcriptase (TERT) of more than 3,400 animals, plants, fungi and
+      protists, from chromosome-level
+      <a href="https://www.darwintreeoflife.org/">Darwin Tree of Life</a>
+      genomes. Repeats were called with
+      <a href="https://github.com/tolkit/telomeric-identifier">tidk</a>. Pick a
+      species to see its telomere at the chromosome ends, its TR with the
+      template that encodes the repeat, and its TERT, each with sequences to
+      download. The data presented here are in preparation for a paper, where we
+      analyse TR/TERT losses, evolutionary rates, and changes across the
+      phylogeny.
+    </p>
+  </div>
+</section>
+
+<section class="section gs og tl">
+  <div class="wrap">
+    <p id="status" class="gs-status">Loading the database…</p>
+
+    <div id="app" hidden>
+      <div class="gs-tiles" id="tiles"></div>
+
+      <div class="gs-bar">
+        <label class="search gs-search">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            aria-hidden="true"
+          >
+            <circle cx="11" cy="11" r="7" />
+            <path d="m20 20-3.5-3.5" />
+          </svg>
+          <input
+            type="search"
+            id="search"
+            list="names"
+            placeholder="Find a species, genus or repeat"
+            aria-label="Find a species, genus or repeat"
+            autocomplete="off"
+          />
+        </label>
+        <datalist id="names"></datalist>
+        <button type="button" class="chip" id="random">Surprise me</button>
+        <span class="og-picks" id="picks"></span>
+      </div>
+
+      <article id="species" class="og-species" aria-live="polite"></article>
+
+      <div class="gs-section">
+        <h2>Across the tree of life</h2>
+        <p class="gs-note" id="note1"></p>
+        <div class="gs-card tl-treecard">
+          <div class="tl-treehead">
+            <h3>Repeats, TR and TERT on the dated tree</h3>
+            <div class="tl-treetools">
+              <label class="og-label"
+                >Marks
+                <select id="markPos" class="tl-select">
+                  <option value="node">at the node</option>
+                  <option value="mid">at the branch midpoint</option>
+                </select></label
+              >
+              <span class="og-toggle"
+                ><button
+                  type="button"
+                  class="chip"
+                  id="treeOut"
+                  aria-label="Zoom out"
+                >
+                  −</button
+                ><button
+                  type="button"
+                  class="chip"
+                  id="treeIn"
+                  aria-label="Zoom in"
+                >
+                  +
+                </button></span
+              >
+              <button type="button" class="chip" id="treeReset">Reset</button>
+              <button type="button" class="chip" id="treeSave">
+                Download SVG
+              </button>
+            </div>
+          </div>
+          <div class="tl-tree" id="figTree"></div>
+          <p class="gs-note tl-treecap">
+            <b>a</b>, the dated species tree, with rings for the repeat, a
+            validated TR and TERT, and the repeat changes marked by route.
+            <b>b</b>, <b>c</b>, Coleoptera and Hymenoptera enlarged, where most
+            changes are. The download is the print figure, 178 mm wide.
+          </p>
+          <div class="og-tip tl-figtip" id="treeTip"></div>
+        </div>
+        <div class="gs-pair">
+          <div class="gs-card">
+            <h3>Telomeric repeat by group</h3>
+            <div class="gs-plot" id="plot1"></div>
+          </div>
+          <div class="gs-card">
+            <h3>Chromosome ends carrying the telomere</h3>
+            <div class="gs-plot" id="plot2"></div>
+          </div>
+        </div>
+        <div class="gs-card">
+          <h3>Telomerase losses</h3>
+          <p class="gs-note" id="note3"></p>
+          <div class="gs-plot" id="plot3"></div>
+        </div>
+      </div>
+
+      <div class="gs-section">
+        <h2>All species</h2>
+        <div class="gs-card og-browse">
+          <div class="og-filters">
+            <label class="og-label" for="groupFilter">Group</label>
+            <select id="groupFilter" class="tl-select"></select>
+            <label class="og-label" for="stateFilter">Telomere</label>
+            <select id="stateFilter" class="tl-select">
+              <option value="">Any</option>
+              <option value="AACCT">AACCT (most arthropods)</option>
+              <option value="AACCCT">AACCCT (most animals)</option>
+              <option value="AAACCCT">AAACCCT (most plants)</option>
+              <option value="other">Another repeat</option>
+              <option value="lost">Telomerase lost</option>
+              <option value="unknown">No call</option>
+            </select>
+            <button
+              type="button"
+              class="chip"
+              id="unitChip"
+              hidden
+              aria-label="Clear the repeat filter"
+            ></button>
+          </div>
+          <div class="gs-tablewrap">
+            <table class="gs-table">
+              <thead id="thead"></thead>
+              <tbody id="tbody"></tbody>
+            </table>
+          </div>
+          <button class="chip gs-more" id="more" type="button"></button>
+        </div>
+      </div>
+
+      <div class="gs-section">
+        <h2>Download everything</h2>
+        <div class="og-filegrid tl-bulk" id="bulk"></div>
+      </div>
+
+      <p class="gs-caveat gs-source" id="source"></p>
+      <div class="og-tip tl-helptip" id="helpTip" role="tooltip"></div>
+    </div>
+  </div>
+</section>
+<script type="module" src="/js/telomeres.js"></script>
