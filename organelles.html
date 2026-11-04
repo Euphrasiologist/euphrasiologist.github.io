@@ -5,54 +5,110 @@ section: figures
 permalink: /organelles.html
 summary: Mitochondrial and plastid assembly graphs, gene annotation and downloads for over 1,200 British plant species, from Darwin Tree of Life long reads.
 ---
-    <section class="page-head">
-      <div class="wrap">
-        <p class="eyebrow"><a href="/figures.html">Figures</a> · Live data</p>
-        <h1>Plant organelle genome atlas</h1>
-        <p class="lede">Mitochondrial and plastid genomes for over 1,200 plant species, assembled with <a href="https://github.com/c-zhou/oatk">Oatk</a> from Darwin Tree of Life long reads and annotated with <a href="https://github.com/Euphrasiologist/poa">poa</a>. Pick a species to see its assembly graphs, its genes and every file behind them.</p>
+
+<section class="page-head">
+  <div class="wrap">
+    <p class="eyebrow"><a href="/figures.html">Figures</a> · Live data</p>
+    <h1>Plant organelle genome atlas</h1>
+    <p class="lede">
+      Mitochondrial and plastid genomes for over 1,200 plant species, assembled
+      with <a href="https://github.com/c-zhou/oatk">Oatk</a> from Darwin Tree of
+      Life long reads and annotated with
+      <a href="https://github.com/Euphrasiologist/poa">poa</a>. Pick a species
+      to see its assembly graphs, its genes and every file behind them.
+    </p>
+  </div>
+</section>
+
+<section class="section gs og">
+  <div class="wrap">
+    <p id="status" class="gs-status">Loading the atlas…</p>
+
+    <div id="app" hidden>
+      <div class="gs-tiles" id="tiles"></div>
+
+      <div class="gs-bar">
+        <label class="search gs-search">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            aria-hidden="true"
+          >
+            <circle cx="11" cy="11" r="7" />
+            <path d="m20 20-3.5-3.5" />
+          </svg>
+          <input
+            type="search"
+            id="search"
+            list="names"
+            placeholder="Find a species or genus"
+            aria-label="Find a species or genus"
+            autocomplete="off"
+          />
+        </label>
+        <datalist id="names"></datalist>
+        <button type="button" class="chip" id="random">Surprise me</button>
+        <span class="og-picks" id="picks"></span>
       </div>
-    </section>
 
-    <section class="section gs og">
-      <div class="wrap">
-        <p id="status" class="gs-status">Loading the atlas…</p>
+      <article id="species" class="og-species" aria-live="polite"></article>
 
-        <div id="app" hidden>
-          <div class="gs-tiles" id="tiles"></div>
-
-          <div class="gs-bar">
-            <label class="search gs-search">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-              <input type="search" id="search" list="names" placeholder="Find a species or genus" aria-label="Find a species or genus" autocomplete="off">
-            </label>
-            <datalist id="names"></datalist>
-            <button type="button" class="chip" id="random">Surprise me</button>
-            <span class="og-picks" id="picks"></span>
+      <div class="gs-section">
+        <h2>All species</h2>
+        <p class="gs-note" id="note1"></p>
+        <div class="gs-pair">
+          <div class="gs-card">
+            <h3>Mitochondrial against plastid genome size</h3>
+            <div class="gs-plot" id="plot1"></div>
           </div>
-
-          <article id="species" class="og-species" aria-live="polite"></article>
-
-          <div class="gs-section">
-            <h2>All species</h2>
-            <p class="gs-note" id="note1"></p>
-            <div class="gs-pair">
-              <div class="gs-card"><h3>Mitochondrial against plastid genome size</h3><div class="gs-plot" id="plot1"></div></div>
-              <div class="gs-card"><h3>Assembly graph complexity</h3><div class="gs-plot" id="plot2"></div></div>
-            </div>
-            <div class="gs-card og-browse">
-              <div class="og-filters" role="group" aria-label="Filter by QC status">
-                <span class="og-label">QC status</span>
-                <button type="button" class="chip" data-status="pass" aria-pressed="true">Pass</button>
-                <button type="button" class="chip" data-status="flag" aria-pressed="true">Flag</button>
-                <button type="button" class="chip" data-status="fail" aria-pressed="true">Fail</button>
-              </div>
-              <div class="gs-tablewrap"><table class="gs-table"><thead id="thead"></thead><tbody id="tbody"></tbody></table></div>
-              <button class="chip gs-more" id="more" type="button"></button>
-            </div>
+          <div class="gs-card">
+            <h3>Assembly graph complexity</h3>
+            <div class="gs-plot" id="plot2"></div>
           </div>
-
-          <p class="gs-caveat gs-source" id="source"></p>
+        </div>
+        <div class="gs-card og-browse">
+          <div class="og-filters" role="group" aria-label="Filter by QC status">
+            <span class="og-label">QC status</span>
+            <button
+              type="button"
+              class="chip"
+              data-status="pass"
+              aria-pressed="true"
+            >
+              Pass
+            </button>
+            <button
+              type="button"
+              class="chip"
+              data-status="flag"
+              aria-pressed="true"
+            >
+              Flag
+            </button>
+            <button
+              type="button"
+              class="chip"
+              data-status="fail"
+              aria-pressed="true"
+            >
+              Fail
+            </button>
+          </div>
+          <div class="gs-tablewrap">
+            <table class="gs-table">
+              <thead id="thead"></thead>
+              <tbody id="tbody"></tbody>
+            </table>
+          </div>
+          <button class="chip gs-more" id="more" type="button"></button>
         </div>
       </div>
-    </section>
-    <script type="module" src="/js/organelles.js"></script>
+
+      <p class="gs-caveat gs-source" id="source"></p>
+    </div>
+  </div>
+</section>
+<script type="module" src="/js/organelles.js"></script>

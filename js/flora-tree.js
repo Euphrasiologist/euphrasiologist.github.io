@@ -104,8 +104,21 @@ const FAMILIES = {
   Rubiaceae: ["Galium", "Rubia", "Sherardia"],
   Gentianaceae: ["Gentiana", "Centaurium"],
   Lamiaceae: ["Lamium", "Mentha", "Ajuga", "Scutellaria"],
-  Orobanchaceae: ["Euphrasia", "Orobanche", "Melampyrum", "Pedicularis", "Lathraea"],
-  Plantaginaceae: ["Veronica", "Plantago", "Digitalis", "Linaria", "Callitriche", "Hippuris"],
+  Orobanchaceae: [
+    "Euphrasia",
+    "Orobanche",
+    "Melampyrum",
+    "Pedicularis",
+    "Lathraea",
+  ],
+  Plantaginaceae: [
+    "Veronica",
+    "Plantago",
+    "Digitalis",
+    "Linaria",
+    "Callitriche",
+    "Hippuris",
+  ],
   Scrophulariaceae: ["Scrophularia", "Verbascum"],
   Lentibulariaceae: ["Pinguicula", "Utricularia"],
   Oleaceae: ["Fraxinus", "Ligustrum"],
@@ -125,7 +138,11 @@ const norm = (a) => ((a % TAU) + TAU) % TAU;
 const fmt = (n) => (n < 10 ? n.toFixed(1) : Math.round(n)).toString();
 const genusOf = (label) => label.split("_")[0];
 const speciesName = (label) => label.replace(/_/g, " ");
-const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const esc = (s) =>
+  s.replace(
+    /[&<>"]/g,
+    (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c],
+  );
 
 function polar(r, a) {
   return [r * Math.cos(a), r * Math.sin(a)];
@@ -138,7 +155,19 @@ function pt(r, a) {
 function arc(r, a0, a1, move = true) {
   const large = Math.abs(a1 - a0) > Math.PI ? 1 : 0;
   const sweep = a1 > a0 ? 1 : 0;
-  return (move ? "M" + pt(r, a0) : "") + "A" + r.toFixed(2) + " " + r.toFixed(2) + " 0 " + large + " " + sweep + " " + pt(r, a1);
+  return (
+    (move ? "M" + pt(r, a0) : "") +
+    "A" +
+    r.toFixed(2) +
+    " " +
+    r.toFixed(2) +
+    " 0 " +
+    large +
+    " " +
+    sweep +
+    " " +
+    pt(r, a1)
+  );
 }
 function el(name, attrs, parent) {
   const node = document.createElementNS(SVGNS, name);
@@ -187,7 +216,11 @@ function buildNodes(layout) {
       n.amax = Math.max(...n.children.map((c) => c.amax));
     }
   }
-  return { root, order, tips: order.filter((n) => n.isTip).sort((a, b) => a.a - b.a) };
+  return {
+    root,
+    order,
+    tips: order.filter((n) => n.isTip).sort((a, b) => a.a - b.a),
+  };
 }
 
 function mrca(tree, genera) {
@@ -196,7 +229,8 @@ function mrca(tree, genera) {
   if (!tips.length) return null;
   let anc = tips[0];
   for (const t of tips) {
-    let a = anc, b = t;
+    let a = anc,
+      b = t;
     while (a.depth > b.depth) a = a.parent;
     while (b.depth > a.depth) b = b.parent;
     while (a !== b) {
@@ -223,20 +257,28 @@ function mount(fig) {
     })
     .then((newick) => {
       const parsed = lw.ladderize(lw.readTree(newick), { ascending: false });
-      const layout = lw.radialLayout(parsed, { openAngleDeg: GAP, rotateDeg: ROT });
+      const layout = lw.radialLayout(parsed, {
+        openAngleDeg: GAP,
+        rotateDeg: ROT,
+      });
       const tree = buildNodes(layout);
       draw(fig, svg, card, legend, input, list, tree);
       status.remove();
     })
     .catch(() => {
-      status.textContent = "The tree could not be loaded. It is also on Observable (link below).";
+      status.textContent =
+        "The tree could not be loaded. It is also on Observable (link below).";
     });
 }
 
 function draw(fig, svg, card, legend, input, list, tree) {
   const R = Math.max(...tree.tips.map((t) => t.r)); // root age; tips sit here
-  const step = (tree.tips[tree.tips.length - 1].a - tree.tips[0].a) / (tree.tips.length - 1);
-  const FAM_R = R + 25, ORD_R = R + 34, V = R + 50;
+  const step =
+    (tree.tips[tree.tips.length - 1].a - tree.tips[0].a) /
+    (tree.tips.length - 1);
+  const FAM_R = R + 25,
+    ORD_R = R + 34,
+    V = R + 50;
   svg.setAttribute("viewBox", [-V, -V, 2 * V, 2 * V].join(" "));
 
   // Name the clades, then let every node inherit its group, order and family
@@ -250,7 +292,9 @@ function draw(fig, svg, card, legend, input, list, tree) {
     }
     return out;
   };
-  const groups = named(GROUPS, "groupName").sort((a, b) => a.node.amin - b.node.amin);
+  const groups = named(GROUPS, "groupName").sort(
+    (a, b) => a.node.amin - b.node.amin,
+  );
   groups.forEach((g, i) => (g.node.slot = i + 1));
   named(CLADES, "cladeName");
   const orders = named(ORDERS, "orderName");
@@ -282,7 +326,8 @@ function draw(fig, svg, card, legend, input, list, tree) {
     return d;
   };
   const sector = (n, r0, r1) => {
-    const a0 = n.amin - step / 2, a1 = n.amax + step / 2;
+    const a0 = n.amin - step / 2,
+      a1 = n.amax + step / 2;
     return arc(r1, a0, a1) + "L" + pt(r0, a1) + arc(r0, a1, a0, false) + "Z";
   };
 
@@ -295,13 +340,49 @@ function draw(fig, svg, card, legend, input, list, tree) {
   // Geological periods as alternate bands, named in the gap at the top
   const time = el("g", { class: "time" }, world);
   PERIODS.forEach(([name, from, to], i) => {
-    const r0 = Math.max(R - from, 0), r1 = R - to;
+    const r0 = Math.max(R - from, 0),
+      r1 = R - to;
     if (i % 2 === 0) {
-      el("path", {
-        class: "band",
-        d: "M" + r1 + " 0A" + r1 + " " + r1 + " 0 1 1 " + -r1 + " 0A" + r1 + " " + r1 + " 0 1 1 " + r1 + " 0" +
-          (r0 > 0 ? "M" + r0 + " 0A" + r0 + " " + r0 + " 0 1 0 " + -r0 + " 0A" + r0 + " " + r0 + " 0 1 0 " + r0 + " 0" : ""),
-      }, time);
+      el(
+        "path",
+        {
+          class: "band",
+          d:
+            "M" +
+            r1 +
+            " 0A" +
+            r1 +
+            " " +
+            r1 +
+            " 0 1 1 " +
+            -r1 +
+            " 0A" +
+            r1 +
+            " " +
+            r1 +
+            " 0 1 1 " +
+            r1 +
+            " 0" +
+            (r0 > 0
+              ? "M" +
+                r0 +
+                " 0A" +
+                r0 +
+                " " +
+                r0 +
+                " 0 1 0 " +
+                -r0 +
+                " 0A" +
+                r0 +
+                " " +
+                r0 +
+                " 0 1 0 " +
+                r0 +
+                " 0"
+              : ""),
+        },
+        time,
+      );
     }
     if (r1 - r0 > 12) {
       const t = el("text", { class: "period", x: 0, y: -(r0 + r1) / 2 }, time);
@@ -318,12 +399,18 @@ function draw(fig, svg, card, legend, input, list, tree) {
 
   const hl = el("g", { class: "highlight" }, world);
   const wedge = el("path", { class: "wedge" }, hl);
-  const tree$ = el("g", { class: "branches", "clip-path": "url(#flora-reveal)" }, world);
+  const tree$ = el(
+    "g",
+    { class: "branches", "clip-path": "url(#flora-reveal)" },
+    world,
+  );
 
   // One path per colour: a few thousand edges in nine elements
   const byslot = new Map();
-  for (const n of tree.order) if (n.parent) byslot.set(n.slot, (byslot.get(n.slot) || "") + edgePath(n));
-  for (const [slot, d] of byslot) el("path", { class: "edges g" + slot, d }, tree$);
+  for (const n of tree.order)
+    if (n.parent) byslot.set(n.slot, (byslot.get(n.slot) || "") + edgePath(n));
+  for (const [slot, d] of byslot)
+    el("path", { class: "edges g" + slot, d }, tree$);
 
   const over = el("g", { class: "overlay" }, world);
   const lineage = el("path", { class: "lineage" }, over);
@@ -335,13 +422,19 @@ function draw(fig, svg, card, legend, input, list, tree) {
   const ringLabels = [];
   const ring = (items, r, cls) => {
     items.forEach(({ name, node }, i) => {
-      const a0 = node.amin - step * 0.4, a1 = node.amax + step * 0.4;
+      const a0 = node.amin - step * 0.4,
+        a1 = node.amax + step * 0.4;
       el("path", { class: cls + " g" + node.slot, d: arc(r, a0, a1) }, rings);
       // Flip labels on the lower half so they read left to right
-      const mid = (a0 + a1) / 2, flip = Math.sin(mid) > 0;
+      const mid = (a0 + a1) / 2,
+        flip = Math.sin(mid) > 0;
       const lr = r + (cls === "ord" ? 5.5 : 4.5);
       const id = "flora-" + cls + "-" + i;
-      el("path", { id, class: "guide", d: flip ? arc(lr, a1, a0) : arc(lr, a0, a1) }, defs);
+      el(
+        "path",
+        { id, class: "guide", d: flip ? arc(lr, a1, a0) : arc(lr, a0, a1) },
+        defs,
+      );
       const t = el("text", { class: cls + "-label" }, rings);
       const tp = el("textPath", { href: "#" + id, startOffset: "50%" }, t);
       tp.textContent = name;
@@ -356,19 +449,33 @@ function draw(fig, svg, card, legend, input, list, tree) {
   for (const t of tree.tips) {
     const deg = (t.a * 360) / TAU;
     const left = Math.cos(t.a) < 0;
-    t.text = el("text", {
-      class: "tip-label",
-      transform: "rotate(" + deg.toFixed(3) + ") translate(" + (R + 1.6) + " 0)" + (left ? " rotate(180)" : ""),
-      "text-anchor": left ? "end" : "start",
-    }, labels);
+    t.text = el(
+      "text",
+      {
+        class: "tip-label",
+        transform:
+          "rotate(" +
+          deg.toFixed(3) +
+          ") translate(" +
+          (R + 1.6) +
+          " 0)" +
+          (left ? " rotate(180)" : ""),
+        "text-anchor": left ? "end" : "start",
+      },
+      labels,
+    );
     t.text.textContent = speciesName(t.label);
   }
 
   // Zoom. --s is screen pixels per tree unit, so text can stay a fixed size.
   let current = d3.zoomIdentity;
-  const zoom = d3.zoom()
+  const zoom = d3
+    .zoom()
     .scaleExtent([1, MAX_K])
-    .translateExtent([[-V * 1.2, -V * 1.2], [V * 1.2, V * 1.2]])
+    .translateExtent([
+      [-V * 1.2, -V * 1.2],
+      [V * 1.2, V * 1.2],
+    ])
     .on("zoom", (e) => {
       current = e.transform;
       world.setAttribute("transform", current.toString());
@@ -377,7 +484,8 @@ function draw(fig, svg, card, legend, input, list, tree) {
   const sel = d3.select(svg).call(zoom).on("dblclick.zoom", null);
 
   function scaleText() {
-    const s = (Math.min(svg.clientWidth, svg.clientHeight) / (2 * V)) * current.k;
+    const s =
+      (Math.min(svg.clientWidth, svg.clientHeight) / (2 * V)) * current.k;
     fig.style.setProperty("--s", s);
     fig.classList.toggle("labels-on", TIP_FONT * s >= 7);
     fig.classList.toggle("fams-on", s >= 2.4);
@@ -395,19 +503,28 @@ function draw(fig, svg, card, legend, input, list, tree) {
       t = d3.zoomIdentity;
     } else {
       // Fit the clade's sector, from its stem out to the tip labels
-      const r0 = n.parent ? n.parent.r : 0, r1 = R + 22;
+      const r0 = n.parent ? n.parent.r : 0,
+        r1 = R + 22;
       const pts = [];
       for (let i = 0; i <= 16; i++) {
         const a = n.amin + ((n.amax - n.amin) * i) / 16;
         pts.push(polar(r0, a), polar(r1, a));
       }
-      const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]);
-      const w = Math.max(...xs) - Math.min(...xs), h = Math.max(...ys) - Math.min(...ys);
-      const cx = (Math.max(...xs) + Math.min(...xs)) / 2, cy = (Math.max(...ys) + Math.min(...ys)) / 2;
-      const kk = k || Math.min(MAX_K, Math.max(1, (0.9 * 2 * V) / Math.max(w, h, 1)));
+      const xs = pts.map((p) => p[0]),
+        ys = pts.map((p) => p[1]);
+      const w = Math.max(...xs) - Math.min(...xs),
+        h = Math.max(...ys) - Math.min(...ys);
+      const cx = (Math.max(...xs) + Math.min(...xs)) / 2,
+        cy = (Math.max(...ys) + Math.min(...ys)) / 2;
+      const kk =
+        k || Math.min(MAX_K, Math.max(1, (0.9 * 2 * V) / Math.max(w, h, 1)));
       t = d3.zoomIdentity.scale(kk).translate(-cx, -cy);
     }
-    sel.transition().duration(reduceMotion ? 0 : 900).ease(d3.easeCubicInOut).call(zoom.transform, t);
+    sel
+      .transition()
+      .duration(reduceMotion ? 0 : 900)
+      .ease(d3.easeCubicInOut)
+      .call(zoom.transform, t);
   }
 
   // Pointer → the lineage under it at that point in time
@@ -425,7 +542,8 @@ function draw(fig, svg, card, legend, input, list, tree) {
     return n;
   }
 
-  let pinned = null, hovered = null;
+  let pinned = null,
+    hovered = null;
   function show(n) {
     fig.classList.toggle("selecting", !!n);
     tree.tips.forEach((t) => t.text.classList.remove("on"));
@@ -445,31 +563,73 @@ function draw(fig, svg, card, legend, input, list, tree) {
     lineage.setAttribute("d", lineagePath(n));
     if (n.isTip) {
       n.text.classList.add("on");
-      el("circle", { class: "dot " + slot, cx: polar(R, n.a)[0], cy: polar(R, n.a)[1], r: 1.4 }, marks);
+      el(
+        "circle",
+        {
+          class: "dot " + slot,
+          cx: polar(R, n.a)[0],
+          cy: polar(R, n.a)[1],
+          r: 1.4,
+        },
+        marks,
+      );
     }
     card.innerHTML = describe(n);
   }
   function describe(n) {
-    const crown = R - n.r, stem = n.parent ? R - n.parent.r : null;
-    const where = [n.fam, n.ord, n.group].filter((x, i, arr) => x && x !== n.cladeName && arr.indexOf(x) === i);
+    const crown = R - n.r,
+      stem = n.parent ? R - n.parent.r : null;
+    const where = [n.fam, n.ord, n.group].filter(
+      (x, i, arr) => x && x !== n.cladeName && arr.indexOf(x) === i,
+    );
     if (n.isTip) {
-      return '<p class="flora-title"><i>' + esc(speciesName(n.label)) + "</i></p>" +
-        (where.length ? '<p class="flora-where">' + esc(where.join(" · ")) + "</p>" : "") +
-        "<dl><dt>Diverged from its closest relative here</dt><dd>" + fmt(stem) + " Mya</dd></dl>";
+      return (
+        '<p class="flora-title"><i>' +
+        esc(speciesName(n.label)) +
+        "</i></p>" +
+        (where.length
+          ? '<p class="flora-where">' + esc(where.join(" · ")) + "</p>"
+          : "") +
+        "<dl><dt>Diverged from its closest relative here</dt><dd>" +
+        fmt(stem) +
+        " Mya</dd></dl>"
+      );
     }
     const genera = [...new Set(n.tips.map((t) => genusOf(t.label)))];
     const name = n.familyName || n.orderName || n.groupName || n.cladeName;
-    const title = genera.length === 1
-      ? "<i>" + esc(genera[0]) + "</i>"
-      : name ? esc(name) : "A clade within " + esc(where[0] || "the seed plants");
-    const ctx = where.filter((x) => x !== name && !(genera.length > 1 && !name && x === where[0]));
-    return '<p class="flora-title">' + title + "</p>" +
-      (ctx.length ? '<p class="flora-where">' + esc(ctx.join(" · ")) + "</p>" : "") +
-      "<dl><dt>Species</dt><dd>" + n.tips.length.toLocaleString("en-GB") + "</dd>" +
-      (genera.length > 1 ? "<dt>Genera</dt><dd>" + genera.length + "</dd>" : "") +
-      "<dt>Crown age</dt><dd>" + fmt(crown) + " Mya</dd>" +
-      (stem != null ? "<dt>Stem age</dt><dd>" + fmt(stem) + " Mya</dd>" : "") + "</dl>" +
-      (genera.length > 1 && genera.length <= 12 ? '<p class="flora-genera">' + genera.map((g) => "<i>" + esc(g) + "</i>").join(", ") + "</p>" : "");
+    const title =
+      genera.length === 1
+        ? "<i>" + esc(genera[0]) + "</i>"
+        : name
+          ? esc(name)
+          : "A clade within " + esc(where[0] || "the seed plants");
+    const ctx = where.filter(
+      (x) => x !== name && !(genera.length > 1 && !name && x === where[0]),
+    );
+    return (
+      '<p class="flora-title">' +
+      title +
+      "</p>" +
+      (ctx.length
+        ? '<p class="flora-where">' + esc(ctx.join(" · ")) + "</p>"
+        : "") +
+      "<dl><dt>Species</dt><dd>" +
+      n.tips.length.toLocaleString("en-GB") +
+      "</dd>" +
+      (genera.length > 1
+        ? "<dt>Genera</dt><dd>" + genera.length + "</dd>"
+        : "") +
+      "<dt>Crown age</dt><dd>" +
+      fmt(crown) +
+      " Mya</dd>" +
+      (stem != null ? "<dt>Stem age</dt><dd>" + fmt(stem) + " Mya</dd>" : "") +
+      "</dl>" +
+      (genera.length > 1 && genera.length <= 12
+        ? '<p class="flora-genera">' +
+          genera.map((g) => "<i>" + esc(g) + "</i>").join(", ") +
+          "</p>"
+        : "")
+    );
   }
   const cardIdle = card.innerHTML;
 
@@ -498,29 +658,57 @@ function draw(fig, svg, card, legend, input, list, tree) {
   });
 
   // Legend: the coloured groups, each a shortcut to its clade
-  legend.replaceChildren(...groups.map((g) => {
-    const b = document.createElement("button");
-    b.type = "button";
-    b.className = "flora-key";
-    b.innerHTML = '<span class="sw g' + g.node.slot + '"></span>' + esc(g.name) + ' <span class="n">' + g.node.tips.length + "</span>";
-    b.addEventListener("click", () => pin(g.node, true));
-    b.addEventListener("pointerenter", () => !pinned && show(g.node));
-    b.addEventListener("pointerleave", () => !pinned && show(null));
-    return b;
-  }));
+  legend.replaceChildren(
+    ...groups.map((g) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "flora-key";
+      b.innerHTML =
+        '<span class="sw g' +
+        g.node.slot +
+        '"></span>' +
+        esc(g.name) +
+        ' <span class="n">' +
+        g.node.tips.length +
+        "</span>";
+      b.addEventListener("click", () => pin(g.node, true));
+      b.addEventListener("pointerenter", () => !pinned && show(g.node));
+      b.addEventListener("pointerleave", () => !pinned && show(null));
+      return b;
+    }),
+  );
 
   // Search across species and genera
-  const genera = d3.rollup(tree.tips, (v) => v.length, (t) => genusOf(t.label));
-  const options = [...genera].sort((a, b) => a[0].localeCompare(b[0])).map(([g, c]) => g + " (" + c + (c > 1 ? " species)" : " species)"))
+  const genera = d3.rollup(
+    tree.tips,
+    (v) => v.length,
+    (t) => genusOf(t.label),
+  );
+  const options = [...genera]
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([g, c]) => g + " (" + c + (c > 1 ? " species)" : " species)"))
     .concat(tree.tips.map((t) => speciesName(t.label)).sort());
-  list.replaceChildren(...options.map((o) => Object.assign(document.createElement("option"), { value: o })));
+  list.replaceChildren(
+    ...options.map((o) =>
+      Object.assign(document.createElement("option"), { value: o }),
+    ),
+  );
   function find(q) {
-    q = q.trim().replace(/\s*\(.*$/, "").toLowerCase();
+    q = q
+      .trim()
+      .replace(/\s*\(.*$/, "")
+      .toLowerCase();
     if (!q) return null;
-    const tip = tree.tips.find((t) => speciesName(t.label).toLowerCase() === q) ||
-      tree.tips.find((t) => speciesName(t.label).toLowerCase().startsWith(q) && q.includes(" "));
+    const tip =
+      tree.tips.find((t) => speciesName(t.label).toLowerCase() === q) ||
+      tree.tips.find(
+        (t) =>
+          speciesName(t.label).toLowerCase().startsWith(q) && q.includes(" "),
+      );
     if (tip) return tip;
-    const g = [...genera.keys()].find((x) => x.toLowerCase() === q) || [...genera.keys()].find((x) => x.toLowerCase().startsWith(q));
+    const g =
+      [...genera.keys()].find((x) => x.toLowerCase() === q) ||
+      [...genera.keys()].find((x) => x.toLowerCase().startsWith(q));
     if (g) return mrca(tree, [g]);
     const all = Object.assign({}, FAMILIES, ORDERS, GROUPS, CLADES);
     const name = Object.keys(all).find((x) => x.toLowerCase().startsWith(q));
@@ -536,8 +724,16 @@ function draw(fig, svg, card, legend, input, list, tree) {
     if (e.key === "Enter") search();
   });
 
-  fig.querySelector('[data-act="in"]').addEventListener("click", () => sel.transition().duration(300).call(zoom.scaleBy, 2));
-  fig.querySelector('[data-act="out"]').addEventListener("click", () => sel.transition().duration(300).call(zoom.scaleBy, 0.5));
+  fig
+    .querySelector('[data-act="in"]')
+    .addEventListener("click", () =>
+      sel.transition().duration(300).call(zoom.scaleBy, 2),
+    );
+  fig
+    .querySelector('[data-act="out"]')
+    .addEventListener("click", () =>
+      sel.transition().duration(300).call(zoom.scaleBy, 0.5),
+    );
   fig.querySelector('[data-act="reset"]').addEventListener("click", () => {
     input.value = "";
     pin(null, false);
@@ -546,16 +742,27 @@ function draw(fig, svg, card, legend, input, list, tree) {
   const fs = fig.querySelector('[data-act="full"]');
   if (fig.requestFullscreen) {
     fs.hidden = false;
-    fs.addEventListener("click", () => (document.fullscreenElement ? document.exitFullscreen() : fig.requestFullscreen()));
+    fs.addEventListener("click", () =>
+      document.fullscreenElement
+        ? document.exitFullscreen()
+        : fig.requestFullscreen(),
+    );
   }
 
   // Grow the tree outward from the root on first view
   if (!reduceMotion) {
-    const io = new IntersectionObserver((entries) => {
-      if (!entries[0].isIntersecting) return;
-      io.disconnect();
-      d3.select(clipCircle).transition().duration(1600).ease(d3.easeCubicOut).attr("r", V * 1.5);
-    }, { threshold: 0.2 });
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (!entries[0].isIntersecting) return;
+        io.disconnect();
+        d3.select(clipCircle)
+          .transition()
+          .duration(1600)
+          .ease(d3.easeCubicOut)
+          .attr("r", V * 1.5);
+      },
+      { threshold: 0.2 },
+    );
     io.observe(svg);
   }
 }

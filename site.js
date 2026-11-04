@@ -7,7 +7,8 @@
     btn.addEventListener("click", function () {
       var dark =
         root.dataset.theme === "dark" ||
-        (!root.dataset.theme && matchMedia("(prefers-color-scheme: dark)").matches);
+        (!root.dataset.theme &&
+          matchMedia("(prefers-color-scheme: dark)").matches);
       root.dataset.theme = dark ? "light" : "dark";
       try {
         localStorage.setItem("theme", root.dataset.theme);
@@ -52,7 +53,7 @@
           }
         });
       },
-      { rootMargin: "0px 0px -8% 0px" }
+      { rootMargin: "0px 0px -8% 0px" },
     );
     reveals.forEach(function (el) {
       io.observe(el);
@@ -96,7 +97,8 @@
       var any = false;
       group.querySelectorAll(".pub").forEach(function (pub) {
         var ok =
-          (topic === "all" || pub.dataset.topics.split(" ").indexOf(topic) > -1) &&
+          (topic === "all" ||
+            pub.dataset.topics.split(" ").indexOf(topic) > -1) &&
           (!leadOnly || pub.dataset.lead === "1") &&
           (!q || pub.textContent.toLowerCase().indexOf(q) > -1);
         pub.hidden = !ok;
@@ -142,7 +144,11 @@
   document.body.appendChild(halo);
 
   // The sequence is laid out as explicit rows so a screen position maps to a base
-  var seq = [], cols = 0, rows = 0, cw = 9, lh = 22;
+  var seq = [],
+    cols = 0,
+    rows = 0,
+    cw = 9,
+    lh = 22;
   function randomBase() {
     return BASES[(Math.random() * 4) | 0];
   }
@@ -179,9 +185,14 @@
     for (var r = 0; r < rows; r++) {
       for (var c = 0; c < cols; c++) {
         var i = r * cols + c;
-        out += i in marks
-          ? '<span class="mut" style="animation-delay:-' + (now - marks[i]).toFixed(0) + 'ms">' + seq[i] + "</span>"
-          : seq[i];
+        out +=
+          i in marks
+            ? '<span class="mut" style="animation-delay:-' +
+              (now - marks[i]).toFixed(0) +
+              'ms">' +
+              seq[i] +
+              "</span>"
+            : seq[i];
       }
       out += "\n";
     }
@@ -200,20 +211,39 @@
   var TRAIL = 7;
   var pts = [];
   for (var i = 0; i < TRAIL; i++) pts.push({ x: -999, y: -999 });
-  var x = -999, y = -999, frame = 0, idle, mutator, started = false;
+  var x = -999,
+    y = -999,
+    frame = 0,
+    idle,
+    mutator,
+    started = false;
   // Fade the whole comet back while the pointer is over readable text
-  var TEXT = "p, h1, h2, h3, h4, li, figcaption, blockquote, address, dt, dd, td, th, label, pre, .pub-title, .pub-authors";
-  var dim = 1, dimTarget = 1;
+  var TEXT =
+    "p, h1, h2, h3, h4, li, figcaption, blockquote, address, dt, dd, td, th, label, pre, .pub-title, .pub-authors";
+  var dim = 1,
+    dimTarget = 1;
 
   function blob(px, py, r, a) {
     a *= dim;
-    return "radial-gradient(circle " + r.toFixed(0) + "px at " + px.toFixed(1) + "px " + py.toFixed(1) +
-      "px, rgba(0,0,0," + a.toFixed(3) + "), rgba(0,0,0," + (a * 0.3).toFixed(3) + ") 45%, transparent)";
+    return (
+      "radial-gradient(circle " +
+      r.toFixed(0) +
+      "px at " +
+      px.toFixed(1) +
+      "px " +
+      py.toFixed(1) +
+      "px, rgba(0,0,0," +
+      a.toFixed(3) +
+      "), rgba(0,0,0," +
+      (a * 0.3).toFixed(3) +
+      ") 45%, transparent)"
+    );
   }
 
   function draw() {
     var head = pts[0];
-    var vx = x - head.x, vy = y - head.y;
+    var vx = x - head.x,
+      vy = y - head.y;
     head.x += vx * 0.22;
     head.y += vy * 0.22;
     for (var i = 1; i < TRAIL; i++) {
@@ -227,7 +257,14 @@
     var layers = [];
     if (speed > 2) {
       var k = 0.55;
-      layers.push(blob(head.x + vx * k, head.y + vy * k, 70 + speed * 0.2, 0.19 * (speed / 160)));
+      layers.push(
+        blob(
+          head.x + vx * k,
+          head.y + vy * k,
+          70 + speed * 0.2,
+          0.19 * (speed / 160),
+        ),
+      );
     }
     layers.push(blob(head.x, head.y, 160, 0.38));
     // Trail blobs shrink and fade, and vanish as they catch up with the head
@@ -253,7 +290,8 @@
   function mutate() {
     var head = pts[0];
     for (var k = 0; k < 3; k++) {
-      var a = Math.random() * Math.PI * 2, d = Math.sqrt(Math.random()) * 130;
+      var a = Math.random() * Math.PI * 2,
+        d = Math.sqrt(Math.random()) * 130;
       var c = Math.floor((head.x + Math.cos(a) * d) / cw);
       var r = Math.floor((head.y + Math.sin(a) * d) / lh);
       if (c < 0 || r < 0 || c >= cols || r >= rows) continue;
@@ -269,25 +307,29 @@
     mutator = 0;
   }
 
-  document.addEventListener("pointermove", function (e) {
-    if (e.pointerType !== "mouse") return;
-    x = e.clientX;
-    y = e.clientY;
-    if (!started) {
-      // Start the comet at the cursor rather than sweeping in from off-screen
-      pts.forEach(function (p) {
-        p.x = x;
-        p.y = y;
-      });
-      started = true;
-    }
-    dimTarget = e.target.closest && e.target.closest(TEXT) ? 0.3 : 1;
-    if (!frame) frame = requestAnimationFrame(draw);
-    halo.classList.add("on");
-    if (!mutator) mutator = setInterval(mutate, 160);
-    clearTimeout(idle);
-    idle = setTimeout(hide, 1800);
-  }, { passive: true });
+  document.addEventListener(
+    "pointermove",
+    function (e) {
+      if (e.pointerType !== "mouse") return;
+      x = e.clientX;
+      y = e.clientY;
+      if (!started) {
+        // Start the comet at the cursor rather than sweeping in from off-screen
+        pts.forEach(function (p) {
+          p.x = x;
+          p.y = y;
+        });
+        started = true;
+      }
+      dimTarget = e.target.closest && e.target.closest(TEXT) ? 0.3 : 1;
+      if (!frame) frame = requestAnimationFrame(draw);
+      halo.classList.add("on");
+      if (!mutator) mutator = setInterval(mutate, 160);
+      clearTimeout(idle);
+      idle = setTimeout(hide, 1800);
+    },
+    { passive: true },
+  );
   document.documentElement.addEventListener("mouseleave", function () {
     hide();
     started = false;

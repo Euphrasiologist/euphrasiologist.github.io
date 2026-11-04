@@ -5,66 +5,125 @@ section: figures
 permalink: /dtol-collections.html
 summary: Progress of the Darwin Tree of Life Plant Working Group in collecting British vascular plants and bryophytes, read live from the collection spreadsheets.
 ---
-    <section class="page-head">
-      <div class="wrap">
-        <p class="eyebrow"><a href="/figures.html">Figures</a> · Live data</p>
-        <h1>Collecting the British flora for the Darwin Tree of Life</h1>
-        <p class="lede">The Darwin Tree of Life Plant Working Group is collecting every species on its target list of British vascular plants and bryophytes for genome sequencing. This dashboard reads the collectors' spreadsheets each time it opens, so it is always up to date.</p>
+
+<section class="page-head">
+  <div class="wrap">
+    <p class="eyebrow"><a href="/figures.html">Figures</a> · Live data</p>
+    <h1>Collecting the British flora for the Darwin Tree of Life</h1>
+    <p class="lede">
+      The Darwin Tree of Life Plant Working Group is collecting every species on
+      its target list of British vascular plants and bryophytes for genome
+      sequencing. This dashboard reads the collectors' spreadsheets each time it
+      opens, so it is always up to date.
+    </p>
+  </div>
+</section>
+
+<section class="section gs">
+  <div class="wrap">
+    <p id="status" class="gs-status">Loading the collection spreadsheets…</p>
+
+    <div id="app" hidden>
+      <div class="gs-tiles" id="tiles"></div>
+
+      <div class="gs-bar">
+        <label class="search gs-search">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            aria-hidden="true"
+          >
+            <circle cx="11" cy="11" r="7" />
+            <path d="m20 20-3.5-3.5" />
+          </svg>
+          <input
+            type="search"
+            id="search"
+            list="names"
+            placeholder="Is my species collected?"
+            aria-label="Find a species"
+            autocomplete="off"
+          />
+        </label>
+        <datalist id="names"></datalist>
+        <div id="legend" class="gs-legend"></div>
       </div>
-    </section>
 
-    <section class="section gs">
-      <div class="wrap">
-        <p id="status" class="gs-status">Loading the collection spreadsheets…</p>
-
-        <div id="app" hidden>
-          <div class="gs-tiles" id="tiles"></div>
-
-          <div class="gs-bar">
-            <label class="search gs-search">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-              <input type="search" id="search" list="names" placeholder="Is my species collected?" aria-label="Find a species" autocomplete="off">
-            </label>
-            <datalist id="names"></datalist>
-            <div id="legend" class="gs-legend"></div>
+      <div class="gs-section">
+        <h2>How much of the target list is collected?</h2>
+        <p class="gs-note" id="note1"></p>
+        <div class="gs-pair">
+          <div class="gs-card">
+            <h3>Target species collected, by plant group</h3>
+            <div class="gs-plot" id="plot1"></div>
           </div>
-
-          <div class="gs-section">
-            <h2>How much of the target list is collected?</h2>
-            <p class="gs-note" id="note1"></p>
-            <div class="gs-pair">
-              <div class="gs-card"><h3>Target species collected, by plant group</h3><div class="gs-plot" id="plot1"></div></div>
-              <div class="gs-card"><h3>By priority on the target list</h3><div class="gs-plot" id="plot2"></div></div>
-            </div>
+          <div class="gs-card">
+            <h3>By priority on the target list</h3>
+            <div class="gs-plot" id="plot2"></div>
           </div>
-
-          <div class="gs-section">
-            <h2>Collecting season by season</h2>
-            <p class="gs-note" id="note2"></p>
-            <div class="gs-pair">
-              <div class="gs-card"><h3>Species first collected each year</h3><div class="gs-plot" id="plot3"></div></div>
-              <div class="gs-card"><h3>Running total</h3><div class="gs-plot" id="plot4"></div></div>
-            </div>
-            <p class="gs-caveat">Each species is counted once, in the first year it was collected. Vascular plants are dated by the RBGE and RBGK collecting columns, and bryophytes by the year columns of their sheet.</p>
-          </div>
-
-          <div class="gs-section">
-            <h2>Which families still have gaps?</h2>
-            <p class="gs-note" id="note3"></p>
-            <div class="gs-card"><h3>Share of each family's target species collected</h3><div class="gs-plot" id="plot5"></div></div>
-            <p class="gs-caveat" id="cav3"></p>
-          </div>
-
-          <div class="gs-section">
-            <h2>Genome sizes measured so far</h2>
-            <p class="gs-note" id="note4"></p>
-            <div class="gs-card"><h3>Flow cytometry genome size (1C), one dot per species</h3><div class="gs-plot" id="plot6"></div></div>
-            <p class="gs-caveat">C-values are shown as measured, without recalibration of the standards. Where a species was measured more than once, the dot is the mean. For how these compare with genome assemblies, see <a href="/genome-sizes.html">genome sizes across DToL plants</a>.</p>
-          </div>
-
-          <p class="gs-caveat gs-source">Data are read live from the Plant Working Group's published spreadsheets for <a href="http://bit.ly/DToLplants2021">vascular plants</a>, <a href="http://bit.ly/DToLbryophytes2021">bryophytes</a> and flow cytometry. This replaces the <a href="https://observablehq.com/@euphrasiologist/another-pwg-dashboard">original Observable dashboard</a>.</p>
         </div>
       </div>
-      <aside id="detail" class="gs-detail" hidden aria-live="polite"></aside>
-    </section>
-    <script type="module" src="/js/dtol-collections.js"></script>
+
+      <div class="gs-section">
+        <h2>Collecting season by season</h2>
+        <p class="gs-note" id="note2"></p>
+        <div class="gs-pair">
+          <div class="gs-card">
+            <h3>Species first collected each year</h3>
+            <div class="gs-plot" id="plot3"></div>
+          </div>
+          <div class="gs-card">
+            <h3>Running total</h3>
+            <div class="gs-plot" id="plot4"></div>
+          </div>
+        </div>
+        <p class="gs-caveat">
+          Each species is counted once, in the first year it was collected.
+          Vascular plants are dated by the RBGE and RBGK collecting columns, and
+          bryophytes by the year columns of their sheet.
+        </p>
+      </div>
+
+      <div class="gs-section">
+        <h2>Which families still have gaps?</h2>
+        <p class="gs-note" id="note3"></p>
+        <div class="gs-card">
+          <h3>Share of each family's target species collected</h3>
+          <div class="gs-plot" id="plot5"></div>
+        </div>
+        <p class="gs-caveat" id="cav3"></p>
+      </div>
+
+      <div class="gs-section">
+        <h2>Genome sizes measured so far</h2>
+        <p class="gs-note" id="note4"></p>
+        <div class="gs-card">
+          <h3>Flow cytometry genome size (1C), one dot per species</h3>
+          <div class="gs-plot" id="plot6"></div>
+        </div>
+        <p class="gs-caveat">
+          C-values are shown as measured, without recalibration of the
+          standards. Where a species was measured more than once, the dot is the
+          mean. For how these compare with genome assemblies, see
+          <a href="/genome-sizes.html">genome sizes across DToL plants</a>.
+        </p>
+      </div>
+
+      <p class="gs-caveat gs-source">
+        Data are read live from the Plant Working Group's published spreadsheets
+        for <a href="http://bit.ly/DToLplants2021">vascular plants</a>,
+        <a href="http://bit.ly/DToLbryophytes2021">bryophytes</a> and flow
+        cytometry. This replaces the
+        <a
+          href="https://observablehq.com/@euphrasiologist/another-pwg-dashboard"
+          >original Observable dashboard</a
+        >.
+      </p>
+    </div>
+  </div>
+  <aside id="detail" class="gs-detail" hidden aria-live="polite"></aside>
+</section>
+<script type="module" src="/js/dtol-collections.js"></script>

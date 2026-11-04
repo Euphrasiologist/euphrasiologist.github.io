@@ -5,86 +5,155 @@ section: figures
 permalink: /genome-sizes.html
 summary: Assembly length, GenomeScope and flow cytometry genome size estimates for Darwin Tree of Life plants, updated weekly.
 ---
-    <section class="page-head">
-      <div class="wrap">
-        <p class="eyebrow"><a href="/figures.html">Figures</a> · Live data</p>
-        <h1>How big are DToL plant genomes?</h1>
-        <p class="lede">Each Darwin Tree of Life plant can be measured three ways: the length of its assembly, a k-mer estimate from GenomeScope, and flow cytometry. Where the three disagree, something interesting is usually going on, whether that is ploidy, repeats or a model that did not fit.</p>
+
+<section class="page-head">
+  <div class="wrap">
+    <p class="eyebrow"><a href="/figures.html">Figures</a> · Live data</p>
+    <h1>How big are DToL plant genomes?</h1>
+    <p class="lede">
+      Each Darwin Tree of Life plant can be measured three ways: the length of
+      its assembly, a k-mer estimate from GenomeScope, and flow cytometry. Where
+      the three disagree, something interesting is usually going on, whether
+      that is ploidy, repeats or a model that did not fit.
+    </p>
+  </div>
+</section>
+
+<section class="section gs">
+  <div class="wrap">
+    <p id="status" class="gs-status">Loading data…</p>
+
+    <div id="app" hidden>
+      <div class="gs-tiles" id="tiles"></div>
+
+      <div class="gs-bar">
+        <label class="search gs-search">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            aria-hidden="true"
+          >
+            <circle cx="11" cy="11" r="7" />
+            <path d="m20 20-3.5-3.5" />
+          </svg>
+          <input
+            type="search"
+            id="search"
+            list="names"
+            placeholder="Find a species"
+            aria-label="Find a species"
+            autocomplete="off"
+          />
+        </label>
+        <datalist id="names"></datalist>
+        <span
+          class="chips"
+          id="clades"
+          role="group"
+          aria-label="Plant groups"
+        ></span>
+        <label class="gs-select"
+          >Colour by
+          <select id="colorBy">
+            <option value="p">GenomeScope ploidy</option>
+            <option value="clade">Plant group</option>
+            <option value="het">Heterozygosity</option>
+            <option value="repeat">Repeat content</option>
+            <option value="fit">Model fit</option>
+          </select>
+        </label>
+        <div id="legend" class="gs-legend"></div>
       </div>
-    </section>
 
-    <section class="section gs">
-      <div class="wrap">
-        <p id="status" class="gs-status">Loading data…</p>
-
-        <div id="app" hidden>
-          <div class="gs-tiles" id="tiles"></div>
-
-          <div class="gs-bar">
-            <label class="search gs-search">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-              <input type="search" id="search" list="names" placeholder="Find a species" aria-label="Find a species" autocomplete="off">
-            </label>
-            <datalist id="names"></datalist>
-            <span class="chips" id="clades" role="group" aria-label="Plant groups"></span>
-            <label class="gs-select">Colour by
-              <select id="colorBy">
-                <option value="p">GenomeScope ploidy</option>
-                <option value="clade">Plant group</option>
-                <option value="het">Heterozygosity</option>
-                <option value="repeat">Repeat content</option>
-                <option value="fit">Model fit</option>
-              </select>
-            </label>
-            <div id="legend" class="gs-legend"></div>
+      <div class="gs-section">
+        <h2>K-mers against assemblies: why are there two lines?</h2>
+        <p class="gs-note" id="note1"></p>
+        <div class="gs-pair">
+          <div class="gs-card">
+            <h3>GenomeScope length against assembly length</h3>
+            <div class="gs-plot" id="plot1"></div>
           </div>
-
-          <div class="gs-section">
-            <h2>K-mers against assemblies: why are there two lines?</h2>
-            <p class="gs-note" id="note1"></p>
-            <div class="gs-pair">
-              <div class="gs-card"><h3>GenomeScope length against assembly length</h3><div class="gs-plot" id="plot1"></div></div>
-              <div class="gs-card"><h3>Assembly as a multiple of GenomeScope</h3><div class="gs-plot" id="hist1"></div></div>
-            </div>
-            <p class="gs-caveat" id="cav1"></p>
+          <div class="gs-card">
+            <h3>Assembly as a multiple of GenomeScope</h3>
+            <div class="gs-plot" id="hist1"></div>
           </div>
+        </div>
+        <p class="gs-caveat" id="cav1"></p>
+      </div>
 
-          <div class="gs-section">
-            <h2>Flow cytometry against assemblies: what is missing?</h2>
-            <p class="gs-note" id="note2"></p>
-            <div class="gs-pair">
-              <div class="gs-card"><h3>1C genome size against assembly length</h3><div class="gs-plot" id="plot2"></div></div>
-              <div class="gs-card"><h3>1C as a multiple of assembly length</h3><div class="gs-plot" id="hist2"></div></div>
-            </div>
-            <p class="gs-caveat" id="cav2"></p>
+      <div class="gs-section">
+        <h2>Flow cytometry against assemblies: what is missing?</h2>
+        <p class="gs-note" id="note2"></p>
+        <div class="gs-pair">
+          <div class="gs-card">
+            <h3>1C genome size against assembly length</h3>
+            <div class="gs-plot" id="plot2"></div>
           </div>
-
-          <div class="gs-section">
-            <h2>Bigger genomes are mostly repeats</h2>
-            <p class="gs-note" id="note3"></p>
-            <div class="gs-card"><h3>GenomeScope repeat content against assembly length</h3><div class="gs-plot" id="plot3"></div></div>
-            <p class="gs-caveat" id="cav3"></p>
+          <div class="gs-card">
+            <h3>1C as a multiple of assembly length</h3>
+            <div class="gs-plot" id="hist2"></div>
           </div>
+        </div>
+        <p class="gs-caveat" id="cav2"></p>
+      </div>
 
-          <div class="gs-section">
-            <h2>Genome size across the largest families</h2>
-            <p class="gs-note" id="note4"></p>
-            <div class="gs-card"><div class="gs-plot" id="plot4"></div></div>
-            <p class="gs-caveat">Family names come from the C-value database, so species without a flow cytometry record are not shown here.</p>
+      <div class="gs-section">
+        <h2>Bigger genomes are mostly repeats</h2>
+        <p class="gs-note" id="note3"></p>
+        <div class="gs-card">
+          <h3>GenomeScope repeat content against assembly length</h3>
+          <div class="gs-plot" id="plot3"></div>
+        </div>
+        <p class="gs-caveat" id="cav3"></p>
+      </div>
+
+      <div class="gs-section">
+        <h2>Genome size across the largest families</h2>
+        <p class="gs-note" id="note4"></p>
+        <div class="gs-card"><div class="gs-plot" id="plot4"></div></div>
+        <p class="gs-caveat">
+          Family names come from the C-value database, so species without a flow
+          cytometry record are not shown here.
+        </p>
+      </div>
+
+      <div class="gs-section">
+        <h2>Worth a second look</h2>
+        <p class="gs-note">
+          Every species in the current view, most discordant first. Discordance
+          is the largest fold difference between any two of the three estimates,
+          so polyploids rank highly because GenomeScope reports a single set.
+          Click a row to pick out that species in the plots, or a heading to
+          sort.
+        </p>
+        <div class="gs-card">
+          <div class="gs-tablewrap">
+            <table class="gs-table">
+              <thead id="thead"></thead>
+              <tbody id="tbody"></tbody>
+            </table>
           </div>
-
-          <div class="gs-section">
-            <h2>Worth a second look</h2>
-            <p class="gs-note">Every species in the current view, most discordant first. Discordance is the largest fold difference between any two of the three estimates, so polyploids rank highly because GenomeScope reports a single set. Click a row to pick out that species in the plots, or a heading to sort.</p>
-            <div class="gs-card">
-              <div class="gs-tablewrap"><table class="gs-table"><thead id="thead"></thead><tbody id="tbody"></tbody></table></div>
-              <button class="chip gs-more" id="more" type="button"></button>
-            </div>
-          </div>
-
-          <p class="gs-caveat gs-source">Data come from the Darwin Tree of Life Plant Working Group's <a href="https://github.com/DToL-Plant-Working-Group/plant-sequencing-status">plant-sequencing-status</a> pipeline and are read live each time this page opens (<a href="https://dtol-plant-working-group.github.io/plant-sequencing-status/data/all_genome_size_data.tsv">TSV</a>). GenomeScope lengths are the upper bound of the model's haploid length, at k = 31.</p>
+          <button class="chip gs-more" id="more" type="button"></button>
         </div>
       </div>
-      <aside id="detail" class="gs-detail" hidden aria-live="polite"></aside>
-    </section>
-    <script type="module" src="/js/genome-sizes.js"></script>
+
+      <p class="gs-caveat gs-source">
+        Data come from the Darwin Tree of Life Plant Working Group's
+        <a
+          href="https://github.com/DToL-Plant-Working-Group/plant-sequencing-status"
+          >plant-sequencing-status</a
+        >
+        pipeline and are read live each time this page opens (<a
+          href="https://dtol-plant-working-group.github.io/plant-sequencing-status/data/all_genome_size_data.tsv"
+          >TSV</a
+        >). GenomeScope lengths are the upper bound of the model's haploid
+        length, at k = 31.
+      </p>
+    </div>
+  </div>
+  <aside id="detail" class="gs-detail" hidden aria-live="polite"></aside>
+</section>
+<script type="module" src="/js/genome-sizes.js"></script>
