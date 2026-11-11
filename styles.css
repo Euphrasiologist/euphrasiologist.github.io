@@ -3935,3 +3935,31 @@ a.output:hover {
   line-height: 1.5;
   color: var(--ink-3);
 }
+
+.tl-sat {
+  margin-top: 18px;
+}
+.tl-sat .gs-tablewrap {
+  margin: 4px 0 8px;
+}
+.tl-sattable tbody tr {
+  cursor: pointer;
+}
+.tl-sattable td .og-badge {
+  margin-left: 4px;
+  vertical-align: 1px;
+}
+.tl-sat h4 {
+  margin: 18px 0 4px;
+}
+.tl-sat .tl-seq {
+  max-height: 220px;
+}
+.og-badge.tl-tag {
+  background: var(--paper-2);
+  color: var(--ink-2);
+  box-shadow: inset 0 0 0 1px var(--rule);
+}
+.tl-sat h4 + .tl-why {
+  margin-bottom: 8px;
+}

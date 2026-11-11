@@ -662,6 +662,10 @@ function renderTable() {
 
 function open(sp, scroll = true) {
   if (!byName.has(sp)) return;
+  if (state.species !== sp) {
+    state.sat = null;
+    state.satAll = false;
+  }
   state.species = sp;
   if (decodeURIComponent(location.hash.slice(1)) !== sp)
     history.replaceState(null, "", "#" + sp);
@@ -712,7 +716,7 @@ function telomereCard(d) {
     v == null || v === "" ? "" : `<dt>${k}</dt><dd>${v}</dd>`;
   let lead;
   if (st === "lost")
-    lead = `<p class="tl-lead">This species belongs to a lineage that has <b>lost telomerase</b>. ${d.unit ? `The commonest repeat at its sequence ends, <code>${esc(d.unit)}</code>, is not a telomerase-made telomere.` : ""}</p>`;
+    lead = `<p class="tl-lead">This species belongs to a lineage that has <b>lost telomerase</b>. ${d.unit ? `The commonest repeat at its sequence ends, <code>${esc(d.unit)}</code>, is not a telomerase-made telomere.` : ""}${d.satFamilies ? ` Its chromosome ends carry satellite repeats instead: see <a href="#sat-card" data-jump="sat">the end satellites</a> below.` : ""}</p>`;
   else if (!d.state)
     lead = `<p class="tl-lead">No telomeric repeat could be called for this genome${d.unit ? `. The best candidate was <code>${esc(d.unit)}</code>, at ${esc(d.ends ?? "few")} ends` : ""}. Assemblies with few complete chromosomes often give no call whatever the biology.</p>`;
   else
@@ -796,6 +800,48 @@ function tertCard(d, seqs) {
   </section>`;
 }
 
+// --- end satellites of telomerase-loss genomes (tol_telomeres shifts/d2_ends/satlib) ---
+
+const kb = (bp) => (bp >= 1e6 ? `${(bp / 1e6).toFixed(1)} Mb` : bp >= 1000 ? `${(bp / 1000).toFixed(bp >= 1e4 ? 0 : 1)} kb` : `${bp} bp`);
+const SAT_TIP = {
+  unit: "The repeat unit: the length of the consensus of one copy. Units over 2 kb were found from recurring 16-mers, as TRF cannot report them.",
+  ends: "Chromosome ends carrying at least 1 kb of this family, out of all ends in the assembly's chromosome-scale sequences.",
+  quality: "How well the consensus is supported: the copies (monomers) aligned to build it, and their mean identity to the consensus.",
+  dfam: "The best match in Dfam 3.8's curated repeat library (RepeatMasker), and how much of the consensus it covers. Most end satellites match nothing known.",
+};
+function satQuality(f) {
+  if (f.method === "seed") return `<span class="tl-help" data-tip="Too few copies to rebuild: this is the unit of the longest array, as found.">single array</span>`;
+  return `<span class="tl-help" data-tip="${esc(`${int(f.aligned)} of ${int(f.monomers)} copies aligned, from ${f.arrays} array${f.arrays === 1 ? "" : "s"}.`)}">${int(f.aligned)} copies, ${f.identity}%</span>`;
+}
+function satDfam(f) {
+  if (!f.dfam?.best) return `<span class="tl-muted">none</span>`;
+  if (f.dfam.cover < 0.1)
+    return `<span class="tl-muted tl-help" data-tip="${esc(`Only small fragments match known repeats: the best, ${f.dfam.best}, covers ${pc(f.dfam.cover)} of the consensus.`)}">none</span>`;
+  return `<span class="tl-help" data-tip="${esc(`${f.dfam.best}${f.dfam.class ? ` (${f.dfam.class})` : ""} covers ${pc(f.dfam.cover)} of the consensus; known repeats cover ${pc(f.dfam.any)} in all.`)}">${esc(f.dfam.best)} ${pc(f.dfam.cover)}</span>`;
+}
+function satCard(d, seqs) {
+  if (!d.satFamilies) return "";
+  const fams = seqs?.sat;
+  if (!fams) return `<section class="gs-card og-card tl-sat" id="sat-card"><div class="og-cardhead"><h3>End satellites</h3></div><p class="og-loading">Loading the satellites…</p></section>`;
+  const sel = fams.find((f) => f.id === state.sat) ?? fams[0];
+  const cap = fams.find((f) => f.cap);
+  const shown = state.satAll ? fams : fams.slice(0, 8);
+  const flags = (f) => [f.cap ? `<span class="og-badge pass tl-help" data-tip="The cap: the end family at the most chromosome ends.">cap</span>` : "", f.long ? `<span class="og-badge tl-tag tl-help" data-tip="A long unit, over 2 kb.">long</span>` : "", f.lowComplexity >= 0.5 ? `<span class="og-badge flag tl-help" data-tip="${esc(`${pc(f.lowComplexity)} of the consensus is low-complexity sequence (dustmasker).`)}">low complexity</span>` : ""].join("");
+  return `<section class="gs-card og-card tl-sat" id="sat-card" data-card="sat">
+    <div class="og-cardhead"><h3>End satellites</h3><span class="og-badge tl-tag tl-help" tabindex="0" data-tip="Tandem-repeat families at the chromosome ends: at least 2 kb at ends, and at most 20% of their bp elsewhere.">${int(fams.length)} famil${fams.length === 1 ? "y" : "ies"}</span></div>
+    <p class="tl-lead">Without telomerase, the chromosome ends of this genome are capped by satellite repeats.${cap ? ` The main one is a ${kb(cap.period)} unit with at least 1 kb at <b>${cap.endsCap} of ${cap.endsTotal}</b> chromosome ends.` : ""}</p>
+    <div class="gs-tablewrap"><table class="gs-table tl-sattable">
+      <thead><tr><th class="l">Family</th><th><span class="tl-help" tabindex="0" data-tip="${esc(SAT_TIP.unit)}">Unit</span></th><th><span class="tl-help" tabindex="0" data-tip="${esc(SAT_TIP.ends)}">Ends</span></th><th class="l"><span class="tl-help" tabindex="0" data-tip="${esc(SAT_TIP.quality)}">Consensus</span></th><th class="l"><span class="tl-help" tabindex="0" data-tip="${esc(SAT_TIP.dfam)}">Known repeat</span></th></tr></thead>
+      <tbody>${shown.map((f) => `<tr data-sat="${esc(f.id)}"${f === sel ? ' class="on"' : ""} tabindex="0"><td class="l"><code>${esc(f.id)}</code> ${flags(f)}</td><td>${kb(f.period)}</td><td>${f.endsCap}/${f.endsTotal}</td><td class="l">${satQuality(f)}</td><td class="l">${satDfam(f)}</td></tr>`).join("")}</tbody>
+    </table></div>
+    ${fams.length > 8 ? `<button type="button" class="chip gs-more" data-satall>${state.satAll ? "Show fewer" : `Show all ${fams.length}`}</button>` : ""}
+    <h4>Consensus of <code>${esc(sel.id)}</code>, ${int(sel.len)} bp</h4>
+    <p class="tl-why">${sel.method === "seed" ? "The unit of the longest array: too few copies to build a consensus." : `Built from ${int(sel.aligned)} aligned copies (${sel.identity}% identity). `}Oriented as most end copies read from the chromosome tip${sel.orientation != null && sel.orientation < 1 ? ` (${pc(sel.orientation)} of them)` : ""}; ${int(sel.bpEnd)} bp at ends${sel.bpInterior ? `, ${int(sel.bpInterior)} bp inside chromosomes` : ", none found inside chromosomes"}.</p>
+    <pre class="tl-seq">${esc(sel.cons)}</pre>
+    <div class="og-filegrid"><button type="button" class="og-file" data-dl="sat"><b>FASTA</b>This family</button><button type="button" class="og-file" data-copy="sat"><b>Copy</b>Sequence</button><button type="button" class="og-file" data-dl="satall"><b>FASTA</b>All ${int(fams.length)} families</button></div>
+  </section>`;
+}
+
 async function renderSpecies() {
   const sp = state.species,
     d = byName.get(sp);
@@ -827,7 +873,8 @@ async function renderSpecies() {
             : "The only species of its genus in the database"
         }</p>
       </header>
-      <div class="tl-three">${telomereCard(d)}${trCard(d, seqs)}${tertCard(d, seqs)}</div>`;
+      <div class="tl-three">${telomereCard(d)}${trCard(d, seqs)}${tertCard(d, seqs)}</div>
+      ${satCard(d, seqs)}`;
   };
   draw(d.seq ? seqCache.get(sp)?.done : {});
   if (d.seq) {
@@ -916,6 +963,16 @@ $("bulk").innerHTML = [
     "telomeres/tert_cds.fa",
     "FASTA",
     `TERT coding sequences (${int(all.filter((d) => d.seq & 2).length)})`,
+  ],
+  [
+    "telomeres/satellites.fa",
+    "FASTA",
+    `End-satellite consensus library of the ${int(all.filter((d) => d.satFamilies).length)} telomerase-loss genomes (${int(d3.sum(all, (d) => d.satFamilies))} families)`,
+  ],
+  [
+    "telomeres/satellites.tsv",
+    "TSV",
+    "One row per end-satellite family: unit, ends, consensus quality and Dfam match",
   ],
   [
     "telomeres.json",
@@ -1021,14 +1078,45 @@ $("more").addEventListener("click", () => {
   state.rows = state.rows === 15 ? Infinity : 15;
   renderTable();
 });
+$("species").addEventListener("keydown", (e) => {
+  if ((e.key === "Enter" || e.key === " ") && e.target.matches("tr[data-sat]")) {
+    e.preventDefault();
+    e.target.click();
+  }
+});
 $("species").addEventListener("click", async (e) => {
+  const row = e.target.closest("tr[data-sat]");
+  if (row || e.target.closest("[data-satall]")) {
+    if (row) state.sat = row.dataset.sat;
+    else state.satAll = !state.satAll;
+    const y = $("sat-card").getBoundingClientRect().top;
+    await renderSpecies();
+    window.scrollBy(0, $("sat-card").getBoundingClientRect().top - y);
+    return;
+  }
+  if (e.target.closest("[data-jump]")) {
+    e.preventDefault();
+    $("sat-card")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
   const dl = e.target.closest("[data-dl]")?.dataset.dl,
     cp = e.target.closest("[data-copy]");
   if (!dl && !cp) return;
   const sp = state.species,
     d = byName.get(sp),
     seqs = await sequences(sp);
-  if (cp && seqs.tr) {
+  const satSel = seqs.sat?.find((f) => f.id === state.sat) ?? seqs.sat?.[0];
+  const satFa = (f) => `>${sp}|${f.id} period=${f.period} ends=${f.endsCap}/${f.endsTotal}${f.cap ? " cap" : ""} method=${f.method}\n${wrap(f.cons)}\n`;
+  if (cp && cp.dataset.copy === "sat" && satSel) {
+    navigator.clipboard?.writeText(satSel.cons).then(() => {
+      cp.querySelector("b").textContent = "Copied";
+      setTimeout(() => (cp.querySelector("b").textContent = "Copy"), 1500);
+    });
+  } else if (dl === "sat" && satSel) {
+    saveText(`${sp}.${satSel.id}.satellite.fa`, satFa(satSel));
+  } else if (dl === "satall" && seqs.sat) {
+    saveText(`${sp}.end_satellites.fa`, seqs.sat.map(satFa).join(""));
+  } else if (cp && seqs.tr) {
     navigator.clipboard?.writeText(seqs.tr.seq).then(() => {
       cp.querySelector("b").textContent = "Copied";
       setTimeout(() => (cp.querySelector("b").textContent = "Copy"), 1500);

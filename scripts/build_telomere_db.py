@@ -8,6 +8,8 @@ Writes:
   data/telomeres/telomeres.tsv   the index as one flat table
   data/telomeres/tr.fa           every TR locus
   data/telomeres/tert_cds.fa     every TERT coding sequence
+  data/telomeres/satellites.fa   end-satellite consensus library of the telomerase-loss genomes
+  data/telomeres/satellites.tsv  one row per end-satellite family
 
 Usage: python3 scripts/build_telomere_db.py --src path/to/tol_telomeres [--ena assemblies.tsv]
 
@@ -96,6 +98,38 @@ def tandem_match(seq, unit):
     return best
 
 
+def satellites(src):
+    """Per species, the end-satellite families of shifts/d2_ends/satlib (telomerase-loss genomes):
+    the cap first, then by the number of ends carrying >= 1 kb, then bp at ends."""
+    lib = src / "shifts/d2_ends/satlib/library.tsv"
+    if not lib.is_file():
+        return {}, []
+    dfam = {r["consensus"]: r for r in csv.DictReader(open(lib.parent / "dfam.tsv"), delimiter="\t")}
+    by, rows = {}, []
+    for r in csv.DictReader(open(lib), delimiter="\t"):
+        h = dfam.get(f"{r['species']}|{r['family']}", {})
+        rows.append({**r, "dfam_best": h.get("best_repeat", ""), "dfam_class": h.get("class", ""),
+                     "dfam_covered_by_best": h.get("covered_by_best", ""), "dfam_covered_any": h.get("covered_any", "")})
+        by.setdefault(r["species"], []).append({
+            "id": r["family"], "cap": r["cap"] == "True", "long": r["long"] == "True",
+            "period": num(r["period"], int), "len": num(r["cons_len"], int),
+            "ends": num(r["ends"], int), "endsCap": num(r["ends_cap"], int), "endsTotal": num(r["ends_total"], int),
+            "interior": num(r["interior_windows"], int), "interiorTotal": num(r["interior_total"], int),
+            "bpEnd": num(r["bp_end"], int), "bpInterior": num(r["bp_interior"], int),
+            "nearestTip": num(r["nearest_tip"], int), "arrays": num(r["arrays"], int),
+            "monomers": num(r["monomers_found"], int), "aligned": num(r["monomers_aligned"], int),
+            "identity": num(r["identity"]), "orientation": num(r["orientation"]),
+            "method": r["method"], "lowComplexity": num(r["low_complexity"]),
+            "dfam": {"best": h["best_repeat"], "class": h.get("class") or None,
+                     "cover": num(h.get("covered_by_best")), "any": num(h.get("covered_any"))}
+            if h.get("best_repeat") else ({"any": num(h.get("covered_any"))} if num(h.get("covered_any")) else None),
+            "cons": r["consensus"],
+        })
+    for fams in by.values():
+        fams.sort(key=lambda f: (not f["cap"], -(f["endsCap"] or 0), -(f["bpEnd"] or 0)))
+    return by, rows
+
+
 def wrap(seq, width=60):
     return "\n".join(seq[i:i + width] for i in range(0, len(seq), width))
 
@@ -140,6 +174,7 @@ def main():
         for r in csv.DictReader(open(src / "shifts/repeat_evolution/b1_transitions.tsv"), delimiter="\t")
     ]
     losses = list(csv.DictReader(open(src / "shifts/d2_ends/loss_events.tsv"), delimiter="\t"))
+    sats, sat_rows = satellites(src)
 
     seqdir = out / "telomeres" / "seq"
     if seqdir.exists():
@@ -150,8 +185,8 @@ def main():
               "unit", "source", "support", "ends", "copies", "sequences", "t2t", "oneEnd", "noEnds",
               "topUnit", "topCopies", "state", "stateClass", "evidence", "flags", "note",
               "tert", "trLocus", "trModel", "trEvalue", "template", "templateMatch", "agrees",
-              "trCopies", "validated", "gca", "seq"]
-    rows, tr_fa, tert_fa = [], [], []
+              "trCopies", "validated", "gca", "satFamilies", "satCap", "seq"]
+    rows, tr_fa, tert_fa, sat_fa = [], [], [], []
     names = sorted(set(summary) | set(states))
     n_tr = n_cds = 0
     for sp in names:
@@ -188,10 +223,15 @@ def main():
                         "cds": cds}
                 tert_fa.append(f">{header}\n{wrap(cds)}")
                 n_cds += 1
-        has = (1 if tr else 0) | (2 if tert else 0)
+        sat = sats.get(sp)
+        for fam in sat or []:
+            sat_fa.append(f">{sp}|{fam['id']} period={fam['period']} ends={fam['endsCap']}/{fam['endsTotal']}"
+                          f"{' cap' if fam['cap'] else ''} method={fam['method']}\n{wrap(fam['cons'])}")
+        cap = next((f for f in sat or [] if f["cap"]), None)
+        has = (1 if tr else 0) | (2 if tert else 0) | (4 if sat else 0)
         if has:
             with open(seqdir / f"{sp}.json", "w") as f:
-                json.dump({k: v for k, v in {"tr": tr, "tert": tert}.items() if v}, f, separators=(",", ":"))
+                json.dump({k: v for k, v in {"tr": tr, "tert": tert, "sat": sat}.items() if v}, f, separators=(",", ":"))
         flags = [x for x in (st.get("flags") or "").split(";") if x]
         rows.append([
             sp, s.get("group") or None, tax.get("phylum") or None, tax.get("klass") or tax.get("class") or None,
@@ -207,7 +247,8 @@ def main():
             t.get("tr_model") or None, num(t.get("tr_evalue")), t.get("template_unit") or None,
             num(t.get("template_match"), int), t.get("agrees") or None,
             num((copies.get(sp) or {}).get("copies"), int) if copies.get(sp) else num(t.get("tr_copies"), int),
-            t.get("validated") or None, acc.get(sp), has or None,
+            t.get("validated") or None, acc.get(sp), len(sat) if sat else None,
+            [cap["period"], cap["endsCap"], cap["endsTotal"]] if cap else None, has or None,
         ])
 
     index = {
@@ -226,11 +267,19 @@ def main():
         w = csv.writer(f, delimiter="\t", lineterminator="\n")
         w.writerow(fields[:-1])
         for r in rows:
-            w.writerow(["" if v is None else ";".join(v) if isinstance(v, list) else v for v in r[:-1]])
+            w.writerow(["" if v is None else ";".join(map(str, v)) if isinstance(v, list) else v for v in r[:-1]])
     (out / "telomeres" / "tr.fa").write_text("\n".join(tr_fa) + "\n")
     (out / "telomeres" / "tert_cds.fa").write_text("\n".join(tert_fa) + "\n")
+    if sat_rows:
+        (out / "telomeres" / "satellites.fa").write_text("\n".join(sat_fa) + "\n")
+        cols = [k for k in sat_rows[0] if k != "consensus"]
+        with open(out / "telomeres" / "satellites.tsv", "w", newline="") as f:
+            w = csv.writer(f, delimiter="\t", lineterminator="\n")
+            w.writerow(cols)
+            w.writerows([r[k] for k in cols] for r in sat_rows)
     size = os.path.getsize(out / "telomeres.json") / 1e3
-    print(f"{sum(1 for r in rows if r[-2])} with a GenBank accession")
+    print(f"{sum(1 for r in rows if r[fields.index('gca')])} with a GenBank accession, "
+          f"{len(sat_fa)} end-satellite families in {len(sats)} telomerase-loss genomes")
     print(f"{len(rows)} species, {n_tr} TR loci, {n_cds} TERT CDS from {REPO}@{commit[:7]} "
           f"-> {out}/telomeres.json ({size:.0f} kB)")
 
