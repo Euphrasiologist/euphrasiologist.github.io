@@ -3936,6 +3936,23 @@ a.output:hover {
   color: var(--ink-3);
 }
 
+.post-body pre {
+  margin: 1.2em 0;
+  padding: 14px 16px;
+  overflow-x: auto;
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+.post-body pre code {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: inherit;
+}
+
 .tl-sat {
   margin-top: 18px;
 }
