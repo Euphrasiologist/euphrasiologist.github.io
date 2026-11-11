@@ -4,6 +4,7 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.17/+esm";
 import { addDownloads } from "./plot-download.js";
 import * as Fig1 from "./telomere-tree.js";
+import * as SatLinks from "./satellite-links.js";
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) =>
@@ -234,8 +235,9 @@ const state = {
   group: "",
   st: "",
   unit: "",
+  links: true, // shared end satellites on the tree
 };
-let index, all, byName, fig, figData;
+let index, all, byName, fig, figData, linkFig;
 const seqCache = new Map();
 
 const comp = { A: "T", C: "G", G: "C", T: "A", N: "N" };
@@ -287,7 +289,18 @@ const TERT_CAT = {
   absent: "absent",
   unresolved: "unresolved",
 };
+// Species sharing an end satellite with each species (index.satLinks)
+let satPartners = new Map();
+function satSummary(d) {
+  if (!d.satFamilies) return null;
+  const n = satPartners.get(d.species)?.length ?? 0;
+  return `${d.satFamilies} famil${d.satFamilies === 1 ? "y" : "ies"}${n ? `, shared with ${n} other species` : ", none shared with other species"}`;
+}
 function prepareTree() {
+  satPartners = new Map();
+  for (const l of index.satLinks ?? [])
+    for (const [x, y] of [[l[0], l[1]], [l[1], l[0]]])
+      satPartners.set(x, [...(satPartners.get(x) ?? []), [y, l[2], l[3]]]);
   const tips = new Map(
     all.map((d) => [
       d.species,
@@ -302,6 +315,7 @@ function prepareTree() {
             : null,
         tertWhy: TERT[d.tert]?.[0],
         tert: TERT_CAT[d.tert] ?? null,
+        sat: satSummary(d),
         group: Fig1.groupLabel({
           phylum: d.phylum,
           klass: d.class,
@@ -321,8 +335,32 @@ function renderTree() {
     selected: state.species,
     onSelect: (sp) => open(sp),
     tip: $("treeTip"),
+    links: state.links ? index.satLinks : null,
   });
   fig.setMarks($("markPos").value);
+}
+
+// The telomerase-loss clades with shared end satellites, drawn flat (js/satellite-links.js)
+function renderLinks() {
+  const el = $("figLinks");
+  el.querySelector("svg")?.remove();
+  if (!index.satLinks?.length) {
+    $("linkCard").hidden = true;
+    return;
+  }
+  const inOrder = (o) => new Set(all.filter((d) => d.order === o).map((d) => d.species));
+  linkFig = SatLinks.render(el, figData, {
+    theme: theme(),
+    clades: [
+      { title: "Flies (Diptera)", tips: inOrder("Diptera"), height: 130 },
+      { title: "Spiders (Araneae)", tips: inOrder("Araneae"), height: 90 },
+    ],
+    familyOf: (sp) => byName.get(sp)?.family,
+    links: index.satLinks,
+    selected: state.species,
+    onSelect: (sp) => open(sp),
+    tip: $("linkTip"),
+  });
 }
 
 function saveTree() {
@@ -330,6 +368,7 @@ function saveTree() {
   const { svg } = Fig1.render(box, figData, {
     theme: Fig1.THEMES.light,
     interactive: false,
+    links: state.links ? index.satLinks : null,
   });
   svg.setAttribute("width", "178mm");
   svg.setAttribute("height", "232mm");
@@ -671,6 +710,7 @@ function open(sp, scroll = true) {
     history.replaceState(null, "", "#" + sp);
   renderSpecies();
   fig?.select(sp);
+  linkFig?.select(sp);
   renderOverview();
   renderTable();
   if (scroll)
@@ -807,6 +847,7 @@ const SAT_TIP = {
   unit: "The repeat unit: the length of the consensus of one copy. Units over 2 kb were found from recurring 16-mers, as TRF cannot report them.",
   ends: "Chromosome ends carrying at least 1 kb of this family, out of all ends in the assembly's chromosome-scale sequences.",
   quality: "How well the consensus is supported: the copies (monomers) aligned to build it, and their mean identity to the consensus.",
+  related: "Other end families whose consensus aligns with this one over at least 60% of the longer unit at 75% identity or more, outside low-complexity sequence (blastn). Plain: variants in this genome. Italic: end families of other species.",
   dfam: "The best match in Dfam 3.8's curated repeat library (RepeatMasker), and how much of the consensus it covers. Most end satellites match nothing known.",
 };
 function satQuality(f) {
@@ -819,6 +860,119 @@ function satDfam(f) {
     return `<span class="tl-muted tl-help" data-tip="${esc(`Only small fragments match known repeats: the best, ${f.dfam.best}, covers ${pc(f.dfam.cover)} of the consensus.`)}">none</span>`;
   return `<span class="tl-help" data-tip="${esc(`${f.dfam.best}${f.dfam.class ? ` (${f.dfam.class})` : ""} covers ${pc(f.dfam.cover)} of the consensus; known repeats cover ${pc(f.dfam.any)} in all.`)}">${esc(f.dfam.best)} ${pc(f.dfam.cover)}</span>`;
 }
+// Related end families (scripts/satellite_pairs.py): within this genome, and in other species
+const shortName = (sp) => {
+  const [g, ...rest] = sp.split("_");
+  return `${g[0]}. ${rest.join(" ")}`;
+};
+function relTip(sp, f, x) {
+  const [s2, fam] = x.to.split("|");
+  return s2 === sp
+    ? `${fam}, a ${kb(x.unit)} family of this genome, aligns with ${f.id} at ${x.pid}% identity: a variant of the same satellite.`
+    : `${fam} of ${nameOf(s2)} (${kb(x.unit)} unit) aligns with ${f.id} at ${x.pid}% identity${x.myr != null ? `; the species diverged about ${Math.round(x.myr)} Myr ago` : ""}. Click to open it.`;
+}
+function relChip(sp, f, x) {
+  const [s2, fam] = x.to.split("|");
+  return s2 === sp
+    ? `<button type="button" class="tl-rel" data-satgo="${esc(fam)}" data-tip="${esc(relTip(sp, f, x))}">${esc(fam)} <small>${Math.round(x.pid)}%</small></button>`
+    : `<a class="tl-rel tl-relx" href="#${esc(s2)}" data-satto="${esc(x.to)}" data-tip="${esc(relTip(sp, f, x))}"><i>${esc(shortName(s2))}</i> ${esc(fam)}</a>`;
+}
+function relCell(sp, f) {
+  const r = f.rel ?? [];
+  if (!r.length) return `<span class="tl-muted">none</span>`;
+  return (
+    r.slice(0, 3).map((x) => relChip(sp, f, x)).join(" ") +
+    (r.length > 3 ? ` <span class="tl-muted">+${r.length - 3}</span>` : "")
+  );
+}
+// Groups of related families within the genome (connected components)
+function satGroups(sp, fams) {
+  const parent = new Map(fams.map((f) => [f.id, f.id]));
+  const root = (x) => (parent.get(x) === x ? x : root(parent.get(x)));
+  for (const f of fams)
+    for (const x of f.rel ?? []) {
+      const [s2, fam] = x.to.split("|");
+      if (s2 === sp && parent.has(fam)) parent.set(root(f.id), root(fam));
+    }
+  return new Set(fams.map((f) => root(f.id))).size;
+}
+function relLead(sp, fams) {
+  const groups = satGroups(sp, fams);
+  const partners = satPartners.get(sp) ?? [];
+  const within =
+    groups < fams.length
+      ? ` Some families are variants of one another, so the ${fams.length} fall into <b>${groups} group${groups === 1 ? "" : "s"}</b> of related sequence.`
+      : fams.length > 1
+        ? " No two of its families are related."
+        : "";
+  const between = partners.length
+    ? ` Related satellites are also at the ends of ${partners
+        .sort((a, b) => a[2] - b[2])
+        .slice(0, 4)
+        .map(([s2, , myr]) => `<a href="#${esc(s2)}"><i>${esc(nameOf(s2))}</i></a> (${Math.round(myr)} Myr apart)`)
+        .join(", ")}${partners.length > 4 ? ` and ${partners.length - 4} more species` : ""}.`
+    : " None is found at the ends of any other species in the database.";
+  return within + between;
+}
+function relDetail(sp, f) {
+  const r = f.rel ?? [];
+  if (!r.length)
+    return `<p class="tl-why">No related family, in this genome or at the ends of other species.</p>`;
+  return `<div class="gs-tablewrap"><table class="gs-table tl-reltable">
+    <thead><tr><th class="l">Family</th><th class="l">Species</th><th>Unit</th><th>Identity</th><th>Diverged</th></tr></thead>
+    <tbody>${r
+      .map((x) => {
+        const [s2, fam] = x.to.split("|");
+        const here = s2 === sp;
+        return `<tr><td class="l">${here ? `<button type="button" class="tl-rel" data-satgo="${esc(fam)}">${esc(fam)}</button>` : `<a class="tl-rel tl-relx" href="#${esc(s2)}" data-satto="${esc(x.to)}">${esc(fam)}</a>`}</td><td class="l">${here ? "this genome" : `<i>${esc(nameOf(s2))}</i>`}</td><td>${kb(x.unit)}</td><td>${x.pid}%</td><td>${here ? "–" : x.myr != null ? `${Math.round(x.myr)} Myr` : "–"}</td></tr>`;
+      })
+      .join("")}</tbody>
+  </table></div>`;
+}
+
+// Where each family sits: one row per chromosome end, 0 to 100 kb from the tip, arrays coloured
+// by end family (table order, so the cap is always the first colour)
+const END_COLOURS = 7;
+function endMap(sp, fams, ends) {
+  if (!ends?.length) return "";
+  const colour = new Map(fams.slice(0, END_COLOURS).map((f, i) => [f.id, `tl-e${i}`]));
+  const ends_ = new Set(fams.map((f) => f.id));
+  const cls = (fam) => colour.get(fam) ?? (ends_.has(fam) ? "tl-eo" : "tl-ex");
+  const sel = fams.find((f) => f.id === state.sat) ?? fams[0];
+  const W = 640, L = 64, R = 24, ROW = 11, BAR = 7, TOP = 4;
+  const x = (bp) => L + (Math.min(bp, 1e5) / 1e5) * (W - L - R);
+  const H = TOP + ends.length * ROW + 22;
+  const fam = new Map(fams.map((f) => [f.id, f]));
+  const label = (e) => `${e.c.replace(/^SUPER_/, "")} ${e.s === "L" ? "left" : "right"}`;
+  const rows = ends
+    .map((e, i) => {
+      const y = TOP + i * ROW;
+      const bars = e.a
+        .map(([a, b, f]) => {
+          const ff = fam.get(f);
+          const tip = `${label(e)} end${e.c.startsWith("SUPER_") ? ` (${e.c})` : ""}: ${ff ? `end family ${f}, ${kb(ff.period)} unit` : `${f}, a repeat mostly away from the ends`}, ${kb(b - a)} at ${kb(a)} to ${kb(b)} from the tip.`;
+          return `<rect class="${cls(f)}${ff && f === sel.id ? " on" : ""}" x="${x(a).toFixed(1)}" y="${y}" width="${Math.max(1.5, x(b) - x(a)).toFixed(1)}" height="${BAR}" rx="1.5" data-tip="${esc(tip)}"${ff ? ` data-satgo="${esc(f)}"` : ""}/>`;
+        })
+        .join("");
+      return `<text x="${L - 6}" y="${y + BAR - 0.5}" text-anchor="end">${esc(label(e))}</text><line x1="${L}" x2="${W - R}" y1="${y + BAR / 2}" y2="${y + BAR / 2}"/>${bars}`;
+    })
+    .join("");
+  const axisY = TOP + ends.length * ROW + 2;
+  const ticks = [0, 25e3, 50e3, 75e3, 1e5]
+    .map((t) => `<text x="${x(t)}" y="${axisY + 11}" text-anchor="middle">${t ? `${t / 1000} kb` : "tip"}</text>`)
+    .join("");
+  const missing = Math.max(0, (fams[0]?.endsTotal ?? 0) - ends.length);
+  const legend = [
+    ...fams.slice(0, END_COLOURS).map((f, i) => `<span><i class="tl-e${i}"></i>${esc(f.id)}${f.cap ? " (cap)" : ""}</span>`),
+    fams.length > END_COLOURS ? `<span><i class="tl-eo"></i>other end families</span>` : "",
+    ends.some((e) => e.a.some(([, , f]) => !ends_.has(f))) ? `<span><i class="tl-ex"></i>repeats mostly away from the ends</span>` : "",
+  ].join("");
+  return `<h4>Where each family sits</h4>
+    <p class="tl-why">The 100 kb at each chromosome end, read from the tip inwards, with every tandem array. Ends that share a colour carry the same family; click an array to see its family.${missing ? ` ${missing} more end${missing === 1 ? " has" : "s have"} no array.` : ""}</p>
+    <div class="tl-endmap"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Tandem arrays in the 100 kb at each chromosome end of ${esc(nameOf(sp))}, coloured by family">${rows}${ticks}</svg></div>
+    <div class="tl-mapkey">${legend}</div>`;
+}
+
 function satCard(d, seqs) {
   if (!d.satFamilies) return "";
   const fams = seqs?.sat;
@@ -829,15 +983,18 @@ function satCard(d, seqs) {
   const flags = (f) => [f.cap ? `<span class="og-badge pass tl-help" data-tip="The cap: the end family at the most chromosome ends.">cap</span>` : "", f.long ? `<span class="og-badge tl-tag tl-help" data-tip="A long unit, over 2 kb.">long</span>` : "", f.lowComplexity >= 0.5 ? `<span class="og-badge flag tl-help" data-tip="${esc(`${pc(f.lowComplexity)} of the consensus is low-complexity sequence (dustmasker).`)}">low complexity</span>` : ""].join("");
   return `<section class="gs-card og-card tl-sat" id="sat-card" data-card="sat">
     <div class="og-cardhead"><h3>End satellites</h3><span class="og-badge tl-tag tl-help" tabindex="0" data-tip="Tandem-repeat families at the chromosome ends: at least 2 kb at ends, and at most 20% of their bp elsewhere.">${int(fams.length)} famil${fams.length === 1 ? "y" : "ies"}</span></div>
-    <p class="tl-lead">Without telomerase, the chromosome ends of this genome are capped by satellite repeats.${cap ? ` The main one is a ${kb(cap.period)} unit with at least 1 kb at <b>${cap.endsCap} of ${cap.endsTotal}</b> chromosome ends.` : ""}</p>
+    <p class="tl-lead">Without telomerase, the chromosome ends of this genome are capped by satellite repeats.${cap ? ` The main one is a ${kb(cap.period)} unit with at least 1 kb at <b>${cap.endsCap} of ${cap.endsTotal}</b> chromosome ends.` : ""}${relLead(d.species, fams)}</p>
     <div class="gs-tablewrap"><table class="gs-table tl-sattable">
-      <thead><tr><th class="l">Family</th><th><span class="tl-help" tabindex="0" data-tip="${esc(SAT_TIP.unit)}">Unit</span></th><th><span class="tl-help" tabindex="0" data-tip="${esc(SAT_TIP.ends)}">Ends</span></th><th class="l"><span class="tl-help" tabindex="0" data-tip="${esc(SAT_TIP.quality)}">Consensus</span></th><th class="l"><span class="tl-help" tabindex="0" data-tip="${esc(SAT_TIP.dfam)}">Known repeat</span></th></tr></thead>
-      <tbody>${shown.map((f) => `<tr data-sat="${esc(f.id)}"${f === sel ? ' class="on"' : ""} tabindex="0"><td class="l"><code>${esc(f.id)}</code> ${flags(f)}</td><td>${kb(f.period)}</td><td>${f.endsCap}/${f.endsTotal}</td><td class="l">${satQuality(f)}</td><td class="l">${satDfam(f)}</td></tr>`).join("")}</tbody>
+      <thead><tr><th class="l">Family</th><th><span class="tl-help" tabindex="0" data-tip="${esc(SAT_TIP.unit)}">Unit</span></th><th><span class="tl-help" tabindex="0" data-tip="${esc(SAT_TIP.ends)}">Ends</span></th><th class="l"><span class="tl-help" tabindex="0" data-tip="${esc(SAT_TIP.quality)}">Consensus</span></th><th class="l"><span class="tl-help" tabindex="0" data-tip="${esc(SAT_TIP.dfam)}">Known repeat</span></th><th class="l"><span class="tl-help" tabindex="0" data-tip="${esc(SAT_TIP.related)}">Related</span></th></tr></thead>
+      <tbody>${shown.map((f) => `<tr data-sat="${esc(f.id)}"${f === sel ? ' class="on"' : ""} tabindex="0"><td class="l"><code>${esc(f.id)}</code> ${flags(f)}</td><td>${kb(f.period)}</td><td>${f.endsCap}/${f.endsTotal}</td><td class="l">${satQuality(f)}</td><td class="l">${satDfam(f)}</td><td class="l tl-relcell">${relCell(d.species, f)}</td></tr>`).join("")}</tbody>
     </table></div>
     ${fams.length > 8 ? `<button type="button" class="chip gs-more" data-satall>${state.satAll ? "Show fewer" : `Show all ${fams.length}`}</button>` : ""}
+    ${endMap(d.species, fams, seqs.ends)}
     <h4>Consensus of <code>${esc(sel.id)}</code>, ${int(sel.len)} bp</h4>
     <p class="tl-why">${sel.method === "seed" ? "The unit of the longest array: too few copies to build a consensus." : `Built from ${int(sel.aligned)} aligned copies (${sel.identity}% identity). `}Oriented as most end copies read from the chromosome tip${sel.orientation != null && sel.orientation < 1 ? ` (${pc(sel.orientation)} of them)` : ""}; ${int(sel.bpEnd)} bp at ends${sel.bpInterior ? `, ${int(sel.bpInterior)} bp inside chromosomes` : ", none found inside chromosomes"}.</p>
     <pre class="tl-seq">${esc(sel.cons)}</pre>
+    <h4>Related to <code>${esc(sel.id)}</code></h4>
+    ${relDetail(d.species, sel)}
     <div class="og-filegrid"><button type="button" class="og-file" data-dl="sat"><b>FASTA</b>This family</button><button type="button" class="og-file" data-copy="sat"><b>Copy</b>Sequence</button><button type="button" class="og-file" data-dl="satall"><b>FASTA</b>All ${int(fams.length)} families</button></div>
   </section>`;
 }
@@ -970,6 +1127,11 @@ $("bulk").innerHTML = [
     `End-satellite consensus library of the ${int(all.filter((d) => d.satFamilies).length)} telomerase-loss genomes (${int(d3.sum(all, (d) => d.satFamilies))} families)`,
   ],
   [
+    "telomeres/satellite_pairs.tsv",
+    "TSV",
+    `Related end-satellite families, within genomes and between species (${int(index.satLinks?.length ?? 0)} species pairs share one)`,
+  ],
+  [
     "telomeres/satellites.tsv",
     "TSV",
     "One row per end-satellite family: unit, ends, consensus quality and Dfam match",
@@ -1044,6 +1206,14 @@ $("treeOut").addEventListener("click", () => fig.zoomBy(1 / 1.6));
 $("treeReset").addEventListener("click", () => fig.reset());
 $("markPos").addEventListener("change", (e) => fig.setMarks(e.target.value));
 $("treeSave").addEventListener("click", saveTree);
+$("linkIn").addEventListener("click", () => linkFig.zoomBy(1.6));
+$("linkOut").addEventListener("click", () => linkFig.zoomBy(1 / 1.6));
+$("linkReset").addEventListener("click", () => linkFig.reset());
+$("treeLinks").addEventListener("click", (e) => {
+  state.links = !state.links;
+  e.currentTarget.setAttribute("aria-pressed", state.links);
+  renderTree();
+});
 $("groupFilter").addEventListener("change", (e) => {
   state.group = e.target.value;
   state.rows = 15;
@@ -1085,6 +1255,26 @@ $("species").addEventListener("keydown", (e) => {
   }
 });
 $("species").addEventListener("click", async (e) => {
+  const go = e.target.closest("[data-satgo], [data-satto]");
+  if (go) {
+    e.preventDefault();
+    if (go.dataset.satto) {
+      const [s2, fam] = go.dataset.satto.split("|");
+      open(s2, false);
+      state.sat = fam;
+      state.satAll = true;
+    } else {
+      state.sat = go.dataset.satgo;
+      if (!$("species").querySelector(`tr[data-sat="${CSS.escape(state.sat)}"]`))
+        state.satAll = true;
+    }
+    const y = $("sat-card")?.getBoundingClientRect().top;
+    await renderSpecies();
+    if (go.dataset.satto)
+      $("sat-card")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    else window.scrollBy(0, $("sat-card").getBoundingClientRect().top - y);
+    return;
+  }
   const row = e.target.closest("tr[data-sat]");
   if (row || e.target.closest("[data-satall]")) {
     if (row) state.sat = row.dataset.sat;
@@ -1147,6 +1337,7 @@ const start = decodeURIComponent(location.hash.slice(1));
 state.species = byName.has(start) ? start : "Arabidopsis_thaliana";
 renderSpecies();
 renderTree();
+renderLinks();
 renderOverview();
 renderTable();
 addDownloads($("app"));
@@ -1161,6 +1352,7 @@ addEventListener("resize", () => {
 const rethemed = () => {
   renderOverview();
   renderTree();
+  renderLinks();
 };
 dark.addEventListener("change", rethemed);
 new MutationObserver(rethemed).observe(root, {

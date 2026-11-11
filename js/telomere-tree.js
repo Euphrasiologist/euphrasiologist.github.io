@@ -65,6 +65,7 @@ export const THEMES = {
       unresolved: "#8f8d86",
     },
     routes: { 1: "#6250d6", 2: "#e0457b", other: "#3f3e39" },
+    links: ["#6cbcc1", "#0b5f66"], // shared end satellites, 75% to 100% identity
   },
   dark: {
     bg: "#18211c",
@@ -92,6 +93,7 @@ export const THEMES = {
       unresolved: "#8f8d86",
     },
     routes: { 1: "#9085e9", 2: "#e8689a", other: "#c3c2b7" },
+    links: ["#2f6b70", "#8ee6eb"],
   },
 };
 export const STATES = [
@@ -238,6 +240,7 @@ export function render(
     onSelect = null,
     tip = null,
     interactive = true,
+    links = null, // [species_a, species_b, identity, divergence, family pairs]: shared end satellites
   } = {},
 ) {
   const {
@@ -599,6 +602,80 @@ export function render(
   }
   const byOrder = (a, b) =>
     d3.ascending(a.deep, b.deep) || d3.ascending(a.posterior, b.posterior);
+  // Shared end satellites: a curve between the two tips, pulled towards their common ancestor,
+  // so sister species make a small bump at the rim and deep pairs sweep across the circle.
+  const linkColour = d3
+    .scaleLinear()
+    .domain([75, 100])
+    .range(C.links)
+    .interpolate(d3.interpolateLab)
+    .clamp(true);
+  const linkData = (links || [])
+    .filter(([a, b]) => tipByName.has(a) && tipByName.has(b))
+    .map(([a, b, pid, myr, n]) => {
+      const ta = tipByName.get(a),
+        tb = tipByName.get(b),
+        m = mrca([a, b]);
+      return { a: ta, b: tb, pid, myr: myr ?? ageOf(m), n, m };
+    })
+    .sort((x, y) => d3.ascending(x.pid, y.pid));
+  const linkPath = (d) =>
+    `M${pt(TREE_R, d.a.angle)}Q${pt(d.m.r * k, d.m.angle)} ${pt(TREE_R, d.b.angle)}`;
+  const linkG = plot
+    .append("g")
+    .attr("class", "satlinks")
+    .attr("fill", "none")
+    .attr("stroke-linecap", "round");
+  const linkCase = linkG
+    .append("g")
+    .attr("stroke", C.bg)
+    .attr("stroke-width", 0.95)
+    .selectAll("path")
+    .data(linkData)
+    .join("path")
+    .attr("d", linkPath);
+  const linkSel = linkG
+    .append("g")
+    .selectAll("path")
+    .data(linkData)
+    .join("path")
+    .attr("d", linkPath)
+    .attr("stroke", (d) => linkColour(d.pid))
+    .attr("stroke-width", 0.55);
+  const ends = [
+    ...new Map(linkData.flatMap((d) => [[d.a.thisLabel, d.a], [d.b.thisLabel, d.b]])).values(),
+  ];
+  linkG
+    .append("g")
+    .attr("fill", C.links[1])
+    .attr("stroke", C.bg)
+    .attr("stroke-width", 0.12)
+    .selectAll("circle")
+    .data(ends)
+    .join("circle")
+    .attr("r", 0.42)
+    .attr("cx", (d) => (TREE_R - 0.2) * Math.cos(d.angle))
+    .attr("cy", (d) => (TREE_R - 0.2) * Math.sin(d.angle));
+  // wider invisible strokes, for hovering
+  const linkHit = linkG
+    .append("g")
+    .attr("stroke", "transparent")
+    .attr("stroke-width", 1.6)
+    .selectAll("path")
+    .data(linkData)
+    .join("path")
+    .attr("d", linkPath);
+  // Links of the hovered or selected species are drawn heavier, the rest fade.
+  function emphasiseLinks(name) {
+    const on = (d) => d.a.thisLabel === name || d.b.thisLabel === name;
+    const any = name && linkData.some(on);
+    linkSel
+      .attr("stroke-width", (d) => (any && on(d) ? 0.9 : 0.55))
+      .attr("stroke-opacity", (d) => (any && !on(d) ? 0.35 : 1));
+    linkCase.attr("stroke-width", (d) => (any && on(d) ? 1.3 : 0.95));
+    if (any) linkSel.filter(on).raise();
+  }
+
   const markG = plot.append("g").attr("class", "marks");
   const markSel = styleMarks(
     markG
@@ -861,6 +938,24 @@ export function render(
       })),
     },
   ]);
+  if (linkData.length) {
+    const linkRow = (pid) => ({
+      label: `${pid}% identity`,
+      draw: (g) =>
+        g
+          .append("path")
+          .attr("d", "M-1.3,0.4Q0,-1.4 1.3,0.4")
+          .attr("fill", "none")
+          .attr("stroke", linkColour(pid))
+          .attr("stroke-width", 0.5),
+    });
+    legendBlock(141, 3.5 + 9 * LINE, [
+      {
+        title: `Shared end satellite (${linkData.length})`,
+        rows: [linkRow(75), linkRow(100)],
+      },
+    ]);
+  }
   legendBlock(0.5, 150, [
     {
       title: `Repeat transitions (${marks.filter((d) => !d.deep).length})`,
@@ -924,7 +1019,7 @@ export function render(
       : `<i>${d.thisLabel.replace(/_/g, " ")}</i><span>${capitalise(o.group)}</span>
          <span>Repeat: ${o.cat === "lost" ? stateName.lost : code(o.unit)}${o.cat === "unknown" && o.unit ? " (not in the analysis set)" : ""}</span>${o.stateWhy ? `<span class="tl-muted">${o.stateWhy.replace(/^[^:]+: /, "")}</span>` : ""}
          <span>TR: ${o.trWhy ?? (o.tr ? "validated" : "not validated")}</span>
-         <span>TERT: ${o.tertWhy ?? o.tert ?? "–"}</span>
+         <span>TERT: ${o.tertWhy ?? o.tert ?? "–"}</span>${o.sat ? `<span>End satellites: ${o.sat}</span>` : ""}
          <span class="tl-tiphint">Click to open</span>`;
   };
 
@@ -1047,6 +1142,7 @@ export function render(
     highlighted = null;
     overlayA.selectAll("*").remove();
     for (const row of built) row.overlay.selectAll("*").remove();
+    emphasiseLinks(selectedNode?.thisLabel);
     if (selectedNode) highlight(selectedNode, null, true);
   }
   // Highlights the path from node to the root. With a colour, also its whole subtree.
@@ -1119,12 +1215,13 @@ export function render(
 
   svg
     .on("pointermove", (event) => {
-      if (event.target.closest(".marks")) return;
+      if (event.target.closest(".marks, .satlinks")) return;
       const d = tipUnder(event);
       svg.style("cursor", d && !d.info.noData ? "pointer" : null);
       if (d) {
         showTip(event, speciesHtml(d));
         highlight(d, null);
+        emphasiseLinks(d.thisLabel);
       } else {
         hideTip();
         clearHighlight();
@@ -1135,7 +1232,8 @@ export function render(
       clearHighlight();
     });
   svg.on("click", (event) => {
-    if (event.defaultPrevented || event.target.closest(".marks")) return;
+    if (event.defaultPrevented || event.target.closest(".marks, .satlinks"))
+      return;
     const d = tipUnder(event);
     if (d && !d.info.noData && onSelect) onSelect(d.thisLabel);
   });
@@ -1163,6 +1261,30 @@ export function render(
         clearHighlight();
       });
   }
+
+  const sp = (d) => `<i>${d.thisLabel.replace(/_/g, " ")}</i>`;
+  linkHit
+    .on("pointerenter pointermove", (event, d) => {
+      showTip(
+        event,
+        `<b>Shared end satellite</b>
+        <span>${sp(d.a)} and ${sp(d.b)}</span>
+        <span>${d.n === 1 ? "One end family" : `${d.n} end families`}, up to ${d.pid.toFixed(1)}% identity</span>
+        <span>Diverged about ${d.myr.toFixed(0)} Myr ago</span>
+        <span class="tl-tiphint">Click to open ${sp(d.a)}</span>`,
+      );
+      highlight(d.m, C.links[1]);
+      emphasiseLinks(null);
+      linkSel.filter((x) => x === d).attr("stroke-width", 0.9).raise();
+    })
+    .on("pointerleave", () => {
+      hideTip();
+      clearHighlight();
+    })
+    .on("click", (event, d) => {
+      event.preventDefault();
+      onSelect?.(d.a.thisLabel);
+    });
 
   // ---- zoom: the wheel zooms only with ctrl or cmd held (and trackpad pinches, which send
   // ctrl), and touch needs two fingers, so the page still scrolls past the figure ----

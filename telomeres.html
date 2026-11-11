@@ -93,6 +93,15 @@ summary: Telomeric repeats, telomerase RNA and TERT across 3,400 chromosome-leve
                   +
                 </button></span
               >
+              <button
+                type="button"
+                class="chip"
+                id="treeLinks"
+                aria-pressed="true"
+                title="Curves join species whose chromosome ends carry a related satellite"
+              >
+                Shared end satellites
+              </button>
               <button type="button" class="chip" id="treeReset">Reset</button>
               <button type="button" class="chip" id="treeSave">
                 Download SVG
@@ -104,9 +113,51 @@ summary: Telomeric repeats, telomerase RNA and TERT across 3,400 chromosome-leve
             <b>a</b>, the dated species tree, with rings for the repeat, a
             validated TR and TERT, and the repeat changes marked by route.
             <b>b</b>, <b>c</b>, Coleoptera and Hymenoptera enlarged, where most
-            changes are. The download is the print figure, 178 mm wide.
+            changes are. Teal curves join telomerase-loss species whose
+            chromosome ends carry a related satellite (at least 75% identity
+            over 60% of the unit), bending towards their common ancestor, so the
+            deeper the curve, the older the split. The download is the print
+            figure, 178 mm wide.
           </p>
           <div class="og-tip tl-figtip" id="treeTip"></div>
+        </div>
+        <div class="gs-card tl-treecard" id="linkCard">
+          <div class="tl-treehead">
+            <h3>Shared end satellites in flies and spiders</h3>
+            <div class="tl-treetools">
+              <span class="og-toggle"
+                ><button
+                  type="button"
+                  class="chip"
+                  id="linkOut"
+                  aria-label="Zoom out"
+                >
+                  −</button
+                ><button
+                  type="button"
+                  class="chip"
+                  id="linkIn"
+                  aria-label="Zoom in"
+                >
+                  +
+                </button></span
+              >
+              <button type="button" class="chip" id="linkReset">Reset</button>
+            </div>
+          </div>
+          <div class="tl-tree tl-links" id="figLinks"></div>
+          <p class="gs-note tl-treecap">
+            The two main clades that lost telomerase, from the tree above. Below the
+            tips, an arc joins two species whose chromosome ends carry a related
+            satellite (at least 75% identity over 60% of the unit). Each arc
+            reaches as deep as the pair's common ancestor is old, on the same
+            scale as the tree. Most are shallow: related end satellites are
+            found mostly between species that split less than 50 Myr ago, and
+            rarely between older pairs (one mayfly pair, outside these clades,
+            is on the tree above). The band under the tips marks taxonomic families. Zoom with
+            the buttons, ctrl and the scroll wheel, or a pinch.
+          </p>
+          <div class="og-tip tl-figtip" id="linkTip"></div>
         </div>
         <div class="gs-pair">
           <div class="gs-card">

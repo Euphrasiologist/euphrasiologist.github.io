@@ -3980,3 +3980,116 @@ a.output:hover {
 .tl-sat h4 + .tl-why {
   margin-bottom: 8px;
 }
+.tl-rel {
+  display: inline-block;
+  margin: 1px 0;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--paper-2);
+  box-shadow: inset 0 0 0 1px var(--rule);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.9em;
+  line-height: 1.6;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+}
+.tl-rel small {
+  color: var(--ink-2);
+}
+.tl-rel:hover,
+.tl-rel:focus-visible {
+  box-shadow: inset 0 0 0 1px var(--ink-2);
+}
+.tl-relx {
+  box-shadow: inset 3px 0 0 #0b8a93, inset 0 0 0 1px var(--rule);
+  padding-left: 8px;
+}
+.tl-relx:hover,
+.tl-relx:focus-visible {
+  box-shadow: inset 3px 0 0 #0b8a93, inset 0 0 0 1px var(--ink-2);
+}
+.tl-relcell {
+  min-width: 9em;
+}
+.tl-reltable {
+  max-width: 560px;
+}
+/* end map colours: the site's categorical order, cap first */
+.tl-sat {
+  --e0: #2a78d6; --e1: #eb6834; --e2: #1baf7a; --e3: #6250d6;
+  --e4: #eda100; --e5: #e34948; --e6: #e87ba4; --eo: #8a918c; --ex: #d9d5ca;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .tl-sat {
+    --e0: #3987e5; --e1: #d95926; --e2: #199e70; --e3: #9085e9;
+    --e4: #c98500; --e5: #e66767; --e6: #d55181; --eo: #9aa39d; --ex: #3a443e;
+  }
+}
+:root[data-theme="dark"] .tl-sat {
+  --e0: #3987e5; --e1: #d95926; --e2: #199e70; --e3: #9085e9;
+  --e4: #c98500; --e5: #e66767; --e6: #d55181; --eo: #9aa39d; --ex: #3a443e;
+}
+.tl-endmap {
+  margin: 6px 0 4px;
+  max-width: 760px;
+  overflow-x: auto;
+}
+.tl-endmap svg {
+  display: block;
+  width: 100%;
+  min-width: 540px;
+  height: auto;
+  font-size: 9px;
+  fill: var(--ink-2);
+}
+.tl-endmap line {
+  stroke: var(--rule);
+  stroke-width: 0.5;
+}
+.tl-endmap rect {
+  stroke: var(--paper);
+  stroke-width: 0.6;
+  cursor: pointer;
+}
+.tl-endmap rect.tl-ex {
+  cursor: default;
+}
+.tl-endmap rect.on {
+  stroke: var(--ink);
+  stroke-width: 1.2;
+}
+.tl-e0 { fill: var(--e0); background: var(--e0); }
+.tl-e1 { fill: var(--e1); background: var(--e1); }
+.tl-e2 { fill: var(--e2); background: var(--e2); }
+.tl-e3 { fill: var(--e3); background: var(--e3); }
+.tl-e4 { fill: var(--e4); background: var(--e4); }
+.tl-e5 { fill: var(--e5); background: var(--e5); }
+.tl-e6 { fill: var(--e6); background: var(--e6); }
+.tl-eo { fill: var(--eo); background: var(--eo); }
+.tl-ex { fill: var(--ex); background: var(--ex); }
+.tl-mapkey {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin: 2px 0 6px;
+  color: var(--ink-2);
+  font-size: 0.85em;
+}
+.tl-mapkey i {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 5px;
+  border-radius: 2px;
+  vertical-align: -1px;
+}
+.tl-tree.tl-links {
+  max-width: none;
+  overflow-x: auto;
+}
+.tl-links svg {
+  min-width: 760px;
+}

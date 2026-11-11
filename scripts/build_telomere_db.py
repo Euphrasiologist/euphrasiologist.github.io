@@ -25,6 +25,7 @@ import re
 import shutil
 import subprocess
 import urllib.request
+from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -98,7 +99,28 @@ def tandem_match(seq, unit):
     return best
 
 
-def satellites(src):
+def satellite_pairs(path):
+    """Related end families (scripts/satellite_pairs.py): {family: [related, ...]} with the
+    identity, and for pairs between species the divergence; and the species pairs, as
+    [species_a, species_b, best identity, divergence (Myr), family pairs]."""
+    rel, links = defaultdict(list), {}
+    if not path.is_file():
+        return rel, []
+    for r in csv.DictReader(open(path), delimiter="\t"):
+        a, b, pid, myr = r["family_a"], r["family_b"], num(r["identity"]), num(r["divergence_myr"])
+        for x, y, py in ((a, b, r["period_b"]), (b, a, r["period_a"])):
+            rel[x].append({"to": y, "pid": pid, "unit": num(py, int),
+                           **({"myr": myr} if r["relation"] == "between" else {})})
+        if r["relation"] == "between":
+            k = tuple(sorted((a.split("|")[0], b.split("|")[0])))
+            old = links.get(k)
+            links[k] = [*k, max(pid, old[2]) if old else pid, myr, (old[4] if old else 0) + 1]
+    for v in rel.values():
+        v.sort(key=lambda x: ("myr" in x, -(x["pid"] or 0)))
+    return rel, sorted(links.values())
+
+
+def satellites(src, pairs):
     """Per species, the end-satellite families of shifts/d2_ends/satlib (telomerase-loss genomes):
     the cap first, then by the number of ends carrying >= 1 kb, then bp at ends."""
     lib = src / "shifts/d2_ends/satlib/library.tsv"
@@ -124,10 +146,30 @@ def satellites(src):
                      "cover": num(h.get("covered_by_best")), "any": num(h.get("covered_any"))}
             if h.get("best_repeat") else ({"any": num(h.get("covered_any"))} if num(h.get("covered_any")) else None),
             "cons": r["consensus"],
+            **({"rel": pairs[k]} if (k := f"{r['species']}|{r['family']}") in pairs else {}),
         })
     for fams in by.values():
         fams.sort(key=lambda f: (not f["cap"], -(f["endsCap"] or 0), -(f["bpEnd"] or 0)))
     return by, rows
+
+
+def end_map(src, sp):
+    """The tandem arrays in each chromosome end's 100 kb window (satlib out/<species>.arrays.tsv),
+    in bp from the tip: [{"c": chromosome, "s": "L" or "R", "len": chromosome length,
+    "a": [[start, end, family], ...]}], ends in chromosome order, left before right."""
+    path = src / "shifts/d2_ends/satlib/out" / f"{sp}.arrays.tsv"
+    if not path.is_file():
+        return None
+    ends = {}
+    for r in csv.DictReader(open(path), delimiter="\t"):
+        if r["kind"] not in ("L", "R"):
+            continue
+        chrom, length = r["window"].split("|")[:2]
+        e = ends.setdefault((chrom, r["kind"]), {"c": chrom, "s": r["kind"], "len": int(length), "a": []})
+        e["a"].append([int(r["start"]), int(r["end"]), r["family"]])
+    for e in ends.values():
+        e["a"].sort()
+    return sorted(ends.values(), key=lambda e: (-e["len"], e["c"], e["s"])) or None
 
 
 def wrap(seq, width=60):
@@ -174,7 +216,8 @@ def main():
         for r in csv.DictReader(open(src / "shifts/repeat_evolution/b1_transitions.tsv"), delimiter="\t")
     ]
     losses = list(csv.DictReader(open(src / "shifts/d2_ends/loss_events.tsv"), delimiter="\t"))
-    sats, sat_rows = satellites(src)
+    sat_rel, sat_links = satellite_pairs(out / "telomeres" / "satellite_pairs.tsv")
+    sats, sat_rows = satellites(src, sat_rel)
 
     seqdir = out / "telomeres" / "seq"
     if seqdir.exists():
@@ -230,8 +273,10 @@ def main():
         cap = next((f for f in sat or [] if f["cap"]), None)
         has = (1 if tr else 0) | (2 if tert else 0) | (4 if sat else 0)
         if has:
+            ends = end_map(src, sp) if sat else None
             with open(seqdir / f"{sp}.json", "w") as f:
-                json.dump({k: v for k, v in {"tr": tr, "tert": tert, "sat": sat}.items() if v}, f, separators=(",", ":"))
+                json.dump({k: v for k, v in {"tr": tr, "tert": tert, "sat": sat, "ends": ends}.items() if v}, f,
+                          separators=(",", ":"))
         flags = [x for x in (st.get("flags") or "").split(";") if x]
         rows.append([
             sp, s.get("group") or None, tax.get("phylum") or None, tax.get("klass") or tax.get("class") or None,
@@ -256,6 +301,7 @@ def main():
         "built": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "fields": fields, "rows": rows,
         "tree": newick, "transitions": transitions,
+        "satLinks": sat_links,
         "losses": [{k: (num(v) if k in ("n_species", "n_families", "crown_myr", "stem_myr", "telomere_strong") else v)
                     for k, v in r.items()} for r in losses],
     }
@@ -278,6 +324,8 @@ def main():
             w.writerow(cols)
             w.writerows([r[k] for k in cols] for r in sat_rows)
     size = os.path.getsize(out / "telomeres.json") / 1e3
+    print(f"{len(sat_links)} species pairs sharing an end satellite, "
+          f"{sum(1 for v in sat_rel.values() for x in v if 'myr' not in x) // 2} related pairs within genomes")
     print(f"{sum(1 for r in rows if r[fields.index('gca')])} with a GenBank accession, "
           f"{len(sat_fa)} end-satellite families in {len(sats)} telomerase-loss genomes")
     print(f"{len(rows)} species, {n_tr} TR loci, {n_cds} TERT CDS from {REPO}@{commit[:7]} "
