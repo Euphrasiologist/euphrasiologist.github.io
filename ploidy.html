@@ -1,0 +1,167 @@
+---
+layout: default
+title: Polyploid genomes, chromosome by chromosome
+section: figures
+permalink: /ploidy.html
+summary: How the copies of every chromosome relate in 60 polyploid and diploid genomes, read from haplotype-resolved assemblies with ploidyspec.
+---
+
+<section class="page-head">
+  <div class="wrap">
+    <p class="eyebrow"><a href="/figures.html">Figures</a> · Live data</p>
+    <h1>Polyploid genomes, chromosome by chromosome</h1>
+    <p class="lede">
+      A polyploid carries several copies of every chromosome. Whether those
+      copies still pair and swap freely (autopolyploid-like), or fall into sets
+      that keep apart (allopolyploid-like), is written in how different they
+      are. <a href="https://github.com/ARU-life-sciences/ploidyspec">ploidyspec</a>
+      measures this from haplotype-resolved genome assemblies with k-mers, with
+      no reference genome or alignment: how far apart the copies of each
+      chromosome are, along their whole length; which chromosomes are old
+      duplicates of each other; and where copies have fused or split into
+      lineages. Pick a species to see every chromosome, or compare the panel
+      below.
+    </p>
+  </div>
+</section>
+
+<section class="section gs og pl">
+  <div class="wrap">
+    <p id="status" class="gs-status">Loading the panel…</p>
+
+    <div id="app" hidden>
+      <div class="gs-tiles" id="tiles"></div>
+
+      <div class="gs-bar">
+        <label class="search gs-search">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            aria-hidden="true"
+          >
+            <circle cx="11" cy="11" r="7" />
+            <path d="m20 20-3.5-3.5" />
+          </svg>
+          <input
+            type="search"
+            id="search"
+            list="names"
+            placeholder="Find a species or genus"
+            aria-label="Find a species or genus"
+            autocomplete="off"
+          />
+        </label>
+        <datalist id="names"></datalist>
+        <button type="button" class="chip" id="random">Surprise me</button>
+        <span class="og-picks" id="picks"></span>
+      </div>
+
+      <article id="species" class="og-species" aria-live="polite"></article>
+
+      <div class="gs-section">
+        <h2>Across the panel</h2>
+        <div class="gs-card">
+          <h3>How far apart the copies are, and how much of the genome is duplicated</h3>
+          <div class="pl-legend pl-keys" id="scatterKey"></div>
+          <div class="gs-plot" id="figScatter"></div>
+          <p class="gs-note">
+            One dot per species, coloured by ploidyspec's reading. Left to
+            right, copies of the same chromosome grow further apart; bottom to
+            top, more of the genome sits in old duplicated blocks, where one
+            chromosome is a copy of another. Diploids sit low; two-copy
+            assemblies of allopolyploids sit high, because their subgenomes
+            were assembled as different chromosomes; and four-copy
+            autopolyploids sit low and to the right, their duplicates being
+            copies of the same chromosome. Click a dot to open the species.
+          </p>
+        </div>
+      </div>
+
+      <div class="gs-section">
+        <h2>All species</h2>
+        <div class="gs-card og-browse">
+          <div class="og-filters">
+            <label class="og-label" for="groupFilter">Group</label>
+            <select id="groupFilter" class="tl-select"></select>
+            <label class="og-label" for="originFilter">Reading</label>
+            <select id="originFilter" class="tl-select"></select>
+          </div>
+          <div class="pl-legend pl-keys" id="stateKey"></div>
+          <div class="gs-tablewrap">
+            <table class="gs-table">
+              <thead id="thead"></thead>
+              <tbody id="tbody"></tbody>
+            </table>
+          </div>
+          <button class="chip gs-more" id="more" type="button"></button>
+        </div>
+      </div>
+
+      <div class="gs-section pl-read">
+        <h2>How to read this</h2>
+        <div class="pl-cols">
+          <div>
+            <h3>Distance is not origin</h3>
+            <p>
+              How far apart two copies are tells you how long ago they stopped
+              recombining, not how the polyploid formed. Autopolyploids that
+              rediploidised long ago look allo-like, and rediploidisation can
+              take tens of millions of years: in salmonids about a quarter of
+              the genome rediploidised late, separately in each lineage, and
+              sturgeons were still about half tetraploid 80 million years after
+              their duplication (Lien et al. 2016; Redmond et al. 2023). And the divergence between subgenomes
+              dates the split of their parent species, not the polyploidy
+              (Dunn &amp; Sethuraman 2025). So we say <i>disomic-like</i> and
+              <i>tetrasomic-like</i>, and keep <i>allo</i> and <i>auto</i> for
+              the literature.
+            </p>
+          </div>
+          <div>
+            <h3>Mixed genomes are normal</h3>
+            <p>
+              Chromosomes in one genome can differ: sturgeon, peanut and
+              <i>Brachiaria</i> have tetrasomic and disomic chromosomes side by
+              side, and pairing in tetraploid rose differs even between the arms
+              of one chromosome (Dalle Palle et al. 2022; Leal-Bertioli et al.
+              2018; Bourke et al. 2017). That is why every reading here is per
+              chromosome. Haplotype labels (HAP1–HAP4) are arbitrary per
+              chromosome too: in these assemblies HAP1 of one chromosome need
+              not belong with HAP1 of the next (Howe et al. 2026).
+            </p>
+          </div>
+          <div>
+            <h3>Transposon markers work one way</h3>
+            <p>
+              Subgenomes from different parents carry their own transposon
+              families for millions of years, so a clear transposon split means
+              separate ancestry. No split proves nothing: the parents may have
+              been too close, or the polyploid too old, for the signal to
+              survive (Session &amp; Rokhsar 2023; Jia et al. 2022).
+            </p>
+          </div>
+          <div>
+            <h3>Check the assembly first</h3>
+            <p>
+              Exchange between homeologs piles up near chromosome ends, but a
+              contig placed on the wrong chromosome leaves the same mark (Deb et
+              al. 2023; Gordon et al. 2019). A copy assembled less completely
+              than its siblings can look divergent. And k-mer (Mash) distance
+              tracks sequence divergence only while copies are more than about
+              90% identical, so deep homeologs are compressed (Ondov et al.
+              2016).
+            </p>
+          </div>
+        </div>
+      </div>
+
+
+      <p class="gs-caveat gs-source" id="source"></p>
+      <div class="og-tip tl-helptip" id="helpTip" role="tooltip"></div>
+      <div class="og-tip pl-tip" id="plTip" role="tooltip"></div>
+    </div>
+  </div>
+</section>
+<script type="module" src="/js/ploidy.js"></script>
