@@ -4186,6 +4186,10 @@ a.output:hover {
 }
 .pl-cardhead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; }
 .pl-cardhead h3 { margin: 0; }
+.pl-cardhead h4 { margin: 0; }
+.pl-save { margin-left: auto; }
+.pl-save[hidden] { display: none; }
+.pl-cardhead .pl-save .chip { padding: 3px 9px; font-size: 0.72rem; }
 .pl-cardhead .og-toggle .chip { border-radius: 0; margin-left: -1px; padding: 5px 11px; }
 .pl-cardhead .og-toggle .chip:first-child { border-radius: 999px 0 0 999px; }
 .pl-cardhead .og-toggle .chip:last-child { border-radius: 0 999px 999px 0; }

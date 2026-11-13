@@ -287,6 +287,10 @@ function renderScatter() {
     .on("mouseleave", hideTip)
     .on("click", (e, d) => open(d.id));
   el.replaceChildren(svg.node());
+  savers.scatter = () => ({
+    name: "ploidyspec_panel",
+    svg: compose("How far apart the copies are, and how much of the genome is duplicated", [htmlKey($("scatterKey"), W), svgOf(el.querySelector("svg"))]),
+  });
   $("scatterKey").innerHTML = ORIGIN.map(
     ([k, l, w]) =>
       `<span class="pl-key tl-help" tabindex="0" data-tip="${esc(w)}"><i style="background:${originColour(k)}"></i>${l}</span>`,
@@ -522,7 +526,7 @@ async function renderSpecies() {
       <div class="gs-card pl-matrixcard">
         <div class="pl-cardhead"><h3>Distance between every pair of chromosome copies</h3>
           <span class="og-toggle"><button type="button" class="chip" data-scheme="contrast" aria-pressed="${state.scheme === "contrast"}" data-tip="Colour stretched over the 2nd to 98th percentile of the distances, as in ploidyspec's contrast heatmaps">Contrast</button><button type="button" class="chip" data-scheme="full" aria-pressed="${state.scheme === "full"}" data-tip="Colour from zero to the largest distance">Full range</button></span>
-          <span class="og-toggle">${hasPairs(data) ? `<button type="button" class="chip" data-order="pair" aria-pressed="${state.order === "pair"}" data-tip="Average-linkage clustering of the chromosome numbers, the order ploidyspec's own heatmaps use">Clustered</button>` : ""}<button type="button" class="chip" data-order="chrom" aria-pressed="${state.order === "chrom"}">By chromosome</button><button type="button" class="chip" data-order="hap" aria-pressed="${state.order === "hap"}">By haplotype</button></span></div>
+          <span class="og-toggle">${hasPairs(data) ? `<button type="button" class="chip" data-order="pair" aria-pressed="${state.order === "pair"}" data-tip="Average-linkage clustering of the chromosome numbers, the order ploidyspec's own heatmaps use">Clustered</button>` : ""}<button type="button" class="chip" data-order="chrom" aria-pressed="${state.order === "chrom"}">By chromosome</button><button type="button" class="chip" data-order="hap" aria-pressed="${state.order === "hap"}">By haplotype</button></span>${saveButtons("matrix", "the matrix")}</div>
         <div class="pl-matrix" id="figMatrix"></div>
         <div class="pl-legend" id="matrixKey"></div>
         <p class="gs-note">Whole-chromosome k-mer (Mash) distance, on ploidyspec's colour scale: yellow is close, dark blue far. Copies of the same chromosome sit in blocks on the diagonal, and old homeolog pairs show as lighter squares off it; <i>Clustered</i> orders the chromosomes as ploidyspec's own heatmaps do, so related chromosomes sit together. Click a cell to open that chromosome. Hold ctrl or ⌘ and scroll to zoom, drag to pan, double-click to reset.</p>
@@ -535,13 +539,13 @@ async function renderSpecies() {
       <div id="chromDetail">${chromDetail(d, data)}</div>
     </div>
     <div class="gs-card pl-wincard" id="winCard">
-      <div class="pl-cardhead"><h3 id="winTitle"></h3></div>
+      <div class="pl-cardhead"><h3 id="winTitle"></h3>${saveButtons("windows", "this chromosome's heatmap")}</div>
       <div class="pl-win" id="figWindows"></div>
       <div class="pl-legend" id="winKey"></div>
       <p class="gs-note" id="winNote"></p>
     </div>
     <div class="gs-card pl-hmcard" id="hmCard">
-      <div class="pl-cardhead"><h3>Homeology map</h3></div>
+      <div class="pl-cardhead"><h3>Homeology map</h3>${saveButtons("homeology", "the homeology map")}</div>
       <p class="gs-note" id="hmNote"></p>
       <div class="pl-hm" id="figHomeology"></div>
     </div>
@@ -754,7 +758,7 @@ function fusionCard(d, data) {
                 ? `Divergence from the unfused copies is lower near the junction (${d3.format(".4f")(nj)}) than at the arm ends (${d3.format(".4f")(ae)}), a ratio of ${d3.format(".2f")(g)}: not highest at the fusion site.`
                 : `Divergence from the unfused copies is about even along the arms (${d3.format(".4f")(nj)} near the junction, ${d3.format(".4f")(ae)} at the ends).`;
         return `<div class="pl-fusion" id="fusion-${esc(k.replace("+", "-"))}">
-          <h4>Chromosomes ${esc(chrLabel(a))} + ${esc(chrLabel(b))} <span class="tl-muted">· fused in ${esc(copies.map((f) => f.hap).join(" and "))}</span></h4>
+          <div class="pl-cardhead"><h4>Chromosomes ${esc(chrLabel(a))} + ${esc(chrLabel(b))} <span class="tl-muted">· fused in ${esc(copies.map((f) => f.hap).join(" and "))}</span></h4>${saveButtons(`fusion-${k.replace("+", "-")}`, "this fusion's panels")}</div>
           <p class="gs-note">${verdict}${copies[0].lineage_divergence ? ` Fused and unfused lineages differ by ${esc(copies[0].lineage_divergence.split(",").map((x) => x.split(":")).map(([c, v]) => `${d3.format(".4f")(+v)} on ${chrLabel(c)}`).join(" and "))}.` : ""}</p>
           <div class="pl-fusgrid">${copies.map((f) => `<div class="pl-fuspanel" data-scaffold="${esc(f.scaffold)}"></div>`).join("")}</div>
         </div>`;
@@ -945,7 +949,236 @@ function drawFusions() {
     key.innerHTML = `<span><i style="background:${col(left)}"></i>vs unfused chromosome ${esc(chrLabel(left))} (${esc(unfused(left).join(", ") || "–")})</span><span><i style="background:${col(right)}"></i>vs unfused chromosome ${esc(chrLabel(right))} (${esc(unfused(right).join(", ") || "–")})</span>${sibs.length ? `<span><i class="ln"></i>vs the other fused copy (${esc(sibs.join(", "))})</span>` : `<span class="tl-muted">no other fused copy to compare with</span>`}`;
     el.replaceChildren(svg.node(), key);
   }
+  for (const [k, copies] of d3.groups(fs, (f) => f.components)) {
+    const [a, b] = k.split("+");
+    savers[`fusion-${k.replace("+", "-")}`] = () => {
+      const panels = copies
+        .map((f) => document.querySelector(`.pl-fuspanel[data-scaffold="${CSS.escape(f.scaffold)}"]`))
+        .filter((p) => p?.querySelector("svg"))
+        .map((p) => {
+          const s = svgOf(p.querySelector("svg"));
+          return compose("", [s, htmlKey(p.querySelector(".pl-fuskey"), s.w)], { gap: 2 });
+        })
+        .map((c) => ({ ...c, markup: c.markup.replace(/^<\?xml[^>]*>\n/, "") }));
+      return {
+        name: figName(panel.d.id, "fusion", `chr${chrLabel(a)}+chr${chrLabel(b)}`),
+        svg: compose(`${figTitle(panel.d)}: chromosomes ${chrLabel(a)} + ${chrLabel(b)}, fused in ${copies.map((f) => f.hap).join(" and ")}`, panels, { row: true }),
+      };
+    };
+  }
 }
+
+// --- saving figures ---
+
+// Every figure can be saved as SVG (vector, for editing) or PNG (3x, for slides). SVG figures
+// are cloned with their computed styles inlined; the two canvas figures are redrawn through
+// SvgCtx, which records the same drawing calls as SVG elements.
+const savers = {};
+const xml = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const n2 = (v) => +(+v).toFixed(2);
+
+class SvgCtx {
+  constructor() {
+    this.out = [];
+    this.defs = [];
+    this.stack = [];
+    this.path = "";
+    this.clipId = null;
+    this.ids = 0;
+    Object.assign(this, { fillStyle: "#000", strokeStyle: "#000", lineWidth: 1, font: "10px sans-serif", textAlign: "start", textBaseline: "alphabetic", globalAlpha: 1, imageSmoothingEnabled: true });
+  }
+  static KEYS = ["fillStyle", "strokeStyle", "lineWidth", "font", "textAlign", "textBaseline", "globalAlpha", "clipId"];
+  save() {
+    this.stack.push(Object.fromEntries(SvgCtx.KEYS.map((k) => [k, this[k]])));
+  }
+  restore() {
+    Object.assign(this, this.stack.pop() ?? {});
+  }
+  setTransform() {}
+  clearRect() {}
+  beginPath() {
+    this.path = "";
+  }
+  moveTo(x, y) {
+    this.path += `M${n2(x)} ${n2(y)}`;
+  }
+  lineTo(x, y) {
+    this.path += `L${n2(x)} ${n2(y)}`;
+  }
+  rect(x, y, w, h) {
+    this.path += `M${n2(x)} ${n2(y)}h${n2(w)}v${n2(h)}h${n2(-w)}Z`;
+  }
+  clip() {
+    const id = `clip${++this.ids}`;
+    this.defs.push(`<clipPath id="${id}"${this.clipId ? ` clip-path="url(#${this.clipId})"` : ""}><path d="${this.path}"/></clipPath>`);
+    this.clipId = id;
+  }
+  attrs() {
+    return `${this.clipId ? ` clip-path="url(#${this.clipId})"` : ""}${this.globalAlpha < 1 ? ` opacity="${this.globalAlpha}"` : ""}`;
+  }
+  stroke() {
+    this.out.push(`<path d="${this.path}" fill="none" stroke="${this.strokeStyle}" stroke-width="${this.lineWidth}"${this.attrs()}/>`);
+  }
+  fillRect(x, y, w, h) {
+    this.out.push(`<rect x="${n2(x)}" y="${n2(y)}" width="${n2(w)}" height="${n2(h)}" fill="${this.fillStyle}"${this.attrs()}/>`);
+  }
+  strokeRect(x, y, w, h) {
+    this.out.push(`<rect x="${n2(x)}" y="${n2(y)}" width="${n2(w)}" height="${n2(h)}" fill="none" stroke="${this.strokeStyle}" stroke-width="${this.lineWidth}"${this.attrs()}/>`);
+  }
+  fillText(t, x, y) {
+    const m = this.font.match(/^(?:(\d{3}|bold)\s+)?([\d.]+)px\s+(.*)$/) ?? [];
+    const anchor = { right: "end", end: "end", center: "middle" }[this.textAlign] ?? "start";
+    const dy = { middle: "0.35em", top: "0.8em", hanging: "0.8em" }[this.textBaseline];
+    this.out.push(
+      `<text x="${n2(x)}" y="${n2(y)}"${dy ? ` dy="${dy}"` : ""} text-anchor="${anchor}" font-size="${m[2] ?? 10}"${m[1] ? ` font-weight="${m[1]}"` : ""} fill="${this.fillStyle}"${this.attrs()}>${xml(t)}</text>`,
+    );
+  }
+  // an image (the matrix's one-pixel-per-cell canvas): one rect per run of equal pixels in a row
+  drawImage(img, dx, dy, dw, dh) {
+    const w = img.width,
+      h = img.height,
+      px = img.getContext("2d").getImageData(0, 0, w, h).data;
+    const sx = dw / w,
+      sy = dh / h;
+    const rgba = (i) => `rgb(${px[i]},${px[i + 1]},${px[i + 2]})`;
+    const g = [];
+    for (let r = 0; r < h; r++)
+      for (let c = 0; c < w; ) {
+        const col = rgba((r * w + c) * 4);
+        let e = c + 1;
+        while (e < w && rgba((r * w + e) * 4) === col) e++;
+        g.push(`<rect x="${n2(dx + c * sx)}" y="${n2(dy + r * sy)}" width="${n2((e - c) * sx)}" height="${n2(sy)}" fill="${col}"/>`);
+        c = e;
+      }
+    this.out.push(`<g shape-rendering="crispEdges"${this.attrs()}>${g.join("")}</g>`);
+  }
+  svg(w, h) {
+    return { w, h, markup: `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><defs>${this.defs.join("")}</defs>${this.out.join("")}</svg>` };
+  }
+}
+
+// a live SVG element, cloned with the styles the page's CSS gave it written onto each element
+const STYLE_PROPS = ["fill", "fill-opacity", "stroke", "stroke-width", "stroke-dasharray", "stroke-opacity", "opacity", "font-family", "font-size", "font-weight", "font-style", "text-anchor", "visibility", "display"];
+function svgOf(node) {
+  const clone = node.cloneNode(true);
+  const live = [node, ...node.querySelectorAll("*")],
+    copy = [clone, ...clone.querySelectorAll("*")];
+  live.forEach((el, i) => {
+    const cs = getComputedStyle(el);
+    copy[i].setAttribute("style", STYLE_PROPS.map((p) => `${p}:${cs.getPropertyValue(p)}`).join(";"));
+  });
+  // hover targets and tooltips have no place in a saved figure
+  for (const el of clone.querySelectorAll("rect")) if (el.getAttribute("fill") === "transparent") el.remove();
+  for (const el of clone.querySelectorAll("title")) el.remove();
+  const [, , w, h] = (node.getAttribute("viewBox") ?? `0 0 ${node.clientWidth} ${node.clientHeight}`).split(/[\s,]+/).map(Number);
+  clone.setAttribute("width", w);
+  clone.setAttribute("height", h);
+  return { w, h, markup: new XMLSerializer().serializeToString(clone) };
+}
+
+// a colour bar, as the HTML legend under the matrix and the windows heatmap
+function gradientKey({ colour, lo, hi, label }) {
+  const id = `key${Math.random().toString(36).slice(2, 8)}`,
+    W = 220,
+    ink3 = css("--ink-3");
+  const stops = d3.range(0, 1.0001, 0.05).map((t) => `<stop offset="${t}" stop-color="${colour(hi + t * (lo - hi))}"/>`);
+  const more = state.scheme === "contrast";
+  const lw = textWidth(label, 11) + 10;
+  return {
+    w: lw + W + 4,
+    h: 30,
+    markup: `<svg width="${lw + W + 4}" height="30"><defs><linearGradient id="${id}">${stops.join("")}</linearGradient></defs><g font-size="11" fill="${ink3}"><text x="0" y="10" dy="0.35em">${xml(label)}</text><rect x="${lw}" y="4" width="${W}" height="12" rx="2" fill="url(#${id})"/><text x="${lw}" y="27">${xml(dist(hi) + (more ? " or more" : ""))}</text><text x="${lw + W}" y="27" text-anchor="end">${xml(dist(lo) + (more ? " or less" : ""))}</text></g></svg>`,
+  };
+}
+
+// an HTML key (a row of swatches and labels) laid out again as SVG, wrapping at width W
+let measurer;
+function textWidth(t, size) {
+  measurer ??= document.createElement("canvas").getContext("2d");
+  measurer.font = `${size}px Inter, system-ui, sans-serif`;
+  return measurer.measureText(t).width;
+}
+function htmlKey(el, W) {
+  if (!el) return null;
+  const items = [...el.children].map((s) => {
+    const i = s.querySelector("i");
+    const cs = i && getComputedStyle(i);
+    return { text: s.textContent.trim(), col: cs?.backgroundColor, line: i?.classList.contains("ln") };
+  });
+  const ink3 = css("--ink-3"),
+    out = [];
+  let x = 0,
+    y = 10;
+  for (const it of items) {
+    const w = (it.col ? 14 : 0) + textWidth(it.text, 11) + 16;
+    if (x && x + w > W) (x = 0), (y += 18);
+    if (it.col)
+      out.push(
+        it.line
+          ? `<rect x="${x}" y="${y - 1}" width="10" height="2" fill="${it.col}"/>`
+          : `<circle cx="${x + 4}" cy="${y}" r="4" fill="${it.col}"/>`,
+      );
+    out.push(`<text x="${x + (it.col ? 14 : 0)}" y="${y}" dy="0.35em" font-size="11" fill="${ink3}">${xml(it.text)}</text>`);
+    x += w;
+  }
+  return { w: W, h: y + 10, markup: `<svg width="${W}" height="${y + 10}">${out.join("")}</svg>` };
+}
+
+// parts stacked top to bottom (or, with row, left to right), under a title, on the page colour
+function compose(title, parts, { row = false, gap = 10 } = {}) {
+  parts = parts.filter(Boolean);
+  const P = 12,
+    TH = title ? 22 : 0;
+  const W = row ? d3.sum(parts, (p) => p.w) + gap * (parts.length - 1) : d3.max(parts, (p) => p.w);
+  const H = row ? d3.max(parts, (p) => p.h) : d3.sum(parts, (p) => p.h) + gap * (parts.length - 1);
+  let at = 0;
+  const body = parts.map((p) => {
+    const g = `<g transform="translate(${P + (row ? at : 0)},${P + TH + (row ? 0 : at)})">${p.markup}</g>`;
+    at += (row ? p.w : p.h) + gap;
+    return g;
+  });
+  const w = Math.ceil(W + 2 * P),
+    h = Math.ceil(H + TH + 2 * P);
+  return {
+    w,
+    h,
+    markup: `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" font-family="Inter, Helvetica, Arial, sans-serif"><rect width="${w}" height="${h}" fill="${css("--surface")}"/>${title ? `<text x="${P}" y="${P + 11}" font-size="13" font-weight="600" fill="${css("--ink")}">${xml(title)}</text>` : ""}${body.join("")}</svg>`,
+  };
+}
+
+function download(blob, name) {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  document.body.append(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+async function saveFigure(key, fmt) {
+  const fig = savers[key]?.();
+  if (!fig) return;
+  const blob = new Blob([fig.svg.markup], { type: "image/svg+xml" });
+  if (fmt === "svg") return download(blob, `${fig.name}.svg`);
+  const img = new Image(),
+    url = URL.createObjectURL(blob);
+  await new Promise((ok, no) => ((img.onload = ok), (img.onerror = no), (img.src = url)));
+  const k = 3,
+    c = document.createElement("canvas");
+  c.width = fig.svg.w * k;
+  c.height = fig.svg.h * k;
+  c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+  URL.revokeObjectURL(url);
+  c.toBlob((b) => download(b, `${fig.name}.png`), "image/png");
+}
+const saveButtons = (key, what = "this figure") =>
+  `<span class="og-toggle pl-save"><button type="button" class="chip" data-save="${esc(key)}" data-fmt="svg" data-tip="Save ${what} as SVG, a vector file to edit">SVG</button><button type="button" class="chip" data-save="${esc(key)}" data-fmt="png" data-tip="Save ${what} as PNG, at three times screen resolution">PNG</button></span>`;
+document.addEventListener("click", (e) => {
+  const b = e.target.closest?.("[data-save]");
+  if (b) saveFigure(b.dataset.save, b.dataset.fmt).catch((err) => console.error("Saving the figure failed", err));
+});
+const figName = (...p) => p.filter(Boolean).join("_").replace(/[^\w.+-]+/g, "-");
+const figTitle = (d) => `${(byId.get(runOf(d.id)) ?? d).name} (${d.id})`;
 
 // --- matrix ---
 
@@ -1075,7 +1308,7 @@ function drawMatrix() {
   canvas.style.height = `${CH}px`;
   canvas.setAttribute("role", "img");
   canvas.setAttribute("aria-label", `Heatmap of the k-mer distance between all ${n} chromosome copies`);
-  const ctx = canvas.getContext("2d");
+  let ctx = canvas.getContext("2d");
   const ink3 = css("--ink-3"),
     surface = css("--surface"),
     gold = css("--gold");
@@ -1193,12 +1426,27 @@ function drawMatrix() {
     if (c) selectChrom(c.chrom, el);
   };
   legend($("matrixKey"), colour, lo, hi, "Distance, whole chromosome");
+  savers.matrix = () => {
+    const real = ctx,
+      rec = (ctx = new SvgCtx());
+    try {
+      render(zooms.matrix);
+    } finally {
+      ctx = real;
+    }
+    const { d } = panel;
+    return {
+      name: figName(d.id, "distance-matrix", state.order === "pair" ? "clustered" : `by-${state.order === "hap" ? "haplotype" : "chromosome"}`),
+      svg: compose(`${figTitle(d)}: distance between every pair of chromosome copies`, [rec.svg(CW, CH), gradientKey($("matrixKey")._key)]),
+    };
+  };
 }
 
 function legend(el, colour, lo, hi, label) {
   const W = 220,
     stops = d3.range(0, 1.0001, 0.05).map((t) => `<stop offset="${t}" stop-color="${colour(hi + t * (lo - hi))}"/>`);
   const id = `g${Math.random().toString(36).slice(2, 8)}`;
+  el._key = { colour, lo, hi, label };
   el.innerHTML = `<span>${label}</span><svg width="${W}" height="12" aria-hidden="true"><defs><linearGradient id="${id}">${stops.join("")}</linearGradient></defs><rect width="${W}" height="12" rx="2" fill="url(#${id})"/></svg><span class="pl-ends"><span>${dist(hi)}${state.scheme === "contrast" ? " or more" : ""}</span><span>${dist(lo)}${state.scheme === "contrast" ? " or less" : ""}</span></span>`;
 }
 
@@ -1227,6 +1475,8 @@ function drawWindows() {
   const tracks = data.windows[state.chrom];
   $("winTitle").textContent = state.chrom ? `Chromosome ${chrLabel(state.chrom)}, along its length` : "Along the chromosome";
   if (!tracks?.length) {
+    savers.windows = null;
+    $("winCard").querySelector(".pl-save")?.toggleAttribute("hidden", true);
     el.innerHTML = "";
     $("winKey").innerHTML = "";
     $("winNote").textContent =
@@ -1297,7 +1547,7 @@ function drawWindows() {
     "aria-label",
     `Heatmap of k-mer distance in ${step / 1000} kb windows along chromosome ${chrLabel(state.chrom)}, one row per pair of copies`,
   );
-  const ctx = canvas.getContext("2d");
+  let ctx = canvas.getContext("2d");
   const ink2 = css("--ink-2"),
     ink3 = css("--ink-3"),
     paper2 = css("--paper-2"),
@@ -1439,6 +1689,20 @@ function drawWindows() {
   };
   canvas.onmouseleave = hideTip;
   legend($("winKey"), colour, lo, hi, `Distance, ${step / 1000} kb windows`);
+  $("winCard").querySelector(".pl-save")?.toggleAttribute("hidden", false);
+  savers.windows = () => {
+    const real = ctx,
+      rec = (ctx = new SvgCtx());
+    try {
+      render();
+    } finally {
+      ctx = real;
+    }
+    return {
+      name: figName(d.id, `chr${chrLabel(state.chrom)}`, "along-chromosome"),
+      svg: compose(`${figTitle(d)}: chromosome ${chrLabel(state.chrom)}, along its length`, [rec.svg(W, H), gradientKey($("winKey")._key)]),
+    };
+  };
   const fusedNote = c?.fusion
     ? `<b>${esc(c.fusion.replace(/^with chr0*(\d+) in (.*)$/, (m, o, h) => `${h.split(",").join(" and ")} of this chromosome ${h.includes(",") ? "are" : "is"} fused with chromosome ${o}`))}, so ${c.fusion.includes(",") ? "they are" : "it is"} not among the rows here unless assembled under this chromosome's name; see Chromosome fusions below.</b> `
     : "";
@@ -1473,6 +1737,8 @@ function drawHomeology() {
   const anchors = Object.entries(data.homeology).sort((a, b) => d3.ascending(a[1].chrom, b[1].chrom));
   if (!anchors.length || !data.blocks.length) {
     $("hmCard").hidden = !anchors.length && !data.blocks.length;
+    $("hmCard").querySelector(".pl-save")?.toggleAttribute("hidden", true);
+    savers.homeology = null;
     el.innerHTML = "";
     $("hmNote").textContent = anchors.length
       ? "No stretch of any chromosome is duplicated on another more than chance allows: no old duplicated sets in this genome."
@@ -1619,6 +1885,11 @@ function drawHomeology() {
       if (a && data.chroms.some((c) => c.chrom === a[1].chrom)) selectChrom(a[1].chrom, el);
     });
   el.replaceChildren(svg.node());
+  $("hmCard").querySelector(".pl-save")?.toggleAttribute("hidden", false);
+  savers.homeology = () => ({
+    name: figName(panel.d.id, "homeology-map"),
+    svg: compose(`${figTitle(panel.d)}: homeology map`, [svgOf(el.querySelector("svg"))]),
+  });
   const frac = byId.get(state.id).homeoFrac;
   $("hmNote").innerHTML = `Each chromosome of ${esc(anchors[0][0].split("_")[0])}, painted where a block of it is duplicated on another chromosome, as in ploidyspec's homeology map. Each reciprocal pair (a block from both sides) has its own colour, and the number in a block is its partner; a chromosome's number is coloured by its main reciprocal partner. Faded, dashed blocks have no block back from the partner and are not counted. Reciprocal blocks cover ${pc(frac)} of the genome. Hover to light up the partner, click to open a chromosome.`;
 }
