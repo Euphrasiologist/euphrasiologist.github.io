@@ -207,6 +207,47 @@ def homeology(d):
     return out
 
 
+def te_subgenomes(d):
+    """scripts/te_subgenomes.py: do the copies fall into subgenomes by repeats only they carry?
+    Returns the panel-level call (chosen k, whole genome and homeolog blocks only), the per-unit
+    cluster, a painting of every copy in 500 kb windows, marker densities and, per set of
+    homeologous chromosomes, whether the repeat split matches the distance split."""
+    summ = [r for r in rows(d / "te_subgenomes/summary.tsv") if r.get("chosen") == "yes"]
+    if not summ:
+        return None, None
+    r = summ[0]
+    blk = [x for x in rows(d / "te_subgenomes_blocks/summary.tsv") if x.get("chosen") == "yes"]
+    call = {"call": r["call"], "k": num(r["k"], int), "frac": num(r["consistent_frac"]),
+            "nullMean": num(r["null_mean"]), "nullMax": num(r["null_max"]), "p": num(r["p"]),
+            "sizes": r["cluster_sizes"], "agree": r["chroms_agreeing_with_distance"],
+            "hapFiles": r.get("clusters_follow_hap_files") == "True"}
+    if blk and blk[0]["cluster_sizes"] != r["cluster_sizes"] or blk and blk[0]["consistent_frac"] != r["consistent_frac"]:
+        b = blk[0]
+        call["blocks"] = {"call": b["call"], "frac": num(b["consistent_frac"]), "nullMax": num(b["null_max"]),
+                          "agree": b["chroms_agreeing_with_distance"]}
+    clusters = {x["unit"]: x["cluster"] for x in rows(d / "te_subgenomes/clusters.tsv")}
+    code = {"S1": "1", "S2": "2", "S3": "3", "S4": "4", "ambiguous": "?"}
+    step = 500000
+    paint = defaultdict(dict)
+    for w in rows(d / "te_subgenomes/windows.tsv"):
+        paint[w["unit"]][(int(w["start"]) - 1) // step] = code.get(w["assigned"], ".")
+    paint = {u: "".join(v.get(i, ".") for i in range(max(v) + 1)) for u, v in paint.items()}
+    cps = rows(d / "te_subgenomes/copies.tsv")
+    copies = {x["unit"]: [num(x["home_frac"]), num(x["n_foreign_runs"], int)] for x in cps}
+    # how often a window is painted with its own chromosome's group: where this is low, the
+    # window painting says less than the whole-chromosome clusters and the page shows those
+    nw = sum(num(x["n_windows"], int) or 0 for x in cps)
+    home = sum((num(x["n_windows"], int) or 0) * (num(x["home_frac"]) or 0) for x in cps)
+    win_agree = round(home / nw, 3) if nw else None
+    rates = [[x["marker_set"]] + [num(v) for k, v in x.items() if k.startswith("in_")]
+             for x in rows(d / "te_subgenomes/rates.tsv")]
+    agree = [[x["chrom"], x["agrees"] == "True", x["te_partition"], x["distance_partition"]]
+             for x in rows(d / "te_subgenomes/distance_agreement.tsv")]
+    data = {"step": step, "clusters": clusters, "paint": paint, "copies": copies, "rates": rates, "agree": agree,
+            "winAgree": win_agree}
+    return call, data
+
+
 def pick(r, keys, conv=None):
     out = {}
     for k in keys:
@@ -271,6 +312,7 @@ def main():
                 f["profile"] = prof[r["scaffold"]]
             fusions.append(f)
         tei = rows(d / "subgenomes/auto_allo_index.tsv")
+        tes, tesub = te_subgenomes(d)
         hms = {r["metric"]: r["value"] for r in rows(d / "homeologs/homeology_map_summary.tsv")}
         ps = {r["species"]: r for r in rows(src / "meta/panel_summary.tsv")}.get(sp, {})
         data = {
@@ -278,6 +320,7 @@ def main():
             "matrix": matrix(d, units), "chroms": chroms, "step": step, "windows": win, "homeology": hm,
             "blocks": blocks, "pairs": pairs, "fusions": fusions,
             "te": [[r["unit_a"], r["unit_b"], num(r["te_marker_fraction"])] for r in tei],
+            "tesub": tesub,
         }
         (outdir / f"{sp}.json").write_text(json.dumps(data, separators=(",", ":")))
         states = defaultdict(int)
@@ -299,6 +342,7 @@ def main():
             "homeoFrac": num(hms.get("duplicated_frac")), "homeoPairs": num(hms.get("n_partner_pairs"), int),
             "windowed": bool(win),
             "teMean": round(sum(x[2] for x in data["te"] if x[2] is not None) / len(tei), 3) if tei else None,
+            "tes": tes,
             "answers": answers(d), "category": cat.get(sp), "lit": clean_lit(lit.get(base)),
             "note": NOTES.get(sp),
         }

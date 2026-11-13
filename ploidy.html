@@ -3,7 +3,7 @@ layout: default
 title: Polyploid genomes, chromosome by chromosome
 section: figures
 permalink: /ploidy.html
-summary: How the copies of every chromosome relate in 60 polyploid and diploid genomes, read from haplotype-resolved assemblies with ploidyspec.
+summary: How the copies of every chromosome relate in 61 polyploid and diploid genomes, read from haplotype-resolved assemblies with ploidyspec.
 ---
 
 <section class="page-head">
@@ -79,6 +79,28 @@ summary: How the copies of every chromosome relate in 60 polyploid and diploid g
             were assembled as different chromosomes; and four-copy
             autopolyploids sit low and to the right, their duplicates being
             copies of the same chromosome. Click a dot to open the species.
+          </p>
+        </div>
+        <div class="gs-card">
+          <div class="pl-cardhead">
+            <h3>Two tests for subgenomes: duplicated blocks and subgenome-specific repeats</h3>
+            <span class="og-toggle pl-save"><button type="button" class="chip" data-save="te" data-fmt="svg" data-tip="Save this figure as SVG, a vector file to edit">SVG</button><button type="button" class="chip" data-save="te" data-fmt="png" data-tip="Save this figure as PNG, at three times screen resolution">PNG</button></span>
+          </div>
+          <div class="pl-legend pl-keys" id="teKey"></div>
+          <div class="gs-plot" id="figTe"></div>
+          <p class="gs-note">
+            The two tests share no data. Across, the k-mer distance test:
+            how much of the genome sits in blocks duplicated on another
+            chromosome. Up, the repeat test: transposons that spread after
+            two progenitors separated mark one subgenome and not the other,
+            so k-mers found in some copies but not all should split the
+            copies the same way again and again. The height is how much
+            more often they do than with the copies shuffled, and the
+            groups must also match the distance split to count.
+            Allopolyploids should sit top right, diploids and
+            autopolyploids bottom left; species off that diagonal are where
+            the two disagree. Hollow rings are tests that could not be read
+            cleanly. Click a dot to open the species.<span id="teUntested"></span>
           </p>
         </div>
       </div>

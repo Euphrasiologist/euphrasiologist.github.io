@@ -4102,6 +4102,7 @@ a.output:hover {
   --or0: #2a78d6; --or1: #eb6834; --or2: #1baf7a; --or3: #e87ba4; --or4: #b9b4a6;
   --p0: #2a78d6; --p1: #eb6834; --p2: #1baf7a; --p3: #6250d6; --p4: #c98500;
   --p5: #d13b3a; --p6: #d6609a; --p7: #13878f; --p8: #8c5a3c; --p9: #6f7f1a;
+  --sg1: #34495e; --sg2: #d8a31a; --sg3: #9b8fd9; --sg4: #8c5a3c;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .pl {
@@ -4110,6 +4111,7 @@ a.output:hover {
     --or0: #3987e5; --or1: #d95926; --or2: #199e70; --or3: #d55181; --or4: #56605a;
     --p0: #3987e5; --p1: #d95926; --p2: #199e70; --p3: #7f72e0; --p4: #b57800;
     --p5: #d24f4f; --p6: #c94d86; --p7: #1f9aa3; --p8: #9a6a4a; --p9: #7a8c22;
+    --sg1: #c6d4e1; --sg2: #e2b23a; --sg3: #a99ee6; --sg4: #b08060;
   }
 }
 :root[data-theme="dark"] .pl {
@@ -4118,6 +4120,7 @@ a.output:hover {
   --or0: #3987e5; --or1: #d95926; --or2: #199e70; --or3: #d55181; --or4: #56605a;
   --p0: #3987e5; --p1: #d95926; --p2: #199e70; --p3: #7f72e0; --p4: #b57800;
   --p5: #d24f4f; --p6: #c94d86; --p7: #1f9aa3; --p8: #9a6a4a; --p9: #7a8c22;
+  --sg1: #c6d4e1; --sg2: #e2b23a; --sg3: #a99ee6; --sg4: #b08060;
 }
 .pl [data-tip] { cursor: help; }
 .pl th button[data-tip] { text-decoration: underline dotted; text-underline-offset: 3px; text-decoration-color: var(--ink-3); }
@@ -4188,6 +4191,11 @@ a.output:hover {
 .pl-cardhead h3 { margin: 0; }
 .pl-cardhead h4 { margin: 0; }
 .pl-save { margin-left: auto; }
+.pl-sgs { display: inline-flex; flex-wrap: wrap; gap: 3px; vertical-align: middle; }
+.pl-sg { display: inline-flex; align-items: center; gap: 3px; padding: 1px 6px 1px 4px; border-radius: 999px; font-size: 0.72rem; color: var(--ink-2); background: var(--paper-2); border-left: 4px solid var(--c); }
+.pl-sg b { font-weight: 600; color: var(--ink); }
+.pl-tecard p { margin: 0 0 8px; }
+.pl-tecard .pl-warn { padding: 6px 10px; border-left: 3px solid var(--gold); background: var(--paper-2); border-radius: 0 6px 6px 0; }
 .pl-save[hidden] { display: none; }
 .pl-cardhead .pl-save .chip { padding: 3px 9px; font-size: 0.72rem; }
 .pl-cardhead .og-toggle .chip { border-radius: 0; margin-left: -1px; padding: 5px 11px; }

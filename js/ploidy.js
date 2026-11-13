@@ -86,6 +86,38 @@ function originClass(d) {
   if (/^One copy apart|AAA?B-like/.test(a)) return "one";
   return "na";
 }
+// the transposon subgenome test (scripts/te_subgenomes.py in ploidyspec): its call, and how
+// the page groups calls. The groups split the copies of a species by k-mers from repeats that
+// only some copies carry; a call is positive when that split is well above the split found
+// with the copies shuffled and matches the distance groups.
+const TE_CALL = {
+  subgenome_specific_repeats: "Subgenome-specific repeats",
+  none_disagrees_with_distance: "Repeats split the copies, but not as distance does",
+  none: "No subgenome-specific repeats",
+  none_within_null: "No more split than chance",
+  none_too_few_sets: "Too few homeologous sets to test",
+  none_length_confounded: "Split follows chromosome length",
+};
+const TE_KINDS = [
+  ["pos", "Subgenome-specific repeats", "Repeats split the copies into groups, well above chance, and the groups match the distance split.", "--st4"],
+  ["dis", "Split, but not as distance does", "Repeats split the copies above chance, but into groups that do not match the k-mer distance split on most sets of homeologous chromosomes.", "--st1"],
+  ["none", "No split", "Repeats do not split the copies more than they do with the copies shuffled.", "--st6"],
+  ["caveat", "Not a clean test", "Too few sets of homeologous chromosomes, a split that follows chromosome length, or groups that follow the assembly's haplotype files: read with care.", null],
+];
+const TE_KIND = Object.fromEntries(TE_KINDS.map(([k, l, w, c]) => [k, { l, w, c }]));
+function teKind(t) {
+  if (!t) return null;
+  if (t.hapFiles || t.call === "none_too_few_sets" || t.call === "none_length_confounded") return "caveat";
+  return t.call === "subgenome_specific_repeats" ? "pos" : t.call === "none_disagrees_with_distance" ? "dis" : "none";
+}
+const teColour = (k) => (TE_KIND[k]?.c ? css(TE_KIND[k].c) : "none");
+// painting colours, one per repeat group
+const sgColour = (code) => css(`--sg${code}`);
+// window painting is shown only where most windows carry their own chromosome's group
+const PAINT_MIN = 0.85;
+const paintsWindows = (data) => (data.tesub?.winAgree ?? 0) >= PAINT_MIN;
+const showPainting = (d, data) => data.tesub && ["pos", "dis", "caveat"].includes(teKind(d.tes)) && d.tes.call !== "none_too_few_sets";
+
 const CONF = {
   high: "High confidence: the lines of evidence agree, and the assembly has enough copies to read this directly.",
   medium: "Medium confidence: the evidence points this way, but it is indirect (pooled across partner chromosomes) or not unanimous.",
@@ -291,10 +323,144 @@ function renderScatter() {
     name: "ploidyspec_panel",
     svg: compose("How far apart the copies are, and how much of the genome is duplicated", [htmlKey($("scatterKey"), W), svgOf(el.querySelector("svg"))]),
   });
+  renderTeScatter();
   $("scatterKey").innerHTML = ORIGIN.map(
     ([k, l, w]) =>
       `<span class="pl-key tl-help" tabindex="0" data-tip="${esc(w)}"><i style="background:${originColour(k)}"></i>${l}</span>`,
   ).join("");
+}
+
+// Two tests for subgenomes, one dot per species: the share of the genome in homeolog blocks
+// (k-mer distance) against how far the repeat split stands above the shuffled-copies null.
+const TE_LABELS = ["drRubCham1", "lpTriTurg1", "drAriEdul1", "drLytSali1", "SchYoun1", "daEupConf1", "daSenVulg1"];
+function renderTeScatter() {
+  const el = $("figTe");
+  if (!el) return;
+  const pts = all.filter((d) => !d.parent && d.tes && d.homeoFrac != null);
+  const untested = all.filter((d) => !d.parent && !d.tes).length;
+  const W = Math.max(320, el.clientWidth),
+    H = 380,
+    m = { t: 14, r: 16, b: 46, l: 52 };
+  const ex = (d) => d.tes.frac - d.tes.nullMax;
+  const x = d3.scaleLinear().domain([-0.03, 0.85]).range([m.l, W - m.r]);
+  const y = d3
+    .scaleLinear()
+    .domain([Math.min(-0.25, d3.min(pts, ex)), 1.12])
+    .range([H - m.b, m.t]);
+  const ink2 = css("--ink-2"),
+    ink3 = css("--ink-3"),
+    rule = css("--rule"),
+    surface = css("--surface"),
+    ink = css("--ink");
+  const svg = d3
+    .create("svg")
+    .attr("viewBox", `0 0 ${W} ${H}`)
+    .attr("width", W)
+    .attr("height", H)
+    .attr("role", "img")
+    .attr("aria-label", "Scatter plot of the share of the genome in duplicated blocks against how far repeats split the copies above chance, one dot per species");
+  svg
+    .append("g")
+    .attr("transform", `translate(0,${H - m.b})`)
+    .call(d3.axisBottom(x).tickValues([0, 0.2, 0.4, 0.6, 0.8]).tickFormat(d3.format(".0%")))
+    .call((g) => g.select(".domain").attr("stroke", rule))
+    .call((g) => g.selectAll(".tick line").attr("stroke", rule))
+    .call((g) => g.selectAll("text").attr("fill", ink3));
+  svg
+    .append("g")
+    .attr("transform", `translate(${m.l},0)`)
+    .call(d3.axisLeft(y).tickValues([-0.2, 0, 0.2, 0.4, 0.6, 0.8, 1]).tickSize(-(W - m.l - m.r)))
+    .call((g) => g.select(".domain").remove())
+    .call((g) => g.selectAll(".tick line").attr("stroke", rule).attr("stroke-opacity", 0.6))
+    .call((g) => g.selectAll("text").attr("fill", ink3).text((v) => (v === 0 ? "0" : d3.format("+.1f")(v))));
+  // chance: the best split found with the copies shuffled
+  svg.append("line").attr("x1", m.l).attr("x2", W - m.r).attr("y1", y(0)).attr("y2", y(0)).attr("stroke", ink3).attr("stroke-dasharray", "4 3");
+  svg.append("text").attr("x", W - m.r - 4).attr("y", y(0) - 5).attr("text-anchor", "end").attr("font-size", 11).attr("fill", ink3).text("chance");
+  // the four corners, read
+  const corner = (cx, cy, anchor, t) => svg.append("text").attr("x", cx).attr("y", cy).attr("text-anchor", anchor).attr("font-size", 11).attr("fill", ink3).attr("opacity", 0.85).text(t);
+  corner(W - m.r - 4, y(1.07), "end", "both tests see subgenomes ↗");
+  corner(m.l + 6, y(1.07), "start", "↖ repeats only");
+  corner(W - m.r - 4, H - m.b - 8, "end", "duplicated blocks only ↘");
+  corner(m.l + 6, H - m.b - 8, "start", "↙ neither");
+  svg
+    .append("text")
+    .attr("x", (m.l + W - m.r) / 2)
+    .attr("y", H - 8)
+    .attr("text-anchor", "middle")
+    .attr("fill", ink3)
+    .attr("font-size", 12)
+    .text("Genome in duplicated blocks (from k-mer distance)");
+  svg
+    .append("text")
+    .attr("transform", `translate(13,${(m.t + H - m.b) / 2}) rotate(-90)`)
+    .attr("text-anchor", "middle")
+    .attr("fill", ink3)
+    .attr("font-size", 12)
+    .text("Repeat split, above chance");
+  const g = svg.append("g");
+  const order = { caveat: 0, none: 1, dis: 2, pos: 3 };
+  const sorted = pts.slice().sort((a, b) => order[teKind(a.tes)] - order[teKind(b.tes)] || (a.id === state.id) - (b.id === state.id));
+  g.selectAll("circle")
+    .data(sorted, (d) => d.id)
+    .join("circle")
+    .attr("cx", (d) => x(d.homeoFrac))
+    .attr("cy", (d) => y(ex(d)))
+    .attr("r", (d) => (d.id === state.id ? 8 : 6))
+    .attr("fill", (d) => (teKind(d.tes) === "caveat" ? surface : teColour(teKind(d.tes))))
+    .attr("stroke", (d) => (d.id === state.id ? ink : teKind(d.tes) === "caveat" ? ink3 : surface))
+    .attr("stroke-width", (d) => (teKind(d.tes) === "caveat" && d.id !== state.id ? 1.5 : 2));
+  const picked = new Set(TE_LABELS.concat(state.id ? [state.id] : []));
+  const labs = pts
+    .filter((d) => picked.has(d.id))
+    .map((d) => ({ d, x: x(d.homeoFrac) + 10, y: y(ex(d)) + 4, w: shortName(d.name).length * 6.2 }))
+    .sort((a, b) => b.y - a.y);
+  for (let i = 0; i < labs.length; i++)
+    for (let j = 0; j < i; j++) {
+      const a = labs[i],
+        b = labs[j];
+      if (a.x < b.x + b.w && b.x < a.x + a.w && Math.abs(a.y - b.y) < 13) a.y = b.y - 13;
+    }
+  for (const l of labs) if (l.x + l.w > W - m.r) l.x -= l.w + 20;
+  g.selectAll("text")
+    .data(labs)
+    .join("text")
+    .attr("x", (l) => l.x)
+    .attr("y", (l) => l.y)
+    .attr("font-size", 11.5)
+    .attr("font-style", "italic")
+    .attr("fill", ink2)
+    .attr("paint-order", "stroke")
+    .attr("stroke", surface)
+    .attr("stroke-width", 3)
+    .text((l) => shortName(l.d.name));
+  g.append("g")
+    .selectAll("circle")
+    .data(pts)
+    .join("circle")
+    .attr("cx", (d) => x(d.homeoFrac))
+    .attr("cy", (d) => y(ex(d)))
+    .attr("r", 12)
+    .attr("fill", "transparent")
+    .style("cursor", "pointer")
+    .on("mousemove", (e, d) =>
+      showTip(
+        `<b><i>${esc(d.name)}</i></b><br>${esc(TE_CALL[d.tes.call] ?? d.tes.call)}${d.tes.hapFiles ? "; the groups follow the haplotype files" : ""}<br><span>${pc(d.tes.frac)} of shared repeat k-mers split the copies the same way, against at most ${pc(d.tes.nullMax)} with the copies shuffled; matches the distance split on ${esc(d.tes.agree)} homeologous sets. ${pc(d.homeoFrac)} of the genome in duplicated blocks. ploidyspec's reading: ${ORIGIN_OF[originClass(d)].l.toLowerCase()}.</span>`,
+        e.clientX,
+        e.clientY,
+      ),
+    )
+    .on("mouseleave", hideTip)
+    .on("click", (e, d) => open(d.id));
+  el.replaceChildren(svg.node());
+  $("teKey").innerHTML = TE_KINDS.map(
+    ([k, l, w]) =>
+      `<span class="pl-key tl-help" tabindex="0" data-tip="${esc(w)}"><i style="${k === "caveat" ? `background:transparent;box-shadow:inset 0 0 0 1.5px ${ink3}` : `background:${teColour(k)}`}"></i>${l}</span>`,
+  ).join("");
+  $("teUntested").textContent = untested ? ` ${untested} species on this page have not been through the test yet and are not shown.` : "";
+  savers.te = () => ({
+    name: "ploidyspec_panel_two-tests",
+    svg: compose("Two tests for subgenomes: duplicated blocks and subgenome-specific repeats", [htmlKey($("teKey"), W), svgOf(el.querySelector("svg"))]),
+  });
 }
 
 const shortName = (n) => n.replace(/^(\w)\w+ /, "$1. ");
@@ -402,9 +568,28 @@ function open(id, scroll = true) {
   if (scroll) $("species").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+// The transposon answer from the repeat subgenome test where it has been run: ploidyspec's own
+// te_markers answer predates it and cannot read two-copy assemblies. The older answer is kept
+// under Evidence.
+function teAnswer(d) {
+  const t = d.tes,
+    old = d.answers.te_markers;
+  if (!t) return old;
+  const k = teKind(t);
+  const conf = k === "caveat" ? "low" : k === "pos" ? (t.frac - t.nullMax > 0.3 ? "high" : "medium") : k === "dis" ? "low" : "medium";
+  const text = {
+    pos: `Repeats that only some copies carry split them into ${t.sizes.split(",").length} groups, matching the k-mer distance split: subgenome-specific transposons, as in an allopolyploid.`,
+    dis: "Repeats split the copies, but not into the groups k-mer distance finds, so they do not point to subgenomes.",
+    none: "No repeats mark one group of copies apart from the rest: no sign of subgenomes from transposons.",
+    caveat: `${TE_CALL[t.call] ?? t.call}, but the test cannot be read cleanly here${t.hapFiles ? ": the groups follow the assembly's haplotype files" : ""}.`,
+  }[k];
+  const ev = `${pc(t.frac)} of repeat k-mers shared by some copies split them the same way, against at most ${pc(t.nullMax)} with the copies shuffled; matches the distance split on ${t.agree} homeologous sets. Details in Transposon subgenomes above.${old ? ` ploidyspec's earlier per-chromosome test: ${old[0]} (${old[1]}; ${old[2]})` : ""}`;
+  return [text, conf, ev];
+}
+
 function answersCard(d) {
   return `<div class="pl-answers">${QUESTIONS.map(([k, label]) => {
-    const a = d.answers[k];
+    const a = k === "te_markers" ? teAnswer(d) : d.answers[k];
     if (!a) return "";
     const cls = { high: "pass", medium: "flag", low: "fail" }[a[1]] ?? "tl-tag";
     return `<div class="gs-card pl-answer"><div class="og-cardhead"><h3>${label}</h3><span class="og-badge ${cls} tl-help" tabindex="0" data-tip="${esc(CONF[a[1]] ?? "ploidyspec's confidence in this reading")}">${esc(a[1])}</span></div><p>${esc(a[0])}</p><details><summary>Evidence</summary><p class="gs-note">${esc(a[2])}</p></details></div>`;
@@ -521,6 +706,7 @@ async function renderSpecies() {
     const best = order.map((k) => data.chroms.find((c) => c.copy_state === k && most && tracks(c) === most)).find(Boolean);
     state.chrom = best?.chrom ?? Object.keys(data.windows)[0] ?? data.chroms[0]?.chrom ?? null;
   }
+  panel = { d, data };
   $("spLoading").outerHTML = `
     <div class="pl-figs">
       <div class="gs-card pl-matrixcard">
@@ -548,7 +734,9 @@ async function renderSpecies() {
       <div class="pl-cardhead"><h3>Homeology map</h3>${saveButtons("homeology", "the homeology map")}</div>
       <p class="gs-note" id="hmNote"></p>
       <div class="pl-hm" id="figHomeology"></div>
+      <div class="pl-legend pl-keys" id="hmKey"></div>
     </div>
+    ${teCard(d, data)}
     ${evidenceCard(d, data)}
     ${fusionCard(d, data)}
     ${verdicts}
@@ -705,6 +893,13 @@ const EV_COLS = [
       return p.length ? p.slice(0, 3).join(", ") + (p.length > 3 ? ` <span class="tl-muted">+${p.length - 3}</span>` : "") : c.ancient_partner ? esc(chrLabel(c.ancient_partner)) : none;
     },
   },
+  {
+    k: "tesub",
+    label: "Repeat groups",
+    tip: "The repeat group (S1, S2…) each copy of this chromosome falls into on the transposon subgenome test, and whether those groups split this set of homeologous chromosomes as the k-mer distance groups do. Only shown when the test found a split.",
+    show: () => !!panel?.data?.tesub && showPainting(panel.d, panel.data),
+    cell: teCell,
+  }
 ];
 
 function evidenceCard(d, data) {
@@ -725,6 +920,81 @@ function evidenceCard(d, data) {
     <p class="gs-note">Each line of evidence ploidyspec weighs, chromosome by chromosome. A filled mark passed its test, a hollow one was tested and did not; a dash was not tested. Hatched states were read by pooling with a homeolog partner, which on its own is not evidence of rediploidisation: there, residual tetrasomy and exchange are what count. Click a row to open that chromosome.</p>
     <div class="gs-tablewrap"><table class="gs-table pl-evtable"><thead><tr><th class="l">Chromosome, state</th>${cols.map((col) => `<th class="l"><span class="tl-help" data-tip="${esc(col.tip)}">${col.label}</span></th>`).join("")}</tr></thead><tbody>${body || `<tr><td class="l" colspan="${cols.length + 1}"><span class="tl-muted">No chromosome passes any test.</span></td></tr>`}</tbody></table></div>
   </div>`;
+}
+
+// --- transposon subgenomes ---
+
+function teCard(d, data) {
+  const t = d.tes,
+    ts = data.tesub;
+  if (!t) return `<div class="gs-card pl-tecard" id="teCard"><div class="og-cardhead"><h3>Transposon subgenomes</h3><span class="og-badge">not run</span></div><p class="gs-note">This assembly has not been through the repeat test yet.</p></div>`;
+  const k = teKind(t);
+  const badge = { pos: ["pass", "found"], dis: ["flag", "differs from distance"], none: ["", "none"], caveat: ["flag", "read with care"] }[k];
+  const n = t.sizes.split(",").length;
+  const lines = [];
+  lines.push(
+    `<p><b>${esc(TE_CALL[t.call] ?? t.call)}.</b> Repeat k-mers found in some copies but not all split the copies into ${n} group${n === 1 ? "" : "s"} (${esc(t.sizes.replace(/,/g, ", "))} copies). ${pc(t.frac)} of them split the copies the same way, against ${pc(t.nullMean)} on average and at most ${pc(t.nullMax)} with the copies shuffled. The groups match the k-mer distance split on ${esc(t.agree)} sets of homeologous chromosomes.</p>`,
+  );
+  const why = [];
+  if (t.hapFiles) why.push("the groups line up with the assembly's haplotype files, so they may reflect how the assembly was made rather than subgenomes");
+  if (t.nullMax > 0.15) why.push(`even shuffled copies split this consistently up to ${pc(t.nullMax)} of the time, so the null is weak`);
+  if (t.call === "none_length_confounded") why.push("the groups follow chromosome length, which repeat content tracks on its own");
+  if (t.call === "none_too_few_sets") why.push("there are too few sets of homeologous chromosomes to tell a real split from chance");
+  if (why.length) lines.push(`<p class="pl-warn">Read with care: ${esc(why.join("; "))}.</p>`);
+  // marker density: each group's markers inside its own group and in the others
+  if (ts?.rates?.length) {
+    const sets = ts.rates.map((r) => r[0]);
+    const bits = ts.rates
+      .map((r, i) => {
+        const own = r[i + 1],
+          other = d3.mean(r.slice(1).filter((_, j) => j !== i));
+        if (own == null || other == null) return null;
+        return `${r[0]}'s markers occur ${d3.format(",.0f")(own)} times per Mb in ${r[0]} and ${d3.format(",.0f")(other)} in ${sets.filter((s) => s !== r[0]).join(" and ")}${other > 0 ? ` (${d3.format(".1f")(own / other)}×)` : ""}`;
+      })
+      .filter(Boolean);
+    if (bits.length) lines.push(`<p>${bits.join("; ")}.</p>`);
+  }
+  if (t.blocks)
+    lines.push(
+      `<p>Restricted to homeolog blocks: ${esc((TE_CALL[t.blocks.call] ?? t.blocks.call).toLowerCase())}, ${pc(t.blocks.frac)} against at most ${pc(t.blocks.nullMax)} shuffled; matches distance on ${esc(t.blocks.agree)} sets.</p>`,
+    );
+  // copies painted mostly as another group than the one they cluster with
+  const odd = Object.entries(ts?.copies ?? {}).filter(([, [h]]) => h != null && h < 0.5);
+  if (showPainting(d, data) && !paintsWindows(data))
+    lines.push(
+      `<p class="gs-note">Window by window, only ${pc(ts.winAgree)} of 500 kb windows are painted with their own chromosome's group, so the homeology map shows each chromosome's group rather than a painting.${skewed(ts) ? " One group's markers are far less specific than the other's (above), which pulls windows towards it." : ""}</p>`,
+    );
+  else if (odd.length && showPainting(d, data))
+    lines.push(
+      `<p class="gs-note">${odd.length} cop${odd.length === 1 ? "y is" : "ies are"} painted mostly as another group than the one ${odd.length === 1 ? "it clusters" : "they cluster"} with: ${esc(odd.map(([u, [h]]) => `${u.split("_")[0]} chr ${chrLabel(u.split("_")[1])} (${pc(1 - h)})`).join(", "))}. The painting is window by window and the cluster is the whole chromosome, so check these before reading the group as a subgenome.</p>`,
+    );
+  return `<div class="gs-card pl-tecard" id="teCard"><div class="og-cardhead"><h3>Transposon subgenomes</h3><span class="og-badge ${badge[0]} tl-help" tabindex="0" data-tip="${esc(TE_KIND[k].w)}">${badge[1]}</span></div>${lines.join("")}<p class="gs-note">Transposons that spread after two progenitor genomes separated mark one subgenome and not the other, independently of how similar the chromosomes are; see <i>Two tests for subgenomes</i> under Across the panel.</p></div>`;
+}
+
+// marker sets whose enrichment in their own group differs threefold or more
+function skewed(ts) {
+  const f = (ts.rates ?? []).map((r, i) => r[i + 1] / Math.max(1e-9, d3.mean(r.slice(1).filter((_, j) => j !== i)))).filter(isFinite);
+  return f.length > 1 && d3.max(f) / d3.min(f) >= 3;
+}
+
+// the chromosome's copies, by repeat group, and whether the groups match the distance split
+function teCell(c) {
+  const ts = panel?.data?.tesub;
+  if (!ts) return none;
+  const cps = Object.entries(ts.clusters)
+    .filter(([u]) => u.split("_")[1] === c.chrom)
+    .sort();
+  if (!cps.length) return none;
+  const ag = ts.agree.find(([k]) => k.split("+").includes(c.chrom));
+  const chips = cps
+    .map(([u, s]) => `<span class="pl-sg" style="--c:${sgColour(s.slice(1))}" data-tip="${esc(`${u.split("_")[0]}: repeat group ${s}`)}">${esc(u.split("_")[0].replace("HAP", "H"))}<b>${esc(s)}</b></span>`)
+    .join("");
+  const mark = ag
+    ? ag[1]
+      ? `<span class="pl-ev on" data-tip="${esc(`The repeat groups split this set (chromosomes ${ag[0].replace(/chr0*/g, "").replace("+", " + ")}) as the distance groups do`)}"><i></i>matches distance</span>`
+      : `<span class="pl-ev" data-tip="${esc(`Repeat groups: ${ag[2].replace(/;/g, " | ")}. Distance groups: ${ag[3].replace(/;/g, " | ")}`)}"><i></i>differs</span>`
+    : "";
+  return `<span class="pl-sgs">${chips}</span> ${mark}`;
 }
 
 // --- fusions ---
@@ -1068,7 +1338,7 @@ function svgOf(node) {
     copy[i].setAttribute("style", STYLE_PROPS.map((p) => `${p}:${cs.getPropertyValue(p)}`).join(";"));
   });
   // hover targets and tooltips have no place in a saved figure
-  for (const el of clone.querySelectorAll("rect")) if (el.getAttribute("fill") === "transparent") el.remove();
+  for (const el of clone.querySelectorAll('[fill="transparent"]')) el.remove();
   for (const el of clone.querySelectorAll("title")) el.remove();
   const [, , w, h] = (node.getAttribute("viewBox") ?? `0 0 ${node.clientWidth} ${node.clientHeight}`).split(/[\s,]+/).map(Number);
   clone.setAttribute("width", w);
@@ -1738,6 +2008,7 @@ function drawHomeology() {
   if (!anchors.length || !data.blocks.length) {
     $("hmCard").hidden = !anchors.length && !data.blocks.length;
     $("hmCard").querySelector(".pl-save")?.toggleAttribute("hidden", true);
+    $("hmKey").innerHTML = "";
     savers.homeology = null;
     el.innerHTML = "";
     $("hmNote").textContent = anchors.length
@@ -1752,9 +2023,15 @@ function drawHomeology() {
     R = 60,
     rowH = anchors.length > 30 ? 12 : 15,
     gap = 4;
+  // the repeat painting: a strip under each chromosome, by the repeat group of each 500 kb window
+  const paint = showPainting(panel.d, data) ? data.tesub : null,
+    byWindow = paint && paintsWindows(data);
+  const ph = paint ? 5 : 0,
+    pg = paint ? 2 : 0,
+    pitch = rowH + gap + ph + pg;
   const maxW = d3.max(anchors, ([, v]) => v.w.length);
   const x = d3.scaleLinear().domain([0, maxW * 250000]).range([L, W - R]);
-  const H = anchors.length * (rowH + gap) + 26;
+  const H = anchors.length * pitch + 26;
   const rule = css("--rule"),
     ink = css("--ink"),
     ink3 = css("--ink-3"),
@@ -1772,7 +2049,7 @@ function drawHomeology() {
     .data(anchors)
     .join("g")
     .attr("class", "row")
-    .attr("transform", (d, i) => `translate(0,${4 + i * (rowH + gap)})`);
+    .attr("transform", (d, i) => `translate(0,${4 + i * pitch})`);
   // chromosome numbers, on a pill in the colour of their dominant reciprocal partner
   const lab = row.append("g");
   lab
@@ -1832,6 +2109,49 @@ function drawHomeology() {
     .attr("fill", (b) => (b.reciprocal === "yes" ? "#fff" : ink))
     .attr("pointer-events", "none")
     .text((b) => chrLabel(b.partner));
+  if (paint) {
+    const step = paint.step;
+    row.each(function ([aid, v]) {
+      const str = paint.paint[aid];
+      if (!str) return;
+      const g = d3.select(this).append("g").attr("class", "paint");
+      const cl0 = paint.clusters[aid];
+      if (!byWindow) {
+        if (cl0)
+          g.append("rect")
+            .attr("x", L)
+            .attr("y", rowH + pg)
+            .attr("width", x(v.w.length * 250000) - L)
+            .attr("height", ph)
+            .attr("fill", sgColour(cl0.slice(1)));
+      } else for (let a = 0; a < str.length; ) {
+        let b = a + 1;
+        while (b < str.length && str[b] === str[a]) b++;
+        if (str[a] !== ".")
+          g.append("rect")
+            .attr("x", x(a * step))
+            .attr("y", rowH + pg)
+            .attr("width", Math.max(1, x(b * step) - x(a * step)))
+            .attr("height", ph)
+            .attr("fill", str[a] === "?" ? rule : sgColour(str[a]));
+        a = b;
+      }
+      const cl = paint.clusters[aid],
+        home = byWindow ? paint.copies[aid]?.[0] : null;
+      if (cl)
+        d3.select(this)
+          .append("text")
+          .attr("x", x(Math.max(str.length * step, v.w.length * 250000)) + 6)
+          .attr("y", rowH / 2 + (ph + pg) / 2)
+          .attr("dy", "0.35em")
+          .attr("font-size", 9.5)
+          .attr("font-weight", home != null && home < 0.5 ? 600 : 400)
+          .attr("fill", home != null && home < 0.5 ? css("--p5") : ink3)
+          .text(`${cl}${home != null && home < 0.5 ? "*" : ""}`)
+          .append("title")
+          .text(`Clusters with ${cl}${home != null ? `; ${pc(home)} of its windows painted ${cl}` : ""}`);
+    });
+  }
   const sel = row.filter(([, v]) => v.chrom === state.chrom);
   sel.select("rect.bar").attr("stroke", ink).attr("stroke-width", 2);
   svg
@@ -1855,7 +2175,7 @@ function drawHomeology() {
     .attr("height", H - 22)
     .attr("fill", "transparent")
     .style("cursor", "pointer");
-  const nb = (i) => Math.floor((i - 4) / (rowH + gap));
+  const nb = (i) => Math.floor((i - 4) / pitch);
   hit
     .on("mousemove", (e) => {
       const [px, py] = d3.pointer(e);
@@ -1868,10 +2188,27 @@ function drawHomeology() {
         b = blockAt(data, a[0], pos);
       if (b) row.attr("opacity", ([, v]) => (v.chrom === a[1].chrom || v.chrom === b.partner ? 1 : 0.3));
       if (!w && !b) return hideTip();
+      // the repeat test: this chromosome's group, this window's painting, and the partner's group
+      let te = "";
+      if (paint) {
+        const hap = a[0].split("_")[0],
+          mine = paint.clusters[a[0]],
+          other = b ? b.partner : w?.[0],
+          theirs = other ? paint.clusters[`${hap}_${other}`] : null;
+        const bits = [];
+        if (mine) bits.push(`chromosome ${chrLabel(a[1].chrom)} clusters with ${mine}`);
+        if (byWindow && paint.paint[a[0]]) {
+          const c = paint.paint[a[0]][Math.floor(pos / paint.step)];
+          if (c && c !== ".") bits.push(`this 500 kb window is painted ${c === "?" ? "ambiguous" : `S${c}`}`);
+        }
+        if (theirs) bits.push(`${b ? "its partner" : "the closest chromosome"}, ${chrLabel(other)}, with ${theirs}`);
+        if (bits.length)
+          te = `<br>Repeats: ${bits.join("; ")}${mine && theirs && b?.reciprocal === "yes" ? (mine === theirs ? " (same group)" : " (different groups, as homeologs from two progenitors would be)") : ""}`;
+      }
       showTip(
         b
-          ? `<b>Chromosome ${chrLabel(a[1].chrom)}, ${d3.format(".1f")(b.start / 1e6)}–${d3.format(".1f")(b.end / 1e6)} Mb</b><br>duplicated on chromosome ${chrLabel(b.partner)} (median distance ${b.median_dist != null ? d3.format(".4f")(b.median_dist) : "–"})<br><span>${b.reciprocal === "yes" ? "Reciprocal: the partner has a block back" : "Not reciprocal: no block back from the partner, so not counted"}${b.position && b.position !== "interior" ? `; at the chromosome ${esc(b.position)}` : ""}</span>`
-          : `<b>Chromosome ${chrLabel(a[1].chrom)}, ${d3.format(".2f")((i * 250000) / 1e6)} Mb</b><br>closest other chromosome: ${chrLabel(w[0])} (distance ${dist(w[1])}, z ${w[2] ?? "–"})<br><span>Not in a homeolog block</span>`,
+          ? `<b>Chromosome ${chrLabel(a[1].chrom)}, ${d3.format(".1f")(b.start / 1e6)}–${d3.format(".1f")(b.end / 1e6)} Mb</b><br>duplicated on chromosome ${chrLabel(b.partner)} (median distance ${b.median_dist != null ? d3.format(".4f")(b.median_dist) : "–"})${te}<br><span>${b.reciprocal === "yes" ? "Reciprocal: the partner has a block back" : "Not reciprocal: no block back from the partner, so not counted"}${b.position && b.position !== "interior" ? `; at the chromosome ${esc(b.position)}` : ""}</span>`
+          : `<b>Chromosome ${chrLabel(a[1].chrom)}, ${d3.format(".2f")((i * 250000) / 1e6)} Mb</b><br>closest other chromosome: ${chrLabel(w[0])} (distance ${dist(w[1])}, z ${w[2] ?? "–"})${te}<br><span>Not in a homeolog block</span>`,
         e.clientX,
         e.clientY,
       );
@@ -1888,10 +2225,21 @@ function drawHomeology() {
   $("hmCard").querySelector(".pl-save")?.toggleAttribute("hidden", false);
   savers.homeology = () => ({
     name: figName(panel.d.id, "homeology-map"),
-    svg: compose(`${figTitle(panel.d)}: homeology map`, [svgOf(el.querySelector("svg"))]),
+    svg: compose(`${figTitle(panel.d)}: homeology map`, [svgOf(el.querySelector("svg")), paint ? htmlKey($("hmKey"), W) : null]),
   });
+  const groups = paint ? [...new Set(Object.values(paint.clusters))].sort() : [];
+  $("hmKey").innerHTML = paint
+    ? groups.map((g) => `<span class="pl-key"><i style="background:${sgColour(g.slice(1))}"></i>${g} repeats</span>`).join("") +
+      (byWindow ? `<span class="pl-key"><i style="background:${rule}"></i>ambiguous</span>` : "")
+    : "";
   const frac = byId.get(state.id).homeoFrac;
-  $("hmNote").innerHTML = `Each chromosome of ${esc(anchors[0][0].split("_")[0])}, painted where a block of it is duplicated on another chromosome, as in ploidyspec's homeology map. Each reciprocal pair (a block from both sides) has its own colour, and the number in a block is its partner; a chromosome's number is coloured by its main reciprocal partner. Faded, dashed blocks have no block back from the partner and are not counted. Reciprocal blocks cover ${pc(frac)} of the genome. Hover to light up the partner, click to open a chromosome.`;
+  $("hmNote").innerHTML = `Each chromosome of ${esc(anchors[0][0].split("_")[0])}, painted where a block of it is duplicated on another chromosome, as in ploidyspec's homeology map. Each reciprocal pair (a block from both sides) has its own colour, and the number in a block is its partner; a chromosome's number is coloured by its main reciprocal partner. Faded, dashed blocks have no block back from the partner and are not counted. Reciprocal blocks cover ${pc(frac)} of the genome. Hover to light up the partner, click to open a chromosome.${
+    !paint
+      ? ""
+      : byWindow
+        ? ` The thin strip under each chromosome paints it, 500 kb at a time, by whose subgenome-specific repeats it carries (key below), and the label at the end of the row is the group the whole chromosome clusters with; a red label with a star is painted mostly as another group. In an allopolyploid the two partners of a homeolog pair carry different groups.`
+        : ` The thin strip under each chromosome is the repeat group the whole chromosome clusters with (key below); in an allopolyploid the two partners of a homeolog pair carry different groups. It is not painted window by window here: only ${pc(data.tesub.winAgree)} of 500 kb windows are painted with their own chromosome's group, too few to read stretches from.`
+  }`;
 }
 
 // --- start ---
