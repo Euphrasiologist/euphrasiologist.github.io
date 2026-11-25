@@ -3677,6 +3677,115 @@ a.output:hover {
   pointer-events: none;
 }
 
+/* A highlighted gene's predicted RNA edits (dots) and frameshifts (bars) */
+.bd-sites {
+  pointer-events: none;
+}
+
+.bd-site path {
+  fill: none;
+  stroke-linecap: round;
+}
+
+.bd-site.edit path {
+  stroke: var(--paper);
+  stroke-width: calc(4px / var(--s));
+  filter: drop-shadow(0 0 calc(0.8px / var(--s)) var(--ink));
+}
+
+.bd-site.fs path {
+  stroke: var(--og-fs);
+  stroke-width: calc(2.5px / var(--s));
+  stroke-linecap: butt;
+}
+
+.og {
+  --og-fs: #d03b3b;
+}
+
+:root[data-theme="dark"] .og {
+  --og-fs: #f07070;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .og {
+    --og-fs: #f07070;
+  }
+}
+
+.og-gene small {
+  margin-left: 4px;
+  font: 500 0.68em/1 var(--sans);
+  font-style: normal;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.og-gene.flag {
+  border-color: var(--og-fs);
+}
+
+.og-ghint {
+  margin: -2px 0 8px;
+  font-size: 0.78rem;
+  color: var(--ink-3);
+}
+
+.og-meta dd small {
+  color: var(--ink-3);
+  font-size: 0.78rem;
+}
+
+.og-gd {
+  margin-top: 10px;
+  padding: 10px 12px;
+  font-size: 0.84rem;
+  line-height: 1.45;
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+}
+
+.og-gd p {
+  margin: 0;
+}
+
+.og-gd p + p {
+  margin-top: 4px;
+  color: var(--ink-2);
+}
+
+.og-gdkey {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  font-size: 0.78rem;
+}
+
+.og-gdkey span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.og-key-edit {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--paper);
+  box-shadow: 0 0 0 1px var(--ink);
+}
+
+.og-key-fs {
+  width: 3px;
+  height: 12px;
+  background: var(--og-fs);
+}
+
+.og-subhead {
+  margin: 28px 0 6px;
+}
+
 /* ---------- Telomeric repeat database (js/telomeres.js) ---------- */
 
 .tl {

@@ -61,10 +61,12 @@ export function parseGFA(text) {
 }
 
 // Gene models on unitigs. Where a gene has a reconstructed or edited model
-// as well as the raw hit, keep only the better models, as the GFF3 keeps both
+// as well as the raw hit, keep only the better models, as the GFF3 keeps both.
+// Also keeps each gene's predicted RNA edit sites and frameshifts (`marks`)
 export function parseGFF(text) {
   const feats = new Map(),
-    parts = [];
+    parts = [],
+    sites = [];
   for (const line of text.split("\n")) {
     if (!line || line[0] === "#") continue;
     const f = line.split("\t");
@@ -83,9 +85,12 @@ export function parseGFF(text) {
       strand: f[6],
       ...a,
     };
-    if (a.ID) feats.set(a.ID, rec);
     if (f[2] === "CDS" || f[2] === "tRNA" || f[2] === "rRNA" || f[2] === "exon")
       parts.push(rec);
+    // CDS rows of one gene share an ID, so keep the first as its node
+    else if (f[2] === "sequence_alteration" || f[2] === "frameshift")
+      sites.push(rec);
+    if (a.ID && !feats.has(a.ID)) feats.set(a.ID, rec);
   }
   const root = (rec) => {
     let r = rec;
@@ -119,17 +124,48 @@ export function parseGFF(text) {
       type: p.type,
     });
   }
+  // Predicted RNA edits and frameshifts, one per site: a gene split across
+  // segments repeats its CDS rows, and with them its sites
+  const marks = [];
+  const seenSite = new Set();
+  for (const r of sites) {
+    const g = root(r);
+    if (!g || !keep.has(g.ID)) continue;
+    const k = `${r.type}|${g.Name}|${r.seqid}|${r.start}`;
+    if (seenSite.has(k)) continue;
+    seenSite.add(k);
+    marks.push({
+      seg: r.seqid,
+      start: r.start,
+      end: r.end,
+      name: g.Name,
+      kind: r.type === "frameshift" ? "fs" : "edit",
+      from: r.edited_from,
+      to: r.edited_to,
+      aa: r.resulting_aa,
+      bases: +r.n_bases || undefined,
+      nearEnd: r.near_end === "true",
+    });
+  }
+  const byGene = d3.group(marks, (m) => m.name);
   const list = [...byName].map(([name, models]) => {
     const kept = models.filter((g) => keep.has(g.ID));
     const mrna = [...feats.values()].filter(
       (r) => r.type === "mRNA" && kept.some((g) => g.ID === r.Parent),
     );
+    const own = byGene.get(name) || [];
+    const edits = own.filter((m) => m.kind === "edit");
     return {
       name,
       tier: kept[0]?.annotation_tier,
       copies: d3.max(kept, (g) => +g.copy_number || 1),
       partial: kept.every((g) => g.partial === "true"),
-      edits: d3.max(mrna, (m) => +m.n_edits || 0) || 0,
+      edits: edits.length || d3.max(mrna, (m) => +m.n_edits || 0) || 0,
+      uc: edits.filter((m) => m.from === "T").length,
+      stopEdits: edits.filter((m) => m.aa === "*").length,
+      frameshifts: own.filter((m) => m.kind === "fs"),
+      internalStops: d3.max(mrna, (m) => +m.n_internal_stops || 0) || 0,
+      approx: mrna.some((m) => m.exon_boundaries === "approximate"),
       exons: d3.max(mrna, (m) => +m.n_exons || 0) || 0,
       spans:
         d3.max(
@@ -138,7 +174,7 @@ export function parseGFF(text) {
         ) || 1,
     };
   });
-  return { parts: out, genes: list };
+  return { parts: out, genes: list, marks };
 }
 
 // --- gene classes ---
@@ -182,31 +218,25 @@ export function layout(graph, seed = "graph") {
   // breadth first, so that joined ends begin side by side, not across the page
   const adj = new Map(segs.map((s) => [s.id, []]));
   for (const l of links) {
-    adj
-      .get(l.from)
-      .push({
-        id: l.to,
-        here: l.fromOrient === "+" ? "end" : "start",
-        there: l.toOrient === "+" ? "start" : "end",
-      });
-    adj
-      .get(l.to)
-      .push({
-        id: l.from,
-        here: l.toOrient === "+" ? "start" : "end",
-        there: l.fromOrient === "+" ? "end" : "start",
-      });
+    adj.get(l.from).push({
+      id: l.to,
+      here: l.fromOrient === "+" ? "end" : "start",
+      there: l.toOrient === "+" ? "start" : "end",
+    });
+    adj.get(l.to).push({
+      id: l.from,
+      here: l.toOrient === "+" ? "start" : "end",
+      there: l.fromOrient === "+" ? "end" : "start",
+    });
   }
   const placed = new Map();
   const lay = (s, x, y, a, fromEnd) => {
     const n = counts[s.i],
       bend = (rand() - 0.5) * 0.12;
-    const arr = d3
-      .range(n)
-      .map((k) => ({
-        x: x + Math.cos(a + k * bend) * k * SPACING,
-        y: y + Math.sin(a + k * bend) * k * SPACING,
-      }));
+    const arr = d3.range(n).map((k) => ({
+      x: x + Math.cos(a + k * bend) * k * SPACING,
+      y: y + Math.sin(a + k * bend) * k * SPACING,
+    }));
     if (fromEnd) arr.reverse();
     s.pts = arr.map((q, k) => ({ seg: s.i, k, ...q }));
     s.pts.forEach((q) => pts.push(q));
@@ -449,6 +479,7 @@ export function draw(svgEl, graph, annot, opts) {
   // Markers for a highlighted gene: a ring and its name at every copy, so
   // that short genes such as tRNAs can be found as easily as long ones
   const marks = root.append("g").attr("class", "bd-marks");
+  const sitesG = root.append("g").attr("class", "bd-sites");
   const pointOf = (p) =>
     svgEl
       .querySelector(`[data-seg="${CSS.escape(p.seg)}"]`)
@@ -520,6 +551,38 @@ export function draw(svgEl, graph, annot, opts) {
       m.select("text")
         .attr("style", (d) => `--r:${d.s.w / 2 + 5}`)
         .text((d) => d.name);
+      // Its predicted RNA edits as dots and frameshifts as bars, on the ribbon
+      const own = (annot?.marks || [])
+        .filter((k) => k.name === name && byId.has(k.seg))
+        .map((k) => {
+          const s = byId.get(k.seg);
+          const at = Math.min(1, Math.max(0, (k.start - 0.5) / s.len));
+          const el = svgEl.querySelector(`[data-seg="${CSS.escape(k.seg)}"]`);
+          const L = s.pathLen;
+          const p = el.getPointAtLength(at * L),
+            q = el.getPointAtLength(Math.min(L, at * L + 0.5));
+          const ang = (Math.atan2(q.y - p.y, q.x - p.x) * 180) / Math.PI;
+          return { ...k, s, x: p.x, y: p.y, ang };
+        });
+      sitesG
+        .selectAll("g")
+        .data(own)
+        .join((e) => {
+          const g = e.append("g");
+          g.append("path");
+          return g;
+        })
+        .attr("class", (d) => `bd-site ${d.kind}`)
+        .attr(
+          "transform",
+          (d) => `translate(${d.x},${d.y}) rotate(${d.ang})`,
+        )
+        .select("path")
+        .attr("d", (d) =>
+          d.kind === "fs"
+            ? `M0,${-d.s.w / 2 - 3}V${d.s.w / 2 + 3}`
+            : `M0,0h0`,
+        );
     },
     segs,
     parts,

@@ -56,6 +56,23 @@ const FILES = {
   annot: ["Oatk annotation", "TXT"],
   png: ["Bandage plot", "PNG"],
 };
+// Genes that are trans-spliced across land plants; poa's other trans-splicing
+// calls are unusual and may be an exon placed at the wrong locus
+const USUAL_TRANS = { mito: ["nad1", "nad2", "nad5"], pltd: ["rps12"] };
+const LINEAGES = {
+  angiosperm: "Flowering plants",
+  fern: "Ferns",
+  horsetail: "Horsetails",
+  lycophyte: "Lycophytes",
+  liverwort: "Liverworts",
+  moss: "Mosses",
+};
+const AA = {
+  A: "Ala", C: "Cys", D: "Asp", E: "Glu", F: "Phe", G: "Gly", H: "His",
+  I: "Ile", K: "Lys", L: "Leu", M: "Met", N: "Asn", P: "Pro", Q: "Gln",
+  R: "Arg", S: "Ser", T: "Thr", V: "Val", W: "Trp", Y: "Tyr", "*": "stop",
+};
+const plural = (n, one, many = one + "s") => `${int(n)} ${n === 1 ? one : many}`;
 const PICKS = [
   ["Acer_campestre", "A clean worked example, from graph to gene models"],
   ["Arabidopsis_thaliana", "Checked against the RefSeq reference"],
@@ -206,12 +223,96 @@ function renderOverview() {
     }),
   );
 
+  renderEditing();
+
   const mito = all.filter((d) => d.mito?.nodes),
     pl = all.filter((d) => d.pltd?.nodes);
   const medNodes = (rs, o) => d3.median(rs, (d) => d[o].nodes);
   const ratio = d3.median(rows, (d) => d.mito.length / d.pltd.length);
   $("note1").innerHTML =
     `Plastid genomes are remarkably uniform, a median ${kb(d3.median(pl, (d) => d.pltd.length))} assembled as a graph of ${medNodes(pl, "pltd")} segments. Mitochondrial genomes are typically ${d3.format(".1f")(ratio)} times larger and far more varied, from ${kb(d3.min(mito, (d) => d.mito.length))} to ${kb(d3.max(mito, (d) => d.mito.length))}, with a median of ${medNodes(mito, "mito")} segments as repeats tangle the graph. Click any point to open that species.`;
+}
+
+// Predicted RNA edit sites per genome, by the editing profile poa used
+function renderEditing() {
+  for (const [o, id] of [
+    ["mito", "plot3"],
+    ["pltd", "plot4"],
+  ]) {
+    const rows = all.filter((d) => d[o]?.annot && d.lineage);
+    const lins = Object.keys(LINEAGES).filter((l) =>
+      rows.some((d) => d.lineage === l),
+    );
+    const n = d3.rollup(rows, (v) => v.length, (d) => d.lineage);
+    const lab = (l) => `${LINEAGES[l]} (${int(n.get(l))})`;
+    const edits = (d) => d[o].annot.edits ?? 0;
+    const sel = rows.filter((d) => d.key === state.species);
+    const colour = palette().org[o === "mito" ? 0 : 1];
+    const med = d3
+      .rollups(rows, (v) => d3.median(v, edits), (d) => d.lineage)
+      .map(([lineage, m]) => ({ lineage, m }));
+    const plot = Plot.plot({
+      width: Math.max(260, $(id).clientWidth),
+      height: 46 + lins.length * 34,
+      marginLeft: 136,
+      marginBottom: 40,
+      x: { label: "Predicted RNA edit sites →", grid: true, nice: true },
+      y: { domain: lins, label: null, tickFormat: lab, padding: 0.25 },
+      marks: [
+        Plot.tickX(rows, {
+          x: edits,
+          y: "lineage",
+          stroke: colour,
+          strokeOpacity: 0.35,
+          channels: {
+            Species: (d) => nameOf(d.key),
+            "Edit sites": edits,
+            "in genes": (d) => d[o].annot.editedGenes ?? 0,
+          },
+          tip: { format: { x: false, y: false } },
+        }),
+        Plot.dot(med, {
+          x: "m",
+          y: "lineage",
+          r: 4.5,
+          fill: "var(--plot-background)",
+          stroke: "currentColor",
+          strokeWidth: 2,
+        }),
+        Plot.tickX(sel, {
+          x: edits,
+          y: "lineage",
+          stroke: "currentColor",
+          strokeWidth: 2.5,
+        }),
+        Plot.text(sel, {
+          x: edits,
+          y: "lineage",
+          text: (d) => nameOf(d.key),
+          dy: -15,
+          fontStyle: "italic",
+          fontWeight: 600,
+          fill: "currentColor",
+          stroke: "var(--plot-background)",
+          strokeWidth: 3,
+        }),
+      ],
+    });
+    plot.addEventListener("click", () => plot.value && open(plot.value.key));
+    $(id).replaceChildren(plot);
+  }
+  const ang = all.filter((d) => d.lineage === "angiosperm");
+  const medOf = (rs, o) =>
+    d3.median(
+      rs.filter((d) => d[o]?.annot),
+      (d) => d[o].annot.edits ?? 0,
+    );
+  const fern = all.filter((d) =>
+    ["fern", "horsetail", "lycophyte"].includes(d.lineage),
+  );
+  const moss = all.filter((d) => d.lineage === "moss");
+  $("note2").innerHTML =
+    `Plant organelles rewrite their own transcripts: before translation, many cytidines are edited to uridine (C→U), changing the amino acid they code for or creating start and stop codons. poa predicts the sites from the genome alone, aligning each gene to a protein profile and allowing a C to be read as a U where that fits the profile better, with a profile chosen for each species' lineage. A typical flowering-plant mitogenome carries ${int(medOf(ang, "mito"))} predicted sites and its plastome ${int(medOf(ang, "pltd"))}. Ferns, horsetails and lycophytes edit far more (a median of ${int(medOf(fern, "mito"))} sites in their mitogenomes) and some also edit U→C, while mosses barely edit at all (${int(medOf(moss, "mito"))}). Each tick is a species, each ring the median; click a tick to open it. These are predictions, not sites seen in RNA.`;
 }
 
 function renderTiles() {
@@ -234,6 +335,12 @@ function renderTiles() {
     [pc(share("pltd")), "of plastomes pass QC"],
     [kb(d3.median(all, (d) => d.mito?.length)), "median mitogenome"],
     [kb(big.mito.length), `largest: <i>${esc(nameOf(big.key))}</i>`],
+    [
+      int(
+        d3.sum(all, (d) => (d.mito?.annot?.edits ?? 0) + (d.pltd?.annot?.edits ?? 0)),
+      ),
+      "predicted RNA edit sites",
+    ],
   ]
     .map(([a, b]) => `<div class="gs-tile"><b>${a}</b><span>${b}</span></div>`)
     .join("");
@@ -246,6 +353,7 @@ const COLS = [
   ["mlen", "Mitochondrion", (d) => kb(d.mito?.length)],
   ["mseg", "Segments", (d) => d.mito?.nodes ?? "–"],
   ["mqc", "QC", (d) => badge(d.mito?.status), "l"],
+  ["medit", "Mito edits", (d) => (d.mito?.annot ? int(d.mito.annot.edits ?? 0) : "–")],
   ["plen", "Plastid", (d) => kb(d.pltd?.length)],
   ["pseg", "Segments", (d) => d.pltd?.nodes ?? "–"],
   ["pqc", "QC", (d) => badge(d.pltd?.status), "l"],
@@ -255,6 +363,7 @@ const SORT = {
   mlen: (d) => d.mito?.length,
   mseg: (d) => d.mito?.nodes,
   mqc: (d) => RANK[d.mito?.status],
+  medit: (d) => (d.mito?.annot ? (d.mito.annot.edits ?? 0) : undefined),
   plen: (d) => d.pltd?.length,
   pseg: (d) => d.pltd?.nodes,
   pqc: (d) => RANK[d.pltd?.status],
@@ -384,10 +493,53 @@ function organelleCard(key, org, e) {
       ${row("Subgraphs", e.subgraphs)}${row("Dead ends", e.deadEnds)}
       ${row("GC content", e.gc != null ? d3.format(".1%")(e.gc) : null)}${row("Mean depth", e.depth != null ? d3.format(",.0f")(e.depth) + "×" : null)}
       ${row("Core genes found", pc(e.coreGenes))}${row("Shared with the other organelle", pc(e.crossOrganelle))}
+      ${annotRows(org, e.annot, index.species[key].lineage, row)}
     </dl>
     <div class="og-genes" id="genes-${org}"></div>
+    <div class="og-gd" id="gd-${org}" hidden></div>
     ${files ? `<div class="og-files"><h4>Download</h4><div class="og-filegrid">${files}</div><button type="button" class="og-copy" data-org="${org}">Copy curl commands for all files</button></div>` : ""}
   </section>`;
+}
+
+function annotRows(org, a, lineage, row) {
+  if (!a) return "";
+  const unusual = (a.transGenes || []).filter(
+    (g) => !USUAL_TRANS[org].includes(g),
+  );
+  const trans = (a.transGenes || [])
+    .map((g) => `<i>${esc(g)}</i>${unusual.includes(g) ? "*" : ""}`)
+    .join(", ");
+  return (
+    row(
+      "Genes",
+      `${int(a.genes)}${a.spliced ? `, ${int(a.spliced)} spliced` : ""}`,
+    ) +
+    row(
+      "Trans-spliced",
+      trans
+        ? trans +
+            (unusual.length
+              ? `<br><small>* not usually trans-spliced: check where its exons were placed</small>`
+              : "")
+        : null,
+    ) +
+    row(
+      "RNA editing",
+      `${a.edits ? `${plural(a.edits, "predicted site")} in ${plural(a.editedGenes, "gene")}${a.uc ? `, ${int(a.uc)} of them U→C` : ""}` : "no sites predicted"}${lineage ? `<br><small>with the ${esc(lineage)} profile</small>` : ""}`,
+    ) +
+    row(
+      "Frameshifts",
+      a.frameshifts
+        ? `${plural(a.frameshifts, "site")} in ${plural(a.fsGenes, "gene")}`
+        : null,
+    ) +
+    row(
+      "Internal stops",
+      a.internalStops
+        ? `${plural(a.internalStops, "gene")} still read through a stop, after editing: a pseudogene, or an edit missed`
+        : null,
+    )
+  );
 }
 
 async function loadGraph(key, org) {
@@ -457,6 +609,52 @@ function recolour(org) {
   $(`l-${org}`).dataset.theme = c;
 }
 
+function geneNotes(org, g) {
+  const trans = index.species[state.species][org].annot?.transGenes?.includes(
+    g.name,
+  );
+  return [
+    g.copies > 1 && `${g.copies} copies`,
+    g.exons > 1 &&
+      `${g.exons} exons${trans ? ", trans-spliced" : ""}${g.approx ? " (boundaries approximate)" : ""}`,
+    g.spans > 1 && `spans ${g.spans} graph segments`,
+    g.edits &&
+      `${plural(g.edits, "predicted RNA edit")}${g.uc ? ` (${g.uc} U→C)` : ""}${g.stopEdits ? `, ${g.stopEdits === 1 ? "one creates" : `${g.stopEdits} create`} a stop codon` : ""}`,
+    g.frameshifts.length &&
+      `${plural(g.frameshifts.length, "frameshift")} (${g.frameshifts.map((f) => `${f.bases} bp${f.nearEnd ? ", near the end" : ""}`).join("; ")})`,
+    g.internalStops && "an internal stop codon remains",
+    g.partial && "partial",
+    g.tier && g.tier !== "raw" && `${g.tier} model`,
+  ].filter(Boolean);
+}
+
+function geneDetail(org, name) {
+  const box = $(`gd-${org}`);
+  const g = graphs[org]?.annot.genes.find((x) => x.name === name);
+  if (!g) {
+    box.hidden = true;
+    return;
+  }
+  const edits = (graphs[org].annot.marks || []).filter(
+    (m) => m.name === name && m.kind === "edit",
+  );
+  const aa = d3
+    .rollups(edits, (v) => v.length, (m) => m.aa)
+    .filter(([a]) => a)
+    .sort((a, b) => b[1] - a[1]);
+  const notes = geneNotes(org, g);
+  box.innerHTML = `<p><b><i>${esc(g.name)}</i></b> · ${esc(notes.join(" · ") || "single exon, no edits predicted")}</p>${
+    aa.length
+      ? `<p class="og-gdaa">Edited codons now read ${aa.map(([a, n]) => `${AA[a] ?? esc(a)} ×${n}`).join(", ")}</p>`
+      : ""
+  }${
+    edits.length || g.frameshifts.length
+      ? `<p class="og-gdkey">${edits.length ? `<span><i class="og-key-edit"></i>predicted edit</span>` : ""}${g.frameshifts.length ? `<span><i class="og-key-fs"></i>frameshift</span>` : ""} marked on the graph</p>`
+      : ""
+  }`;
+  box.hidden = false;
+}
+
 function renderGenes(org, annot) {
   const box = $(`genes-${org}`);
   if (!annot.genes.length) {
@@ -466,24 +664,18 @@ function renderGenes(org, annot) {
   const groups = d3
     .groups(annot.genes, (g) => classOf(g.name))
     .sort((a, b) => a[0] - b[0]);
+  const nEdit = d3.sum(annot.genes, (g) => g.edits);
   box.innerHTML =
-    `<h4>${int(annot.genes.length)} genes</h4>` +
+    `<h4>${int(annot.genes.length)} genes</h4><p class="og-ghint">${nEdit ? "Small numbers count each gene's predicted RNA edits; a" : "A"} red edge marks a frameshift or a remaining stop codon. Point at a gene to find it on the graph, click to pin it.</p>` +
     groups
       .map(
         ([c, gs]) =>
           `<div class="og-group"><span class="og-glabel"><i class="og-sw c${c}"></i>${CLASSES[c][0]}</span>${gs
             .sort((a, b) => d3.ascending(a.name, b.name))
             .map((g) => {
-              const notes = [
-                g.copies > 1 && `${g.copies} copies`,
-                g.exons > 1 && `${g.exons} exons`,
-                g.spans > 1 && `spans ${g.spans} segments`,
-                g.edits &&
-                  `${g.edits} predicted RNA edit${g.edits > 1 ? "s" : ""}`,
-                g.partial && "partial",
-                g.tier && g.tier !== "raw" && `${g.tier} model`,
-              ].filter(Boolean);
-              return `<button type="button" class="og-gene${g.partial ? " partial" : ""}" data-gene="${esc(g.name)}" title="${esc(notes.join(", ") || g.name)}">${esc(g.name)}${g.copies > 1 ? `<sup>×${g.copies}</sup>` : ""}</button>`;
+              const notes = geneNotes(org, g);
+              const flag = g.frameshifts.length || g.internalStops;
+              return `<button type="button" class="og-gene${g.partial ? " partial" : ""}${flag ? " flag" : ""}" data-gene="${esc(g.name)}" title="${esc(notes.join(", ") || g.name)}">${esc(g.name)}${g.copies > 1 ? `<sup>×${g.copies}</sup>` : ""}${g.edits ? `<small>${g.edits}</small>` : ""}</button>`;
             })
             .join("")}</div>`,
       )
@@ -496,7 +688,10 @@ function wireGraph(org) {
   const tip = card.querySelector(".og-tip");
   const svg = card.querySelector("svg");
   let pinned = null;
-  const setGene = (name) => g.h.highlight(name);
+  const setGene = (name) => {
+    g.h.highlight(name);
+    geneDetail(org, name);
+  };
   card.querySelector(".og-genes").addEventListener("mouseover", (e) => {
     const b = e.target.closest(".og-gene");
     if (b && !pinned) setGene(b.dataset.gene);

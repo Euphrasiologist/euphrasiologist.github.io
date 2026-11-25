@@ -3,7 +3,7 @@ layout: default
 title: Plant organelle genome atlas
 section: figures
 permalink: /organelles.html
-summary: Mitochondrial and plastid assembly graphs, gene annotation and downloads for over 1,200 British plant species, from Darwin Tree of Life long reads.
+summary: Mitochondrial and plastid assembly graphs, gene annotation with spliced genes, RNA editing and frameshifts, and downloads for over 1,400 British plant species, from Darwin Tree of Life long reads.
 ---
 
 <section class="page-head">
@@ -11,11 +11,12 @@ summary: Mitochondrial and plastid assembly graphs, gene annotation and download
     <p class="eyebrow"><a href="/figures.html">Figures</a> · Live data</p>
     <h1>Plant organelle genome atlas</h1>
     <p class="lede">
-      Mitochondrial and plastid genomes for over 1,200 plant species, assembled
+      Mitochondrial and plastid genomes for over 1,400 plant species, assembled
       with <a href="https://github.com/c-zhou/oatk">Oatk</a> from Darwin Tree of
       Life long reads and annotated with
-      <a href="https://github.com/Euphrasiologist/poa">poa</a>. Pick a species
-      to see its assembly graphs, its genes and every file behind them.
+      <a href="https://github.com/Euphrasiologist/poa">poa</a>, down to spliced
+      and trans-spliced genes, predicted RNA editing and frameshifts. Pick a
+      species to see its assembly graphs, its genes and every file behind them.
     </p>
   </div>
 </section>
@@ -67,6 +68,18 @@ summary: Mitochondrial and plastid assembly graphs, gene annotation and download
           <div class="gs-card">
             <h3>Assembly graph complexity</h3>
             <div class="gs-plot" id="plot2"></div>
+          </div>
+        </div>
+        <h3 class="og-subhead">RNA editing</h3>
+        <p class="gs-note" id="note2"></p>
+        <div class="gs-pair">
+          <div class="gs-card">
+            <h3>Predicted edit sites per mitochondrial genome</h3>
+            <div class="gs-plot" id="plot3"></div>
+          </div>
+          <div class="gs-card">
+            <h3>Predicted edit sites per plastid genome</h3>
+            <div class="gs-plot" id="plot4"></div>
           </div>
         </div>
         <div class="gs-card og-browse">
